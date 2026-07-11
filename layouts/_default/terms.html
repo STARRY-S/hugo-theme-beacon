@@ -1,0 +1,15 @@
+{{ define "main" }}
+  <header class="list-header">
+    <h1 class="list-title">{{ .Title }}</h1>
+    {{- with .Description }}<p class="list-description">{{ . | markdownify }}</p>{{ end }}
+  </header>
+
+  <div class="terms">
+    {{- range .Pages.ByTitle }}
+      <a href="{{ .RelPermalink }}" class="term">
+        <span class="term-name">{{ .Title }}</span>
+        <span class="term-count">{{ len .Pages }}</span>
+      </a>
+    {{- end }}
+  </div>
+{{ end }}

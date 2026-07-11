@@ -1,0 +1,193 @@
+baseURL = "https://example.org/"
+title = "Pascal"
+theme = "pascal"
+paginate = 8
+enableRobotsTXT = true
+
+# ── Multilingual ────────────────────────────────────────────
+defaultContentLanguage = "en"      # English served at "/", others under /zh-cn/, /zh-tw/, /ja/
+# defaultContentLanguageInSubdir = true   # uncomment to serve English under /en/ too
+hasCJKLanguage = true              # correct word/character counts for CJK content
+
+# ── Shared params (translatable strings are overridden per language below) ──
+[params]
+  dateFormat = "Jan 2, 2006"
+  mainSections = ["posts"]
+  author = "Jane Doe"
+
+  enableRobots = true
+  enableSearch = false
+  showReadingTime = true
+  showWordCount = true
+  showAuthor = true
+  showSummary = true
+  showToc = true
+  showBreadcrumbs = true
+  showShareButtons = true
+
+  [[params.social]]
+    name = "GitHub"
+    icon = "github"
+    url = "https://github.com/starry-s"
+  [[params.social]]
+    name = "Twitter"
+    icon = "twitter"
+    url = "https://twitter.com/"
+  [[params.social]]
+    name = "RSS"
+    icon = "rss"
+    url = "/index.xml"
+
+  # Sidebar — structural bits are shared; per-language overrides (author /
+  # description / itemsTitle) live in each [languages.*.params.sidebar] below.
+  [params.sidebar]
+    enabled = true
+    position = "left"          # "left" or "right"
+    avatar = "/images/avatar.svg"
+    showStats = true
+    author = "Jane Doe"
+    description = "Developer & writer. Sharing notes on code, design, and side projects."
+    itemsTitle = "Elsewhere"
+
+    [[params.sidebar.buttons]]
+      name = "Email me"
+      icon = "email"
+      url = "mailto:jane@example.com"
+    [[params.sidebar.buttons]]
+      name = "LinkedIn"
+      icon = "linkedin"
+      url = "https://www.linkedin.com/"
+
+    [[params.sidebar.items]]
+      name = "Portfolio"
+      url = "/about/"
+    [[params.sidebar.items]]
+      name = "Résumé"
+      url = "/about/"
+
+    [[params.sidebar.friends]]
+      name = "Hugo"
+      url = "https://gohugo.io/"
+    [[params.sidebar.friends]]
+      name = "A Friend's Blog"
+      url = "https://example.com/"
+    [[params.sidebar.friends]]
+      name = "Another Blog"
+      url = "https://example.org/"
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[markup]
+  [markup.highlight]
+    noClasses = false
+    lineNos = false
+    codeFences = true
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+
+# ── Languages ───────────────────────────────────────────────
+[languages]
+
+  [languages.en]
+    label ="English"
+    locale ="en-US"
+    weight = 1
+    title = "Pascal"
+    [languages.en.params]
+      description = "A clean, fast, modern blog theme for Hugo with a dual-column card layout."
+    [languages.en.menu]
+      [[languages.en.menu.main]]
+        name = "Posts"
+        pageRef = "/posts"
+        weight = 1
+      [[languages.en.menu.main]]
+        name = "Tags"
+        pageRef = "/tags"
+        weight = 2
+      [[languages.en.menu.main]]
+        name = "About"
+        pageRef = "/about"
+        weight = 3
+
+  [languages.zh-cn]
+    label ="简体中文"
+    locale ="zh-CN"
+    weight = 2
+    title = "Pascal"
+    [languages.zh-cn.params]
+      author = "张三"
+      description = "一款简洁、快速、现代的 Hugo 博客主题，采用双栏卡片布局。"
+      [languages.zh-cn.params.sidebar]
+        author = "张三"
+        description = "开发者 & 作者。分享关于代码、设计与业余项目的笔记。"
+        itemsTitle = "其他"
+    [languages.zh-cn.menu]
+      [[languages.zh-cn.menu.main]]
+        name = "文章"
+        pageRef = "/posts"
+        weight = 1
+      [[languages.zh-cn.menu.main]]
+        name = "标签"
+        pageRef = "/tags"
+        weight = 2
+      [[languages.zh-cn.menu.main]]
+        name = "关于"
+        pageRef = "/about"
+        weight = 3
+
+  [languages.zh-tw]
+    label ="繁體中文"
+    locale ="zh-TW"
+    weight = 3
+    title = "Pascal"
+    [languages.zh-tw.params]
+      author = "張三"
+      description = "一款簡潔、快速、現代的 Hugo 部落格主題，採用雙欄卡片版面。"
+      [languages.zh-tw.params.sidebar]
+        author = "張三"
+        description = "開發者 & 作者。分享關於程式碼、設計與業餘專案的筆記。"
+        itemsTitle = "其他"
+    [languages.zh-tw.menu]
+      [[languages.zh-tw.menu.main]]
+        name = "文章"
+        pageRef = "/posts"
+        weight = 1
+      [[languages.zh-tw.menu.main]]
+        name = "標籤"
+        pageRef = "/tags"
+        weight = 2
+      [[languages.zh-tw.menu.main]]
+        name = "關於"
+        pageRef = "/about"
+        weight = 3
+
+  [languages.ja]
+    label ="日本語"
+    locale ="ja-JP"
+    weight = 4
+    title = "Pascal"
+    [languages.ja.params]
+      author = "山田花子"
+      description = "デュアルカラムのカードレイアウトを備えた、クリーンで高速なモダンな Hugo ブログテーマ。"
+      [languages.ja.params.sidebar]
+        author = "山田花子"
+        description = "開発者 & ライター。コード、デザイン、時々サイドプロジェクトについて綴っています。"
+        itemsTitle = "その他"
+    [languages.ja.menu]
+      [[languages.ja.menu.main]]
+        name = "記事"
+        pageRef = "/posts"
+        weight = 1
+      [[languages.ja.menu.main]]
+        name = "タグ"
+        pageRef = "/tags"
+        weight = 2
+      [[languages.ja.menu.main]]
+        name = "概要"
+        pageRef = "/about"
+        weight = 3

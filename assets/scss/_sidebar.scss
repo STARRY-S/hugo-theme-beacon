@@ -1,0 +1,218 @@
+// ── Layout with sidebar ──────────────────────────────────────────────
+.layout { min-width: 0; }
+
+.has-sidebar {
+  --content-width: 1320px;
+
+  .layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .main { min-width: 0; }        // prevent grid blowout from long code lines
+}
+
+// Right-hand position: swap column order
+.has-sidebar.sidebar-right {
+  .layout { grid-template-columns: 1fr 300px; }
+  .sidebar { order: 2; }
+  .main { order: 1; }
+}
+
+// Desktop, sidebar visible: align the sidebar card's top edge with the first
+// post card (`.main` carries 32px of top padding), and quiet the section title
+// down to a label so it doesn't read as a redundant second "bar".
+@media (min-width: 901px) {
+  .has-sidebar .sidebar-inner { margin-top: 32px; }
+
+  .has-sidebar .list-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--color-text-soft);
+  }
+}
+
+// ── Sidebar shell ────────────────────────────────────────────────────
+.sidebar {
+  min-width: 0;
+}
+
+.sidebar-inner {
+  @extend %card;
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 24px 20px;
+  animation: fade-in-up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.sidebar-block {
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-child { border-bottom: none; padding-bottom: 0; }
+}
+
+// Profile
+.sidebar-profile {
+  text-align: center;
+
+  .sidebar-avatar {
+    width: 156px;
+    height: 156px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-border);
+    transition: transform 0.3s ease;
+
+    &:hover { transform: scale(1.06); }
+  }
+  .sidebar-author { font-size: 1.35rem; margin: 12px 0 4px; }
+  .sidebar-desc { color: var(--color-text-soft); font-size: 1.05rem; line-height: 1.6; margin: 0; }
+}
+
+// Stats
+.sidebar-stats {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+
+  a {
+    display: flex;
+    flex-direction: column;
+    color: var(--color-text);
+    &:hover { color: var(--color-primary); }
+  }
+  .stat-num { font-size: 1.4rem; font-weight: 700; color: var(--color-heading); }
+  .stat-label { font-size: 0.85rem; color: var(--color-text-soft); }
+}
+
+// Social row
+.sidebar-social { justify-content: center; margin-bottom: 0; }
+
+// Buttons
+.sidebar-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .sidebar-button {
+    @extend %btn;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+
+    .icon { width: 18px; height: 18px; }
+  }
+}
+
+// Link lists (items + friends)
+.sidebar-title {
+  @extend %section-label;
+  display: flex;
+  align-items: center;
+  font-size: 0.82rem;
+  margin: 0 0 12px;
+
+  // trailing hairline rule → tidy section header
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+    margin-left: 10px;
+  }
+}
+.sidebar-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  a {
+    color: var(--color-text);
+    &:hover { color: var(--color-primary); }
+  }
+}
+
+// ── Toggle + close buttons (mobile only) ─────────────────────────────
+.sidebar-toggle,
+.sidebar-close {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  padding: 4px;
+}
+.sidebar-toggle { margin-right: 10px; }
+.sidebar-close { position: absolute; top: 14px; right: 14px; z-index: 2; }
+
+.nav-brand { display: flex; align-items: center; }
+
+// ── Overlay ──────────────────────────────────────────────────────────
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 40;
+}
+
+// ── Mobile: off-canvas drawer ────────────────────────────────────────
+@media (max-width: 900px) {
+  .has-sidebar {
+    --content-width: 720px;
+
+    .layout { grid-template-columns: 1fr; }
+    .main, .sidebar { order: 0; }
+
+    .sidebar-toggle { display: inline-flex; }
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    max-width: 85vw;
+    background: var(--color-bg);
+    box-shadow: var(--shadow);
+    padding: 0 20px;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.28s ease;
+    z-index: 50;
+  }
+  .sidebar-right .sidebar {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+  }
+
+  .sidebar-close { display: inline-flex; }
+  .sidebar-inner {
+    position: static;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 24px 0;
+  }
+
+  body.sidebar-open .sidebar { transform: translateX(0); }
+  body.sidebar-open .sidebar-overlay:not([hidden]) { opacity: 1; }
+  body.sidebar-open { overflow: hidden; }
+}

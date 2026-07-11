@@ -1,0 +1,21 @@
+{{- $p := site.Params.profileMode }}
+<section class="profile">
+  {{- with $p.imageUrl }}
+    <img class="profile-avatar" src="{{ . | relURL }}" alt="{{ $p.title }}"
+      width="{{ $p.imageWidth | default 120 }}" height="{{ $p.imageHeight | default 120 }}">
+  {{- end }}
+  {{- with $p.title }}<h1 class="profile-title">{{ . }}</h1>{{ end }}
+  {{- with $p.subtitle }}<p class="profile-subtitle">{{ . | markdownify }}</p>{{ end }}
+  {{- with site.Params.social }}
+    <div class="social-icons profile-social">
+      {{- range . }}
+        <a href="{{ .url }}" target="_blank" rel="noopener noreferrer me" aria-label="{{ .name }}">{{ partial "svg.html" .icon }}</a>
+      {{- end }}
+    </div>
+  {{- end }}
+  {{- with $p.buttons }}
+    <div class="profile-buttons">
+      {{- range . }}<a class="profile-button" href="{{ .url | relURL }}">{{ .name }}</a>{{ end }}
+    </div>
+  {{- end }}
+</section>

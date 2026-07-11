@@ -1,0 +1,43 @@
+{{- /* Charset & viewport */ -}}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="{{ if or (.Params.private) (not site.Params.enableRobots) }}noindex, nofollow{{ else }}index, follow{{ end }}">
+
+{{- /* Title */ -}}
+<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+
+{{- /* Prevent theme flash: set color scheme before paint */ -}}
+<script>
+  (function () {
+    var theme = localStorage.getItem("pascal-theme");
+    if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      document.documentElement.classList.add("dark");
+    }
+  })();
+</script>
+
+{{- partial "meta.html" . -}}
+
+{{- /* Styles */ -}}
+{{- $opts := dict "transpiler" "libsass" "targetPath" "css/main.css" "enableSourceMap" hugo.IsDevelopment -}}
+{{- with resources.Get "scss/main.scss" | toCSS $opts -}}
+  {{- if hugo.IsProduction -}}
+    {{- with . | minify | fingerprint -}}
+      <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
+    {{- end -}}
+  {{- else -}}
+    <link rel="stylesheet" href="{{ .RelPermalink }}">
+  {{- end -}}
+{{- end -}}
+
+{{- /* Feed */ -}}
+{{- with .OutputFormats.Get "rss" -}}
+  <link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ site.Title }}">
+{{- end -}}
+
+{{- /* Favicon */ -}}
+{{- with site.Params.favicon -}}
+  <link rel="icon" href="{{ . | relURL }}">
+{{- end -}}
+
+{{- with hugo.Generator -}}{{ . }}{{- end -}}

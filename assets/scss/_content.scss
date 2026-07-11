@@ -1,0 +1,112 @@
+// Single post — clean card
+.post {
+  @extend %card;
+  padding: 44px 52px;
+  animation: fade-in-up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @media (max-width: 640px) { padding: 24px 20px; }
+}
+
+.post-header {
+  margin-bottom: 28px;
+
+  .post-title { margin: 0 0 10px; font-size: 2.2rem; }
+  .post-description { color: var(--color-text-soft); font-size: 1.1rem; margin: 0 0 12px; }
+}
+
+.post-cover {
+  margin: 0 0 28px;
+
+  img { width: 100%; border-radius: var(--radius); }
+  figcaption { text-align: center; color: var(--color-text-soft); font-size: 0.85rem; margin-top: 8px; }
+}
+
+// Rendered markdown content
+.post-content {
+  font-size: 1.08rem;
+
+  > *:first-child { margin-top: 0; }
+
+  p, ul, ol, blockquote, table, pre { margin: 1.1em 0; }
+
+  ul, ol { padding-left: 1.5em; }
+  li { margin: 0.3em 0; }
+
+  a { text-decoration: underline; text-underline-offset: 2px; }
+
+  blockquote {
+    border-left: 3px solid var(--color-primary);
+    padding: 4px 18px;
+    margin-left: 0;
+    color: var(--color-text-soft);
+    background: var(--color-bg-soft);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  img { display: block; border-radius: var(--radius); margin: 1.5em auto; }
+
+  // Headings with anchor space
+  h2 { font-size: 1.6rem; }
+  h3 { font-size: 1.3rem; }
+  h2, h3, h4 { scroll-margin-top: 20px; }
+
+  // Inline code
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--color-bg-code);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+  }
+
+  // Code blocks
+  pre {
+    background: var(--color-bg-code);
+    padding: 16px;
+    border-radius: var(--radius);
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.5;
+
+    code {
+      background: none;
+      padding: 0;
+      font-size: inherit;
+    }
+  }
+
+  // Chroma highlight override to match theme background
+  .highlight { margin: 1.1em 0; }
+  .highlight pre { margin: 0; }
+
+  // Tables
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.95rem;
+  }
+  th, td {
+    border: 1px solid var(--color-border);
+    padding: 8px 12px;
+    text-align: left;
+  }
+  th { background: var(--color-bg-soft); }
+
+  kbd {
+    font-family: var(--font-mono);
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.85em;
+  }
+}
+
+.list-header {
+  margin-bottom: 20px;
+
+  // Full page heading by default (e.g. mobile, where the sidebar is folded).
+  // In the desktop sidebar view it is quieted down to a label — see _sidebar.scss.
+  .list-title { margin: 0; font-size: 1.9rem; }
+  .list-description { color: var(--color-text-soft); margin-top: 6px; }
+}

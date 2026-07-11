@@ -1,0 +1,10 @@
+{{- if and (site.Params.showToc | default true) .Params.showToc | default true }}
+  {{- if gt (len .TableOfContents) 50 }}
+    <details class="toc" open>
+      <summary class="toc-title">{{ i18n "toc" | default "Table of Contents" }}</summary>
+      <div class="toc-content">
+        {{ .TableOfContents }}
+      </div>
+    </details>
+  {{- end }}
+{{- end }}

@@ -1,0 +1,58 @@
+[minutes]
+one = "分で読む"
+other = "分で読む"
+
+[words]
+one = "文字"
+other = "文字"
+
+[by]
+other = "投稿者"
+
+[toc]
+other = "目次"
+
+[share]
+other = "共有"
+
+[prev]
+other = "前へ"
+
+[next]
+other = "次へ"
+
+[prevPost]
+other = "新しい記事"
+
+[nextPost]
+other = "古い記事"
+
+[home]
+other = "ホーム"
+
+[notFound]
+other = "おっと！このページは存在しません。"
+
+[backHome]
+other = "ホームに戻る"
+
+[posts]
+other = "記事"
+
+[categories]
+other = "カテゴリー"
+
+[tags]
+other = "タグ"
+
+[friends]
+other = "リンク"
+
+[openSidebar]
+other = "サイドバーを開く"
+
+[closeSidebar]
+other = "サイドバーを閉じる"
+
+[language]
+other = "言語"

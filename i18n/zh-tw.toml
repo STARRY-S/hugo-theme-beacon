@@ -1,0 +1,58 @@
+[minutes]
+one = "分鐘閱讀"
+other = "分鐘閱讀"
+
+[words]
+one = "字"
+other = "字"
+
+[by]
+other = "作者"
+
+[toc]
+other = "目錄"
+
+[share]
+other = "分享"
+
+[prev]
+other = "上一頁"
+
+[next]
+other = "下一頁"
+
+[prevPost]
+other = "較新"
+
+[nextPost]
+other = "較舊"
+
+[home]
+other = "首頁"
+
+[notFound]
+other = "哎呀！此頁面不存在。"
+
+[backHome]
+other = "返回首頁"
+
+[posts]
+other = "文章"
+
+[categories]
+other = "分類"
+
+[tags]
+other = "標籤"
+
+[friends]
+other = "友情連結"
+
+[openSidebar]
+other = "開啟側邊欄"
+
+[closeSidebar]
+other = "關閉側邊欄"
+
+[language]
+other = "語言"

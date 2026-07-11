@@ -1,0 +1,58 @@
+[minutes]
+one = "分钟阅读"
+other = "分钟阅读"
+
+[words]
+one = "字"
+other = "字"
+
+[by]
+other = "作者"
+
+[toc]
+other = "目录"
+
+[share]
+other = "分享"
+
+[prev]
+other = "上一页"
+
+[next]
+other = "下一页"
+
+[prevPost]
+other = "较新"
+
+[nextPost]
+other = "较旧"
+
+[home]
+other = "首页"
+
+[notFound]
+other = "哎呀！此页面不存在。"
+
+[backHome]
+other = "返回首页"
+
+[posts]
+other = "文章"
+
+[categories]
+other = "分类"
+
+[tags]
+other = "标签"
+
+[friends]
+other = "友链"
+
+[openSidebar]
+other = "打开侧边栏"
+
+[closeSidebar]
+other = "关闭侧边栏"
+
+[language]
+other = "语言"

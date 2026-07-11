@@ -1,0 +1,78 @@
+{{- $s := site.Params.sidebar }}
+<aside class="sidebar">
+  <button class="sidebar-close" aria-label="{{ i18n "closeSidebar" | default "Close" }}">
+    <svg class="icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+  <div class="sidebar-inner">
+
+    {{- /* Profile: avatar + name + description */ -}}
+    <section class="sidebar-block sidebar-profile">
+      {{- with $s.avatar }}
+        <a href="{{ site.Home.RelPermalink }}"><img class="sidebar-avatar" src="{{ . | relURL }}" alt="{{ $s.author | default site.Title }}"></a>
+      {{- end }}
+      {{- with $s.author | default site.Params.author }}<h2 class="sidebar-author">{{ . }}</h2>{{ end }}
+      {{- with $s.description }}<p class="sidebar-desc">{{ . | markdownify }}</p>{{ end }}
+    </section>
+
+    {{- /* Site stats: posts / categories / tags */ -}}
+    {{- if $s.showStats }}
+      {{- $posts := where site.RegularPages "Type" "in" (site.Params.mainSections | default (slice "posts")) }}
+      <section class="sidebar-block sidebar-stats">
+        <a href="{{ (index (site.Params.mainSections | default (slice "posts")) 0) | relURL }}">
+          <span class="stat-num">{{ len $posts }}</span>
+          <span class="stat-label">{{ i18n "posts" | default "Posts" }}</span>
+        </a>
+        <a href="{{ "categories/" | relURL }}">
+          <span class="stat-num">{{ len site.Taxonomies.categories }}</span>
+          <span class="stat-label">{{ i18n "categories" | default "Categories" }}</span>
+        </a>
+        <a href="{{ "tags/" | relURL }}">
+          <span class="stat-num">{{ len site.Taxonomies.tags }}</span>
+          <span class="stat-label">{{ i18n "tags" | default "Tags" }}</span>
+        </a>
+      </section>
+    {{- end }}
+
+    {{- /* Social icons */ -}}
+    {{- with site.Params.social }}
+      <div class="sidebar-block social-icons sidebar-social">
+        {{- range . }}
+          <a href="{{ .url }}" target="_blank" rel="noopener noreferrer me" aria-label="{{ .name }}" title="{{ .name }}">{{ partial "svg.html" .icon }}</a>
+        {{- end }}
+      </div>
+    {{- end }}
+
+    {{- /* Buttons */ -}}
+    {{- with $s.buttons }}
+      <section class="sidebar-block sidebar-buttons">
+        {{- range . }}
+          <a class="sidebar-button" href="{{ .url }}"{{ if hasPrefix .url "http" }} target="_blank" rel="noopener noreferrer"{{ end }}>
+            {{- with .icon }}{{ partial "svg.html" . }}{{ end }}
+            <span>{{ .name }}</span>
+          </a>
+        {{- end }}
+      </section>
+    {{- end }}
+
+    {{- /* Custom link items */ -}}
+    {{- with $s.items }}
+      <section class="sidebar-block sidebar-links-block">
+        {{- with $s.itemsTitle }}<h3 class="sidebar-title">{{ . }}</h3>{{ end }}
+        <ul class="sidebar-links">
+          {{- range . }}<li><a href="{{ .url }}">{{ .name }}</a></li>{{ end }}
+        </ul>
+      </section>
+    {{- end }}
+
+    {{- /* Friends / links */ -}}
+    {{- with $s.friends }}
+      <section class="sidebar-block sidebar-friends">
+        <h3 class="sidebar-title">{{ $s.friendsTitle | default (i18n "friends") | default "Friends" }}</h3>
+        <ul class="sidebar-links">
+          {{- range . }}<li><a href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ .name }}</a></li>{{ end }}
+        </ul>
+      </section>
+    {{- end }}
+
+  </div>
+</aside>

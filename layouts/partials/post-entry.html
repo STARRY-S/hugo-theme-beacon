@@ -1,0 +1,24 @@
+{{- /* A single post card in list views */ -}}
+<article class="post-entry">
+  {{- with .Params.cover.image }}
+    <a href="{{ $.RelPermalink }}" class="entry-cover" aria-label="{{ $.Title }}">
+      <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+    </a>
+  {{- end }}
+  <div class="entry-body">
+    <h2 class="entry-title">
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    </h2>
+    {{ partial "post-meta.html" . }}
+    {{- if site.Params.showSummary | default true }}
+      <p class="entry-summary">{{ .Summary | plainify | truncate (or site.Params.summaryLength 200) }}</p>
+    {{- end }}
+    {{- with .Params.tags }}
+      <div class="entry-tags">
+        {{- range . }}
+          <a href="{{ (urls.JoinPath "tags" (. | urlize)) | relURL }}" class="tag">{{ . }}</a>
+        {{- end }}
+      </div>
+    {{- end }}
+  </div>
+</article>

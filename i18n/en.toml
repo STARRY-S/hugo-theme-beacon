@@ -1,0 +1,58 @@
+[minutes]
+one = "min read"
+other = "min read"
+
+[words]
+one = "word"
+other = "words"
+
+[by]
+other = "By"
+
+[toc]
+other = "Table of Contents"
+
+[share]
+other = "Share"
+
+[prev]
+other = "Prev"
+
+[next]
+other = "Next"
+
+[prevPost]
+other = "Newer"
+
+[nextPost]
+other = "Older"
+
+[home]
+other = "Home"
+
+[notFound]
+other = "Oops! This page does not exist."
+
+[backHome]
+other = "Back to home"
+
+[posts]
+other = "Posts"
+
+[categories]
+other = "Categories"
+
+[tags]
+other = "Tags"
+
+[friends]
+other = "Friends"
+
+[openSidebar]
+other = "Open sidebar"
+
+[closeSidebar]
+other = "Close sidebar"
+
+[language]
+other = "Language"

@@ -1,0 +1,14 @@
+# Hugo build output & caches
+/exampleSite/public/
+/exampleSite/resources/
+/exampleSite/.hugo_build.lock
+public/
+resources/
+.hugo_build.lock
+hugo_stats.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+node_modules/

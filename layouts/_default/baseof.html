@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="{{ site.Language.Lang }}" dir="{{ or site.Language.Direction `ltr` }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+{{- $showSidebar := false -}}
+{{- $pos := "left" -}}
+{{- with site.Params.sidebar }}{{ if .enabled }}{{ $showSidebar = true }}{{ $pos = .position | default "left" }}{{ end }}{{ end -}}
+<body class="{{ if eq .Kind `page` }}single{{ else }}list{{ end }}{{ if $showSidebar }} has-sidebar sidebar-{{ $pos }}{{ end }}">
+  <div class="container">
+    {{ partial "header.html" . }}
+    <div class="layout">
+      {{- if $showSidebar }}{{ partial "sidebar.html" . }}{{ end }}
+      <main class="main">
+        {{ block "main" . }}{{ end }}
+      </main>
+    </div>
+    {{ partial "footer.html" . }}
+  </div>
+  {{- if $showSidebar }}<div class="sidebar-overlay" hidden></div>{{ end }}
+  {{ partialCached "js.html" . }}
+</body>
+</html>

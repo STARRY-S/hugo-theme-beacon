@@ -1,0 +1,47 @@
+{{ define "main" }}
+  <article class="post">
+    <header class="post-header">
+      {{- if .Params.showBreadcrumbs | default site.Params.showBreadcrumbs }}
+        {{ partial "breadcrumbs.html" . }}
+      {{- end }}
+      <h1 class="post-title">{{ .Title }}</h1>
+      {{- with .Description }}<p class="post-description">{{ . }}</p>{{ end }}
+      {{ partial "post-meta.html" . }}
+    </header>
+
+    {{- with .Params.cover.image }}
+      <figure class="post-cover">
+        <img src="{{ . | relURL }}" alt="{{ $.Title }}">
+        {{- with $.Params.cover.caption }}<figcaption>{{ . | markdownify }}</figcaption>{{ end }}
+      </figure>
+    {{- end }}
+
+    {{ partial "toc.html" . }}
+
+    <div class="post-content">
+      {{ .Content }}
+    </div>
+
+    <footer class="post-footer">
+      {{- with .Params.tags }}
+        <div class="post-tags">
+          {{- range . }}
+            <a href="{{ (urls.JoinPath "tags" (. | urlize)) | relURL }}" class="tag">{{ . }}</a>
+          {{- end }}
+        </div>
+      {{- end }}
+
+      {{ partial "post-nav.html" . }}
+
+      {{- if site.Params.showShareButtons }}
+        {{ partial "share.html" . }}
+      {{- end }}
+    </footer>
+
+    {{- if site.Params.comments }}
+      <section class="comments">
+        {{ partial "comments.html" . }}
+      </section>
+    {{- end }}
+  </article>
+{{ end }}

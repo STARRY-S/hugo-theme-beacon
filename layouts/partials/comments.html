@@ -1,0 +1,14 @@
+{{- /* Comments placeholder. Configure a provider (giscus, utterances, disqus)
+       by overriding this partial in your site's layouts/partials/comments.html */ -}}
+{{- with site.Params.giscus }}
+  <script src="https://giscus.app/client.js"
+    data-repo="{{ .repo }}"
+    data-repo-id="{{ .repoId }}"
+    data-category="{{ .category }}"
+    data-category-id="{{ .categoryId }}"
+    data-mapping="{{ .mapping | default "pathname" }}"
+    data-reactions-enabled="{{ .reactionsEnabled | default "1" }}"
+    data-theme="{{ .theme | default "preferred_color_scheme" }}"
+    crossorigin="anonymous" async>
+  </script>
+{{- end }}
