@@ -114,6 +114,9 @@
 
     &::-webkit-details-marker { display: none; }
     &:hover { color: var(--color-primary); }
+
+    // Icon-only trigger: hide the current-language label, show just the globe
+    .lang-current { display: none; }
   }
 
   &[open] summary { color: var(--color-primary); }
