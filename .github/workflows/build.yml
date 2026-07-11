@@ -1,0 +1,26 @@
+name: Build
+
+# Fast validation that the theme still builds the example site.
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Hugo (extended)
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: latest
+          extended: true
+
+      - name: Link theme into example site
+        run: |
+          mkdir -p exampleSite/themes
+          ln -sfn ../.. exampleSite/themes/pascal
+
+      - name: Build
+        run: hugo --gc --minify --source exampleSite

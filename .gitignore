@@ -12,3 +12,6 @@ hugo_stats.json
 Thumbs.db
 *.swp
 node_modules/
+
+# Claude Code — keep shared settings, ignore personal/local overrides
+.claude/settings.local.json

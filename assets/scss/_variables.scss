@@ -16,6 +16,7 @@
   --color-text-soft: #6c757d;    // muted / metadata
   --color-heading: #1a1a1a;      // crisp titles
   --color-border: #e0e0e0;
+  --color-divider: #e6e6e6;      // section dividers (sidebar) — a touch softer than border
   --color-border-hover: #007bff; // card/button hover outline (light: full accent)
   --color-primary: #007bff;      // accent / links
   --color-primary-hover: #0069d9;
@@ -28,11 +29,12 @@
   // Dark palette — modern deep charcoal, aligned with starry-s.moe
   --color-bg: #1d1e20;           // body — deep charcoal
   --color-bg-soft: #2e2e33;      // card / entry — solid dark gray
-  --color-bg-code: #333333;
+  --color-bg-code: #22262b;      // code blocks — deeper so GitHub-Dark syntax pops
   --color-text: #e5e7eb;         // body text — gentle light gray
   --color-text-soft: #9ca3af;    // muted / metadata
   --color-heading: #ffffff;      // crisp white titles
   --color-border: #2e3035;       // clean thin border
+  --color-divider: #40434a;      // section dividers (sidebar) — brighter than card so lines read
   --color-border-hover: #4d6d96; // card/button hover outline — muted, not glaring
   --color-primary: #64b5f6;      // accent / links — soft blue
   --color-primary-hover: #90caf9;

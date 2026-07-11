@@ -63,6 +63,21 @@ exampleSite/              # demo content + config for previewing
 - **Styles**: SCSS compiled via Hugo Pipes in `head.html` (minified + fingerprinted
   in production). Requires Hugo **extended**.
 - **Scripts**: `partials/js.html` concatenates the JS files into one bundle.
+- **Icons**: `partials/svg.html` maps a name to an icon — `{{ partial "svg.html" "github" }}`.
+  A curated set (github, x/twitter, email, rss, linkedin, mastodon, bluesky, youtube,
+  bilibili, tiktok, instagram, telegram, discord, zhihu, weibo, wechat, globe, link)
+  ships as **inline SVG** — zero requests, `currentColor` so it inherits text color.
+  Unknown names get a fallback `?` glyph. Opt-in `[params].iconify = true` loads the
+  Iconify web component (CDN, pinned + SRI in `js.html`) so any `prefix:name` icon
+  (e.g. `simple-icons:bilibili`, `mdi:home`) renders on demand; without a colon it
+  stays on the inline set. To add a curated icon, drop an `{{ else if }}` branch in
+  `svg.html` (24×24 viewBox, `fill`/`stroke="currentColor"`; grab paths from Simple
+  Icons (CC0) or Feather (MIT)).
+- **Pagination**: homepage (`index.html`), section lists and taxonomy pages
+  (`list.html`) all use `.Paginate` + `partials/pagination.html` (Prev / "n / total"
+  / Next). Page size is `[pagination].pagerSize` in the site config (the old
+  top-level `paginate` key is deprecated — use the table form). Scales to hundreds
+  of posts automatically.
 - **Config-driven**: most features are toggled by `[params]` flags in the site
   config (see README). Check `site.Params.*` in partials before adding UI.
 - **Sidebar**: `[params.sidebar].enabled` gates it. `baseof.html` wraps `<main>`
@@ -80,11 +95,32 @@ exampleSite/              # demo content + config for previewing
 ## Status
 
 **Done:** homepage post list, single post (TOC, meta, tags, prev/next, share,
-breadcrumbs), light/dark/auto toggle, code copy, tags/categories, SEO/OpenGraph,
-RSS, 404, responsive layout, sidebar (avatar/stats/social/buttons/
+breadcrumbs), light/dark/auto toggle, code copy, class-based syntax highlighting
+(`_syntax.scss` — GitHub light / GitHub Dark, Chroma classes), tags/categories,
+SEO/OpenGraph, RSS, 404, responsive layout, sidebar (avatar/stats/social/buttons/
 items/friends, left-or-right, mobile drawer), multilingual (i18n en/zh-cn/zh-tw/ja
 + header language switcher, per-filename content translations).
 
 **Not done yet (stubbed):** search (Fuse.js), archives page, full comments setup
-(giscus is wired but unconfigured), dark-mode syntax-highlight tuning.
-Profile-mode homepage is scaffolded but off by default.
+(giscus is wired but unconfigured). Profile-mode homepage is scaffolded but off by default.
+
+## Design decisions & preferences (owner)
+
+This is a personal, WIP, "vibe-coding" theme (see README notices). Owner preferences
+observed while iterating — keep these in mind before restyling:
+
+- **Light and dark must look the same.** Several bugs came from colors that were
+  visible in one theme but not the other (e.g. `--color-border` ≈ the dark card).
+  When adding lines/borders, verify both modes; prefer `--color-divider` for
+  sidebar section rules and `color-mix(... var(--color-primary) ...)` tints for
+  hover states (works in both palettes).
+- **Sidebar contact buttons are intentionally flat** (no border/fill box) so they
+  read identically in light and dark; hover is an accent tint, not a border.
+- **Keep motion/animation minimal and calm** (e.g. the lang switcher is one short
+  fade, no elaborate transitions).
+- **Icons**: prefers inline SVG by default with an *opt-in* CDN path
+  (`[params].iconify`), not a heavy always-on icon font. See the Icons note above.
+- **README tone**: no emoji; concise; keep the WIP / personal-use / vibe-coding
+  notices near the top.
+- Repo has CI (`.github/workflows/build.yml` PR build check, `gh-pages.yml` demo
+  deploy) and shared Claude settings (`.claude/settings.json`).

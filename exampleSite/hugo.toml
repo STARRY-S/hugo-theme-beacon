@@ -1,13 +1,17 @@
 baseURL = "https://example.org/"
 title = "Pascal"
 theme = "pascal"
-paginate = 8
 enableRobotsTXT = true
 
 # ── Multilingual ────────────────────────────────────────────
 defaultContentLanguage = "en"      # English served at "/", others under /zh-cn/, /zh-tw/, /ja/
 # defaultContentLanguageInSubdir = true   # uncomment to serve English under /en/ too
 hasCJKLanguage = true              # correct word/character counts for CJK content
+
+# ── Pagination ──────────────────────────────────────────────
+# Posts per page on the homepage, section lists, and taxonomy pages.
+[pagination]
+  pagerSize = 5
 
 # ── Shared params (translatable strings are overridden per language below) ──
 [params]
@@ -25,14 +29,22 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
   showBreadcrumbs = true
   showShareButtons = true
 
+  # Load the Iconify CDN so any "prefix:name" icon works (see the Telegram
+  # entry below). Curated short names still render as inline SVG regardless.
+  iconify = true
+
   [[params.social]]
     name = "GitHub"
     icon = "github"
     url = "https://github.com/starry-s"
   [[params.social]]
-    name = "Twitter"
-    icon = "twitter"
-    url = "https://twitter.com/"
+    name = "Telegram"
+    icon = "simple-icons:telegram"   # via Iconify CDN (params.iconify = true)
+    url = "https://t.me/"
+  [[params.social]]
+    name = "X"
+    icon = "x"
+    url = "https://x.com/"
   [[params.social]]
     name = "RSS"
     icon = "rss"

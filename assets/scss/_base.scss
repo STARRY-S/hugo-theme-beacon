@@ -99,6 +99,15 @@ hr {
   vertical-align: middle;
 }
 
+// Iconify web-component icons (only present when params.iconify = true) —
+// default to the same 20px box as the inline SVGs. More specific rules
+// (e.g. `.sidebar-button .icon`) still override width/height as usual.
+iconify-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+}
+
 // Respect users who prefer reduced motion — disable animation & transitions.
 @media (prefers-reduced-motion: reduce) {
   *,

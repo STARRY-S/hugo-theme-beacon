@@ -8,3 +8,11 @@
 {{- else }}
   <script src="{{ $bundle.RelPermalink }}" defer></script>
 {{- end }}
+
+{{- /* Optional: Iconify web component for CDN icons ("prefix:name"). Only
+       loaded when [params].iconify = true; otherwise all icons stay inline. */ -}}
+{{- if site.Params.iconify }}
+<script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"
+        integrity="sha384-63H0EhkXL6M4HAjkA3bbnT+mkm0SbHKtxxj4Iv1hXtM6FDH+c6XqvuXgDKBJdJNG"
+        crossorigin="anonymous" defer></script>
+{{- end }}
