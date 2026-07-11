@@ -56,3 +56,6 @@ other = "关闭侧边栏"
 
 [language]
 other = "语言"
+
+[backToTop]
+other = "回到顶部"

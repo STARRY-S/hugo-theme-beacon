@@ -1,7 +1,8 @@
 {{- $toggle := resources.Get "js/theme-toggle.js" }}
 {{- $copy := resources.Get "js/code-copy.js" }}
 {{- $sidebar := resources.Get "js/sidebar-toggle.js" }}
-{{- $bundle := slice $toggle $copy $sidebar | resources.Concat "js/bundle.js" }}
+{{- $backToTop := resources.Get "js/back-to-top.js" }}
+{{- $bundle := slice $toggle $copy $sidebar $backToTop | resources.Concat "js/bundle.js" }}
 {{- if hugo.IsProduction }}
   {{- $bundle = $bundle | minify | fingerprint }}
   <script src="{{ $bundle.RelPermalink }}" integrity="{{ $bundle.Data.Integrity }}" defer></script>

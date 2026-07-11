@@ -56,3 +56,6 @@ other = "サイドバーを閉じる"
 
 [language]
 other = "言語"
+
+[backToTop]
+other = "トップへ戻る"
