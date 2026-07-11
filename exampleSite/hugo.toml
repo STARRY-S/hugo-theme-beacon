@@ -1,4 +1,4 @@
-baseURL = "https://example.org/"
+baseURL = "https://pascal-demo.starry-s.moe/"
 title = "Pascal"
 theme = "pascal"
 enableRobotsTXT = true
