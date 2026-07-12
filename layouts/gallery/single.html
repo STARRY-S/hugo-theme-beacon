@@ -1,0 +1,40 @@
+{{- /* Gallery page — a photo waterfall built from a leaf bundle's images.
+
+  Create a bundle and drop photos next to it:
+
+    content/gallery/
+      index.md          # front matter: type = "gallery"
+      seaside.jpg
+      alley.jpg
+      ...
+
+  Every image resource in the bundle is laid out as a masonry grid with
+  click-to-zoom. Any Markdown in index.md renders above the grid as an intro.
+  Set `galleryReverse = true` in front matter to flip the order, and give an
+  image a caption via [[resources]] params (see the partial). */ -}}
+{{ define "main" }}
+  <article class="post gallery-page">
+    <header class="post-header">
+      {{- if .Params.showBreadcrumbs | default site.Params.showBreadcrumbs }}
+        {{ partial "breadcrumbs.html" . }}
+      {{- end }}
+      <h1 class="post-title">{{ .Title }}</h1>
+      {{- with .Description }}<p class="post-description">{{ . }}</p>{{ end }}
+    </header>
+
+    {{- with .Content }}
+      <div class="post-content gallery-intro">{{ . }}</div>
+    {{- end }}
+
+    {{- $images := .Resources.ByType "image" }}
+    {{- if .Params.timeline }}
+      {{ partial "gallery-timeline.html" . }}
+    {{- else if $images }}
+      {{ partial "gallery.html" (dict "images" $images "page" . "reverse" .Params.galleryReverse) }}
+    {{- else }}
+      <p class="gallery-empty">{{ i18n "galleryEmpty" | default "No photos yet." }}</p>
+    {{- end }}
+  </article>
+
+  {{ partial "back-to-top.html" . }}
+{{ end }}

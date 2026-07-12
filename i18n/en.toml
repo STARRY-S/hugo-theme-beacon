@@ -104,3 +104,6 @@ other = "Pagination"
 
 [breadcrumb]
 other = "Breadcrumb"
+
+[galleryEmpty]
+other = "No photos yet."

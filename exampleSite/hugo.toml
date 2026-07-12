@@ -89,6 +89,13 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
   tag = "tags"
   category = "categories"
 
+# ── Image EXIF ──────────────────────────────────────────────
+# Hugo strips EXIF by default; opt the gallery's camera/lens/exposure fields
+# back in so the lightbox can show them. (Location/GPS stays disabled.)
+[imaging.exif]
+  includeFields = "Make|Model|LensModel|LensMake|FNumber|ExposureTime|ISOSpeedRatings|PhotographicSensitivity|ISO|FocalLength|FocalLengthIn35mmF.*|DateTimeOriginal"
+  disableLatLong = true
+
 [markup]
   [markup.highlight]
     noClasses = false
@@ -120,9 +127,13 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
         pageRef = "/tags"
         weight = 2
       [[languages.en.menu.main]]
+        name = "Gallery"
+        pageRef = "/gallery"
+        weight = 3
+      [[languages.en.menu.main]]
         name = "About"
         pageRef = "/about"
-        weight = 3
+        weight = 4
 
   [languages.zh-cn]
     label ="简体中文"

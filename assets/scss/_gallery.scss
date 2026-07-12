@@ -1,0 +1,171 @@
+// Gallery / photo waterfall — a masonry grid built with CSS columns.
+// Rendered by partials/gallery.html (gallery page layout + gallery shortcode).
+// Thumbnails open full-screen via the shared lightbox (see _lightbox.scss).
+
+.gallery {
+  // Responsive masonry: column count scales with viewport, gap is a token.
+  column-count: 3;
+  column-gap: var(--space-md);
+  margin: var(--space-lg) 0;
+
+  @media (max-width: 900px) {
+    column-count: 2;
+  }
+  @media (max-width: 480px) {
+    column-count: 1;
+  }
+
+  &__item {
+    // Each photo is a block inside a column; avoid splitting across columns.
+    position: relative;
+    display: block;
+    margin: 0 0 var(--space-md);
+    break-inside: avoid;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-bg-soft);
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+  }
+
+  &__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: zoom-in;
+  }
+
+  // Caption overlay — fades up from the bottom on hover/focus.
+  &__caption {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: var(--space-lg) var(--space-md) var(--space-sm);
+    color: #fff;
+    font-size: 0.85rem;
+    line-height: 1.35;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0));
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__item:hover &__caption,
+  &__item:focus-visible &__caption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ── Timeline (dated photo groups, Apple/Google Photos "memories" style) ──
+// A vertical rail runs down the left; each dated section hangs off a marker.
+.timeline {
+  position: relative;
+  margin: var(--space-lg) 0;
+
+  // The rail — a thin continuous line linking every section marker.
+  &::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    bottom: 0;
+    left: 7px;
+    width: 2px;
+    background: var(--color-divider);
+  }
+
+  &__group {
+    position: relative;
+    padding-left: calc(16px + var(--space-lg));
+    margin-bottom: var(--space-xl);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__head {
+    position: relative;
+    margin-bottom: var(--space-md);
+  }
+
+  // The dot sitting on the rail, aligned to the date line.
+  &__marker {
+    position: absolute;
+    left: calc(-1 * (16px + var(--space-lg)));
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 3px solid var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-bg);
+  }
+
+  &__date {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+
+  &__title {
+    margin: var(--space-xs) 0 0;
+    font-size: 1.35rem;
+    line-height: 1.25;
+    color: var(--color-heading);
+  }
+
+  &__desc {
+    margin: var(--space-xs) 0 0;
+    color: var(--color-text-soft);
+
+    p {
+      margin: 0;
+    }
+  }
+
+  // On narrow screens the rail would crowd single-column photos; drop it.
+  @media (max-width: 480px) {
+    &::before {
+      display: none;
+    }
+    .timeline__group {
+      padding-left: 0;
+    }
+    .timeline__marker {
+      display: none;
+    }
+  }
+}
+
+// The gallery page's intro text sits above the grid, centered like other headers.
+.gallery-page .gallery-intro {
+  margin-bottom: var(--space-lg);
+}
+
+.gallery-empty {
+  color: var(--color-text-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery__item,
+  .gallery__caption {
+    transition: none;
+  }
+  .gallery__item:hover {
+    transform: none;
+  }
+}

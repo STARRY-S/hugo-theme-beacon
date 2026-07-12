@@ -1,7 +1,8 @@
-{{- /* Previous / next post navigation within same section */ -}}
+{{- /* Previous / next post navigation — only for real posts (main sections),
+       not standalone pages like About or Gallery. */ -}}
 {{- $prev := .PrevInSection }}
 {{- $next := .NextInSection }}
-{{- if or $prev $next }}
+{{- if and (in site.MainSections .Section) (or $prev $next) }}
   <nav class="post-nav" aria-label="{{ i18n "postNav" | default "Post navigation" }}">
     {{- with $next }}
       <a class="post-nav-prev" href="{{ .RelPermalink }}">

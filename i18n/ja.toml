@@ -104,3 +104,6 @@ other = "ページネーション"
 
 [breadcrumb]
 other = "パンくずリスト"
+
+[galleryEmpty]
+other = "まだ写真がありません。"

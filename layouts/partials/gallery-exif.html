@@ -1,0 +1,34 @@
+{{- /* Extract and format an image's EXIF for the lightbox info panel.
+
+  Takes an image resource, returns a dict of display-ready strings:
+    { camera, lens, settings, shot }   (each "" when the data is absent)
+
+  e.g. camera "Sony ILCE-7M4", lens "FE 16-35mm F2.8 GM",
+       settings "16mm · ƒ/8 · 8s · ISO 100", shot "Mar 20, 2026".
+
+  EXIF is only present when the fields are opted in via [imaging.exif] in the
+  site config (Hugo strips it otherwise) — see the README. Non-photo resources
+  or images without metadata simply return empty strings. */ -}}
+{{- $camera := "" -}}
+{{- $lens := "" -}}
+{{- $settings := "" -}}
+{{- $shot := "" -}}
+{{- with .Exif -}}
+  {{- $t := .Tags -}}
+  {{- $make := index $t "Make" -}}
+  {{- with index $t "Model" -}}
+    {{- $camera = . -}}
+    {{- /* Prefix the make unless the model already carries the brand. */ -}}
+    {{- if and $make (not (in (lower .) (lower $make))) }}{{ $camera = printf "%s %s" $make . }}{{ end -}}
+  {{- end -}}
+  {{- with index $t "LensModel" }}{{ $lens = . }}{{ end -}}
+  {{- $parts := slice -}}
+  {{- with index $t "FocalLength" }}{{ $parts = $parts | append (printf "%vmm" .Float64) }}{{ end -}}
+  {{- with index $t "FNumber" }}{{ $parts = $parts | append (printf "ƒ/%v" .Float64) }}{{ end -}}
+  {{- with index $t "ExposureTime" }}{{ $parts = $parts | append (printf "%ss" .String) }}{{ end -}}
+  {{- $iso := or (index $t "ISO") (index $t "ISOSpeedRatings") (index $t "PhotographicSensitivity") -}}
+  {{- with $iso }}{{ $parts = $parts | append (printf "ISO %v" .) }}{{ end -}}
+  {{- $settings = delimit $parts " · " -}}
+  {{- if not .Date.IsZero }}{{ $shot = .Date.Format (or site.Params.dateFormat "Jan 2, 2006") }}{{ end -}}
+{{- end -}}
+{{- return dict "camera" $camera "lens" $lens "settings" $settings "shot" $shot -}}

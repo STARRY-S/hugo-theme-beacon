@@ -104,3 +104,6 @@ other = "分頁"
 
 [breadcrumb]
 other = "麵包屑導覽"
+
+[galleryEmpty]
+other = "尚無照片。"

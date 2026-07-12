@@ -14,6 +14,7 @@ A clean, fast blog theme for [Hugo](https://gohugo.io/) — two-column card layo
 - Post-list homepage, reading time, word count, tags, breadcrumbs
 - Table of contents and one-click code copy
 - Click-to-zoom image preview (lightbox) with captions and keyboard navigation
+- Gallery — a masonry photo waterfall or a dated timeline (Photos-style), plus an inline shortcode; thumbnails auto-generated
 - Prev/next navigation and share buttons
 - SEO ready: OpenGraph, Twitter cards, JSON-LD, hreflang alternates, RSS, canonical URLs
 - Responsive, with an optional sidebar and multilingual UI
@@ -153,6 +154,79 @@ Per-post front matter overrides: `showToc`, `showBreadcrumbs`, `draft`, `private
 **Images** use plain Markdown — `![alt](/path.png "optional caption")`. The quoted
 title becomes a caption and the image opens in a full-screen preview on click.
 End the title with `#noZoom` to keep a specific image from zooming.
+
+## Gallery / photo waterfall
+
+Two ways to lay out photos as a masonry grid with click-to-zoom. Both generate
+resized thumbnails and a size-capped full image with Hugo's image processing —
+no external service, all cached and fingerprinted. Put the photos in a
+[page bundle](https://gohugo.io/content-management/page-bundles/) so Hugo can
+find them as resources.
+
+**A whole gallery page** — make a leaf bundle and set `type = "gallery"`:
+
+```
+content/gallery/
+  index.md        # front matter: type = "gallery"
+  seaside.jpg
+  alley.jpg
+```
+
+Every image in the bundle is laid out automatically; any Markdown in `index.md`
+renders as an intro above the grid. Set `galleryReverse = true` to flip the
+order.
+
+**Timeline mode** (Apple/Google Photos style) — group the photos into dated
+sections down a timeline rail. Add a `timeline` array to the page front matter;
+sections render newest-first automatically:
+
+```toml
+[[timeline]]
+  date = "2026-03-20"                       # ISO date — sorts + labels the section
+  title = "City nights"
+  description = "A weekend downtown after dark."
+  images = ["city-night.jpg", "coffee.jpg"] # explicit, ordered
+[[timeline]]
+  date = "2026-01-10"
+  title = "First snow"
+  match = "snow*.jpg"                        # …or select with a glob
+```
+
+Drop the `timeline` block and the same page falls back to a plain waterfall of
+every image.
+
+**An inline gallery** — inside any post that is a bundle, use the shortcode:
+
+```md
+{{</* gallery */>}}                     all images in the post's bundle
+{{</* gallery match="trip/*" */>}}      only those matching a glob
+{{</* gallery reverse="true" thumb="600" */>}}
+```
+
+**Captions** (optional) come from each image's resource params. Add them to the
+page front matter:
+
+```toml
+[[resources]]
+  src = "seaside.jpg"
+  [resources.params]
+    caption = "Low tide, early light"   # shows on hover + in the lightbox
+    alt = "A rocky beach at dawn"        # alt text (defaults to the caption)
+```
+
+**EXIF details** — the lightbox shows each photo's camera, lens, exposure
+(focal length · aperture · shutter · ISO) and capture date, read straight from
+the file. Hugo strips EXIF by default, so opt the fields back in once in your
+site config:
+
+```toml
+[imaging.exif]
+  includeFields = "Make|Model|LensModel|FNumber|ExposureTime|ISOSpeedRatings|ISO|FocalLength|DateTimeOriginal"
+  disableLatLong = true   # keep GPS location out
+```
+
+Photos without EXIF (or with it stripped) simply show no details — nothing
+breaks.
 
 ## Customizing
 

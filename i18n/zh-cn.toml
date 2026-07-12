@@ -104,3 +104,6 @@ other = "分页"
 
 [breadcrumb]
 other = "面包屑导航"
+
+[galleryEmpty]
+other = "暂无照片。"

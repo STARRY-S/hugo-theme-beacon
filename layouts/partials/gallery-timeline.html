@@ -1,0 +1,49 @@
+{{- /* Gallery timeline — photos grouped into dated sections (Apple/Google
+  Photos style "memories"). Driven by a `timeline` array in the page front
+  matter; each entry is a section with a date, an optional title/description,
+  and the images it contains. Sections render newest-first down a timeline rail,
+  each photo group as a masonry grid (partials/gallery.html) with click-to-zoom.
+
+  Front matter (see exampleSite/content/gallery/index.md):
+
+    [[timeline]]
+      date = "2026-03-20"           # ISO date; used for sorting + the header
+      title = "City nights"
+      description = "A weekend downtown."
+      images = ["a.jpg", "b.jpg"]   # explicit, ordered — or use `match`
+    [[timeline]]
+      date = "2026-01-10"
+      title = "First snow"
+      match = "snow*.jpg"           # glob against the bundle's resources
+
+  Call with the page as context: {{ partial "gallery-timeline.html" . }} */ -}}
+{{- $page := . -}}
+{{- $groups := sort $page.Params.timeline "date" "desc" -}}
+{{- $fmt := or site.Params.dateFormat "Jan 2, 2006" -}}
+<div class="timeline">
+  {{- range $groups }}
+    {{- /* Resolve this section's images: an explicit ordered list, or a glob. */ -}}
+    {{- $imgs := slice -}}
+    {{- with .images -}}
+      {{- range . -}}
+        {{- with $page.Resources.Get . }}{{ $imgs = $imgs | append . }}{{ end -}}
+      {{- end -}}
+    {{- else with .match -}}
+      {{- $imgs = $page.Resources.Match . -}}
+    {{- end -}}
+    {{- if $imgs }}
+    <section class="timeline__group">
+      <header class="timeline__head">
+        <span class="timeline__marker" aria-hidden="true"></span>
+        {{- with .date }}
+          {{- $t := time.AsTime . }}
+          <time class="timeline__date" datetime="{{ $t.Format "2006-01-02" }}">{{ $t.Format $fmt }}</time>
+        {{- end }}
+        {{- with .title }}<h2 class="timeline__title">{{ . }}</h2>{{ end }}
+        {{- with .description }}<p class="timeline__desc">{{ . | markdownify }}</p>{{ end }}
+      </header>
+      {{ partial "gallery.html" (dict "images" $imgs "page" $page) }}
+    </section>
+    {{- end }}
+  {{- end }}
+</div>

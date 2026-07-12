@@ -1,0 +1,22 @@
+{{- /* Gallery shortcode — a photo waterfall inside any post.
+
+  Put images in the post's page bundle and call (angle-percent shortcode form):
+
+    {{< gallery >}}                       all image resources
+    {{< gallery match="trip/*" >}}        only those matching a glob
+    {{< gallery match="*.jpg" reverse="true" >}}
+
+  Params:
+    match    - resource glob (default: all images in the bundle).
+    reverse  - "true" to flip the order.
+    thumb    - thumbnail width in px (default 800).
+
+  Captions come from each image's [[resources]] params (see partials/gallery.html). */ -}}
+{{- $match := .Get "match" -}}
+{{- $images := cond (ne $match "") ($.Page.Resources.Match $match) ($.Page.Resources.ByType "image") -}}
+{{- partial "gallery.html" (dict
+      "images" $images
+      "page" $.Page
+      "reverse" (eq (.Get "reverse") "true")
+      "thumb" (int (.Get "thumb" | default 800))
+) -}}

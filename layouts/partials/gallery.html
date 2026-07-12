@@ -1,0 +1,54 @@
+{{- /* Gallery / photo waterfall.
+
+  Renders a slice of image page-resources as a masonry (CSS columns) grid with
+  click-to-zoom via the shared lightbox (image-preview.js). Thumbnails and a
+  size-capped full image are generated with Hugo image processing — no external
+  service, all fingerprinted and cached.
+
+  Call with a dict:
+    {{ partial "gallery.html" (dict "images" $images "page" .) }}
+
+  Keys:
+    images   - a slice of image resources (e.g. .Resources.ByType "image").
+    page     - the page (used for error context); optional.
+    thumb    - thumbnail width in px (default 800).
+    reverse  - reverse the given order (default false).
+
+  Per-image caption comes from the resource's front-matter params: set
+  `caption` (and optionally `alt`) under [[resources]] in the page front matter;
+  otherwise the image shows no caption. */ -}}
+
+{{- $images := .images -}}
+{{- if .reverse }}{{ $images = collections.Reverse $images }}{{ end -}}
+{{- $thumbW := .thumb | default 800 -}}
+{{- $fullW := 2000 -}}
+
+{{- if $images -}}
+<div class="gallery">
+  {{- range $images -}}
+    {{- $img := . -}}
+    {{- $thumb := $img -}}
+    {{- if gt $img.Width $thumbW }}{{ $thumb = $img.Resize (printf "%dx q82" $thumbW) }}{{ end -}}
+    {{- $full := $img -}}
+    {{- if gt $img.Width $fullW }}{{ $full = $img.Resize (printf "%dx q85" $fullW) }}{{ end -}}
+    {{- $caption := "" -}}
+    {{- with $img.Params.caption }}{{ $caption = . }}{{ end -}}
+    {{- $alt := or $img.Params.alt $caption "" -}}
+    {{- $exif := partial "gallery-exif.html" $img -}}
+    <a class="gallery__item" href="{{ $full.RelPermalink }}"
+       {{ with $caption }}data-caption="{{ . }}"{{ end }}
+       {{- with $exif.camera }} data-camera="{{ . }}"{{ end }}
+       {{- with $exif.lens }} data-lens="{{ . }}"{{ end }}
+       {{- with $exif.settings }} data-settings="{{ . }}"{{ end }}
+       {{- with $exif.shot }} data-shot="{{ . }}"{{ end }}>
+      <img class="gallery__img zoomable"
+           src="{{ $thumb.RelPermalink }}"
+           width="{{ $thumb.Width }}" height="{{ $thumb.Height }}"
+           data-full="{{ $full.RelPermalink }}"
+           alt="{{ $alt }}"{{ with $caption }} title="{{ . }}"{{ end }}
+           loading="lazy" decoding="async" />
+      {{- with $caption }}<span class="gallery__caption">{{ . | markdownify }}</span>{{ end -}}
+    </a>
+  {{- end -}}
+</div>
+{{- end -}}

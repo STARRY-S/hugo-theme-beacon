@@ -125,9 +125,13 @@
   gap: var(--space-md);
   margin: 40px 0;
 
+  // Links and the empty placeholder each claim half the row, so a lone
+  // Newer/Older button fills 50% instead of stretching full width.
+  > a,
+  > span { flex: 1 1 0; min-width: 0; }
+
   a {
     @extend %btn;
-    flex: 1;
     padding: 14px 18px;
     display: flex;
     flex-direction: column;
