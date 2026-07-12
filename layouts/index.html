@@ -2,10 +2,13 @@
   {{- if site.Params.profileMode.enabled }}
     {{ partial "home-profile.html" . }}
   {{- else }}
+    {{- if not site.Params.homeInfo.title }}
+      <h1 class="visually-hidden">{{ site.Title }}</h1>
+    {{- end }}
     {{- with site.Params.homeInfo }}
       <section class="home-info">
         {{- with .title }}<h1 class="home-title">{{ . }}</h1>{{ end }}
-        {{- with .content }}<div class="home-content">{{ . | markdownify }}</div>{{ end }}
+        {{- with .content }}<div class="home-intro">{{ . | markdownify }}</div>{{ end }}
       </section>
     {{- end }}
     {{- with .Content }}

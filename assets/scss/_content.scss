@@ -39,16 +39,21 @@
     padding: 4px 18px;
     margin-left: 0;
     color: var(--color-text-soft);
-    background: var(--color-bg-soft);
+    // -bg-code, not -bg-soft: the latter equals the card bg, so the tint vanishes
+    background: var(--color-bg-code);
     border-radius: 0 var(--radius) var(--radius) 0;
   }
 
   img { display: block; border-radius: var(--radius); margin: 1.5em auto; }
 
-  // Headings with anchor space
+  // Headings with anchor space — explicit sizes down to h6 so deep levels
+  // never render smaller than body text (the UA default would)
   h2 { font-size: 1.6rem; }
   h3 { font-size: 1.3rem; }
-  h2, h3, h4 { scroll-margin-top: 20px; }
+  h4 { font-size: 1.15rem; }
+  h5 { font-size: 1.05rem; }
+  h6 { font-size: 0.95rem; color: var(--color-text-soft); }
+  h2, h3, h4, h5, h6 { scroll-margin-top: 20px; }
 
   // Inline code
   code {
@@ -56,13 +61,13 @@
     font-size: 0.88em;
     background: var(--color-bg-code);
     padding: 0.15em 0.4em;
-    border-radius: 4px;
+    border-radius: var(--radius);
   }
 
   // Code blocks
   pre {
     background: var(--color-bg-code);
-    padding: 16px;
+    padding: var(--space-md);
     border-radius: var(--radius);
     overflow-x: auto;
     font-size: 0.9rem;
@@ -79,7 +84,14 @@
   .highlight { margin: 1.1em 0; }
   .highlight pre { margin: 0; }
 
-  // Tables
+  // Tables — the render hook wraps each one in .table-wrapper so wide tables
+  // scroll inside the card instead of overflowing the page on mobile
+  .table-wrapper {
+    overflow-x: auto;
+    margin: 1.1em 0;
+
+    table { margin: 0; }
+  }
   table {
     border-collapse: collapse;
     width: 100%;
@@ -90,13 +102,14 @@
     padding: 8px 12px;
     text-align: left;
   }
-  th { background: var(--color-bg-soft); }
+  // -bg-code, not -bg-soft: the latter equals the card bg, so headers wouldn't read
+  th { background: var(--color-bg-code); }
 
   kbd {
     font-family: var(--font-mono);
     background: var(--color-bg-soft);
     border: 1px solid var(--color-border);
-    border-radius: 4px;
+    border-radius: var(--radius);
     padding: 1px 6px;
     font-size: 0.85em;
   }

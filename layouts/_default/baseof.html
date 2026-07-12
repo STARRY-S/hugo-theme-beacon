@@ -6,12 +6,14 @@
 {{- $showSidebar := false -}}
 {{- $pos := "left" -}}
 {{- with site.Params.sidebar }}{{ if .enabled }}{{ $showSidebar = true }}{{ $pos = .position | default "left" }}{{ end }}{{ end -}}
-<body class="{{ if eq .Kind `page` }}single{{ else }}list{{ end }}{{ if $showSidebar }} has-sidebar sidebar-{{ $pos }}{{ end }}">
+<body class="{{ if eq .Kind `page` }}single{{ else }}list{{ end }}{{ if $showSidebar }} has-sidebar sidebar-{{ $pos }}{{ end }}"
+      data-copy="{{ i18n "copy" | default "Copy" }}" data-copied="{{ i18n "copied" | default "Copied!" }}">
+  <a class="skip-link" href="#main">{{ i18n "skipToContent" | default "Skip to content" }}</a>
   <div class="container">
     {{ partial "header.html" . }}
     <div class="layout">
       {{- if $showSidebar }}{{ partial "sidebar.html" . }}{{ end }}
-      <main class="main">
+      <main class="main" id="main">
         {{ block "main" . }}{{ end }}
       </main>
     </div>

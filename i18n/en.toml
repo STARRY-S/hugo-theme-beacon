@@ -59,3 +59,33 @@ other = "Language"
 
 [backToTop]
 other = "Back to top"
+
+[copy]
+other = "Copy"
+
+[copied]
+other = "Copied!"
+
+[skipToContent]
+other = "Skip to content"
+
+[toggleTheme]
+other = "Toggle theme"
+
+[shareTwitter]
+other = "Share on X/Twitter"
+
+[shareLinkedin]
+other = "Share on LinkedIn"
+
+[shareEmail]
+other = "Share via email"
+
+[postNav]
+other = "Post navigation"
+
+[pagination]
+other = "Pagination"
+
+[breadcrumb]
+other = "Breadcrumb"

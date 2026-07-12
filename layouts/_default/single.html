@@ -38,7 +38,7 @@
       {{- end }}
     </footer>
 
-    {{- if site.Params.comments }}
+    {{- if and site.Params.comments site.Params.giscus }}
       <section class="comments">
         {{ partial "comments.html" . }}
       </section>

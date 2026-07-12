@@ -4,7 +4,7 @@
     <img class="profile-avatar" src="{{ . | relURL }}" alt="{{ $p.title }}"
       width="{{ $p.imageWidth | default 120 }}" height="{{ $p.imageHeight | default 120 }}">
   {{- end }}
-  {{- with $p.title }}<h1 class="profile-title">{{ . }}</h1>{{ end }}
+  {{- with $p.title }}<h1 class="profile-title">{{ . }}</h1>{{ else }}<h1 class="visually-hidden">{{ site.Title }}</h1>{{ end }}
   {{- with $p.subtitle }}<p class="profile-subtitle">{{ . | markdownify }}</p>{{ end }}
   {{- with site.Params.social }}
     <div class="social-icons profile-social">

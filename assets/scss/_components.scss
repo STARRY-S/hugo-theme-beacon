@@ -10,21 +10,17 @@
   padding: 60px 0;
 
   .profile-avatar {
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 16px;
-    transition: transform 0.3s ease;
-
-    &:hover { transform: scale(1.06); }
+    @extend %avatar;
+    margin-bottom: var(--space-md);
   }
   .profile-title { font-size: 2rem; margin: 0.2em 0; }
   .profile-subtitle { color: var(--color-text-soft); margin: 0 0 20px; }
-  .profile-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+  .profile-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: var(--space-md); }
   .profile-button {
     @extend %btn;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-sm);
     padding: 8px 18px;
     font-weight: 500;
   }
@@ -108,13 +104,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 32px;
+  margin-top: var(--space-xl);
   padding-top: 20px;
   border-top: 1px solid var(--color-border);
 
   a {
     @extend %btn;
-    padding: 8px 16px;
+    padding: var(--space-sm) var(--space-md);
     font-size: 0.95rem;
     font-weight: 500;
   }
@@ -126,7 +122,7 @@
 .post-nav {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-md);
   margin: 40px 0;
 
   a {
@@ -135,7 +131,7 @@
     padding: 14px 18px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--space-xs);
 
     &:hover .post-nav-title { color: var(--color-primary); }
   }
@@ -171,7 +167,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 12px 18px;
-  margin: 24px 0;
+  margin: var(--space-lg) 0;
 
   .toc-title { @extend %section-label; cursor: pointer; color: var(--color-heading); font-size: 0.9rem; }
   .toc-content { font-size: 0.98rem; }
@@ -187,10 +183,10 @@
 
   .term {
     @extend %btn;
-    padding: 8px 16px;
+    padding: var(--space-sm) var(--space-md);
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-sm);
 
     .term-count {
       background: var(--color-tag-bg);
@@ -213,6 +209,7 @@
 // Copy code button
 .code-block-wrapper { position: relative; }
 .copy-code {
+  @extend %hit-area;
   position: absolute;
   top: 8px;
   right: 8px;
@@ -228,7 +225,9 @@
 
   &:hover { color: var(--color-primary); }
 }
-.code-block-wrapper:hover .copy-code { opacity: 1; }
+// Reveal on hover, and also on keyboard focus (it's focusable while invisible)
+.code-block-wrapper:hover .copy-code,
+.copy-code:focus-visible { opacity: 1; }
 
 // Back-to-top button — floating, bottom-right of the viewport
 .back-to-top {
@@ -269,6 +268,6 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .back-to-top { right: 1rem; bottom: 1rem; }
 }

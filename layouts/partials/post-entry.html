@@ -2,7 +2,8 @@
 <article class="post-entry">
   {{- with .Params.cover.image }}
     <a href="{{ $.RelPermalink }}" class="entry-cover" aria-label="{{ $.Title }}">
-      <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+      {{- /* alt is empty on purpose: the wrapping link already carries the title */ -}}
+      <img src="{{ . | relURL }}" alt="" loading="lazy">
     </a>
   {{- end }}
   <div class="entry-body">

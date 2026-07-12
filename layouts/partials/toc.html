@@ -1,4 +1,8 @@
-{{- if and (site.Params.showToc | default true) .Params.showToc | default true }}
+{{- /* An explicit showToc = false must win, so avoid `default` (it treats false as unset) */ -}}
+{{- $show := true }}
+{{- if ne site.Params.showToc nil }}{{ $show = site.Params.showToc }}{{ end }}
+{{- if ne .Params.showToc nil }}{{ $show = .Params.showToc }}{{ end }}
+{{- if $show }}
   {{- if gt (len .TableOfContents) 50 }}
     <details class="toc" open>
       <summary class="toc-title">{{ i18n "toc" | default "Table of Contents" }}</summary>

@@ -1,7 +1,7 @@
 {{- /* Charset & viewport */ -}}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="{{ if or (.Params.private) (not site.Params.enableRobots) }}noindex, nofollow{{ else }}index, follow{{ end }}">
+<meta name="robots" content="{{ if or .Params.private site.Params.noindex }}noindex, nofollow{{ else }}index, follow{{ end }}">
 
 {{- /* Title */ -}}
 <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
@@ -17,6 +17,21 @@
 </script>
 
 {{- partial "meta.html" . -}}
+
+{{- /* Cross-link translations for search engines */ -}}
+{{- if .IsTranslated -}}
+  {{- range .AllTranslations }}
+  <link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">
+  {{- end }}
+  {{- $defaultLang := (index hugo.Sites 0).Language.Lang }}
+  {{- range .AllTranslations }}
+    {{- if eq .Language.Lang $defaultLang }}
+  <link rel="alternate" hreflang="x-default" href="{{ .Permalink }}">
+    {{- end }}
+  {{- end }}
+{{- end -}}
+
+{{- partial "json-ld.html" . -}}
 
 {{- /* Styles */ -}}
 {{- $opts := dict "transpiler" "libsass" "targetPath" "css/main.css" "enableSourceMap" hugo.IsDevelopment -}}

@@ -1,6 +1,6 @@
 <div class="share-buttons">
   <span class="share-label">{{ i18n "share" | default "Share" }}:</span>
-  <a href="https://twitter.com/intent/tweet?url={{ .Permalink }}&text={{ .Title }}" target="_blank" rel="noopener noreferrer" aria-label="Share on X/Twitter">{{ partial "svg.html" "twitter" }}</a>
-  <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink }}" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">{{ partial "svg.html" "linkedin" }}</a>
-  <a href="mailto:?subject={{ .Title }}&body={{ .Permalink }}" aria-label="Share via email">{{ partial "svg.html" "email" }}</a>
+  <a href="https://twitter.com/intent/tweet?url={{ .Permalink | urlquery }}&text={{ .Title | urlquery }}" target="_blank" rel="noopener noreferrer" aria-label="{{ i18n "shareTwitter" | default "Share on X/Twitter" }}">{{ partial "svg.html" "twitter" }}</a>
+  <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink | urlquery }}" target="_blank" rel="noopener noreferrer" aria-label="{{ i18n "shareLinkedin" | default "Share on LinkedIn" }}">{{ partial "svg.html" "linkedin" }}</a>
+  <a href="mailto:?subject={{ .Title | urlquery }}&body={{ .Permalink | urlquery }}" aria-label="{{ i18n "shareEmail" | default "Share via email" }}">{{ partial "svg.html" "email" }}</a>
 </div>

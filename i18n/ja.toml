@@ -59,3 +59,33 @@ other = "言語"
 
 [backToTop]
 other = "トップへ戻る"
+
+[copy]
+other = "コピー"
+
+[copied]
+other = "コピーしました"
+
+[skipToContent]
+other = "本文へスキップ"
+
+[toggleTheme]
+other = "テーマを切り替え"
+
+[shareTwitter]
+other = "X/Twitter でシェア"
+
+[shareLinkedin]
+other = "LinkedIn でシェア"
+
+[shareEmail]
+other = "メールでシェア"
+
+[postNav]
+other = "記事ナビゲーション"
+
+[pagination]
+other = "ページネーション"
+
+[breadcrumb]
+other = "パンくずリスト"

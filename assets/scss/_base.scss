@@ -47,6 +47,27 @@ body {
   }
 }
 
+// ── Round avatar: circle-cropped image with a gentle hover zoom ────────
+%avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+
+  &:hover { transform: scale(1.06); }
+}
+
+// ── Invisible hit-area extension for small icon buttons ────────────────
+// Grows the clickable area toward the 44px touch-target guideline without
+// moving anything. The element must be its own positioning context
+// (relative or absolute).
+%hit-area {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+  }
+}
+
 // ── Small section label: quiet, tracked, no markers ────────────────────
 %section-label {
   text-transform: uppercase;
@@ -79,9 +100,49 @@ a {
   }
 }
 
+// Consistent on-brand keyboard focus ring — the variable keeps it visible in
+// both palettes. Components with their own focus style (e.g. the lang menu's
+// tint) override this with a more specific rule.
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 img {
   max-width: 100%;
   height: auto;
+}
+
+// Screen-reader-only content (e.g. the fallback homepage h1)
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Skip-to-content link — hidden offscreen until keyboard-focused
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-md);
+  z-index: 100;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-soft);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  font-weight: 500;
+
+  &:focus { top: var(--space-md); }
 }
 
 hr {

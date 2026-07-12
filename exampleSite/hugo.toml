@@ -19,8 +19,6 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
   mainSections = ["posts"]
   author = "Jane Doe"
 
-  enableRobots = true
-  enableSearch = false
   showReadingTime = true
   showWordCount = true
   showAuthor = true

@@ -97,12 +97,22 @@ exampleSite/              # demo content + config for previewing
 **Done:** homepage post list, single post (TOC, meta, tags, prev/next, share,
 breadcrumbs), light/dark/auto toggle, code copy, class-based syntax highlighting
 (`_syntax.scss` — GitHub light / GitHub Dark, Chroma classes), tags/categories,
-SEO/OpenGraph, RSS, 404, responsive layout, sidebar (avatar/stats/social/buttons/
-items/friends, left-or-right, mobile drawer), multilingual (i18n en/zh-cn/zh-tw/ja
-+ header language switcher, per-filename content translations).
+SEO (OpenGraph, JSON-LD via `partials/json-ld.html`, hreflang alternates), RSS,
+404, responsive layout, sidebar (avatar/stats/social/buttons/items/friends,
+left-or-right, mobile drawer), multilingual (i18n en/zh-cn/zh-tw/ja + header
+language switcher, per-filename content translations), accessibility pass (skip
+link, `.visually-hidden` h1 fallbacks, shared `:focus-visible` ring, `%hit-area`
+tap targets, i18n'd aria-labels), markdown tables in a scroll container
+(`layouts/_default/_markup/render-table.html`), spacing tokens
+(`--space-xs`…`--space-xl` in `_variables.scss`).
 
-**Not done yet (stubbed):** search (Fuse.js), archives page, full comments setup
-(giscus is wired but unconfigured). Profile-mode homepage is scaffolded but off by default.
+**Not done yet (stubbed):** search (Fuse.js — no UI ships; add a header entry
+back when implemented), archives page, full comments setup (giscus is wired but
+unconfigured; `single.html` requires both `params.comments` and
+`[params.giscus]`). Profile-mode homepage is scaffolded but off by default.
+
+Robots default: pages are indexable; `noindex = true` (site) or `private: true`
+(front matter) opts out — the old `enableRobots` flag is gone.
 
 ## Design decisions & preferences (owner)
 

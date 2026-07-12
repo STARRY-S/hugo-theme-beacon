@@ -14,7 +14,7 @@ A clean, fast blog theme for [Hugo](https://gohugo.io/) — two-column card layo
 - Post-list homepage, reading time, word count, tags, breadcrumbs
 - Table of contents and one-click code copy
 - Prev/next navigation and share buttons
-- SEO ready: OpenGraph, Twitter cards, RSS, canonical URLs
+- SEO ready: OpenGraph, Twitter cards, JSON-LD, hreflang alternates, RSS, canonical URLs
 - Responsive, with an optional sidebar and multilingual UI
 
 ## Requirements
@@ -55,6 +55,10 @@ Options live under `[params]` in `hugo.toml`:
   showToc          = true
   showBreadcrumbs  = true
   showShareButtons = true
+
+  # Pages are indexable by default. Set noindex = true to ask search
+  # engines to skip the whole site (per-page: `private: true` front matter).
+  noindex = false
 
   # Optional: load the Iconify CDN so any "prefix:name" icon works.
   iconify = false
@@ -143,7 +147,7 @@ description: "A short summary for SEO."
 Your content here.
 ```
 
-Per-post front matter overrides: `showToc`, `showBreadcrumbs`, `draft`.
+Per-post front matter overrides: `showToc`, `showBreadcrumbs`, `draft`, `private` (excludes the page from search engines).
 
 ## Customizing
 

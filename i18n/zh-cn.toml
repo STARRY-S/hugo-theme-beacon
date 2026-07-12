@@ -59,3 +59,33 @@ other = "语言"
 
 [backToTop]
 other = "回到顶部"
+
+[copy]
+other = "复制"
+
+[copied]
+other = "已复制"
+
+[skipToContent]
+other = "跳到主要内容"
+
+[toggleTheme]
+other = "切换主题"
+
+[shareTwitter]
+other = "分享到 X/Twitter"
+
+[shareLinkedin]
+other = "分享到 LinkedIn"
+
+[shareEmail]
+other = "通过邮件分享"
+
+[postNav]
+other = "文章导航"
+
+[pagination]
+other = "分页"
+
+[breadcrumb]
+other = "面包屑导航"
