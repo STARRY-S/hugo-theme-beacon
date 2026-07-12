@@ -164,7 +164,8 @@
 // TOC
 .toc {
   background: var(--color-bg-soft);
-  border: 1px solid var(--color-border);
+  // divider, not border: dark --color-border ≈ the card bg, so it disappears
+  border: 1px solid var(--color-divider);
   border-radius: var(--radius);
   padding: 12px 18px;
   margin: var(--space-lg) 0;
