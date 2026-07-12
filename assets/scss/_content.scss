@@ -46,6 +46,19 @@
 
   img { display: block; border-radius: var(--radius); margin: 1.5em auto; }
 
+  // Images wrapped by the render-image hook, with an optional caption
+  .post-figure {
+    margin: 1.5em 0;
+
+    img { margin: 0 auto; }
+    figcaption {
+      text-align: center;
+      color: var(--color-text-soft);
+      font-size: 0.85rem;
+      margin-top: 8px;
+    }
+  }
+
   // Headings with anchor space — explicit sizes down to h6 so deep levels
   // never render smaller than body text (the UA default would)
   h2 { font-size: 1.6rem; }

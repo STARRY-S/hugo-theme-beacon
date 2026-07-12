@@ -66,6 +66,21 @@ other = "复制"
 [copied]
 other = "已复制"
 
+[imagePreview]
+other = "图片预览"
+
+[openImagePreview]
+other = "打开图片预览"
+
+[closePreview]
+other = "关闭"
+
+[prevImage]
+other = "上一张"
+
+[nextImage]
+other = "下一张"
+
 [skipToContent]
 other = "跳到主要内容"
 

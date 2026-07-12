@@ -1,0 +1,22 @@
+{{- /* Content image render hook.
+
+       Adds lazy-loading + async decoding, marks the image "zoomable" so
+       image-preview.js can open it in a full-screen lightbox, and — when the
+       Markdown title is set: ![alt](src "title") — renders a <figcaption>.
+
+       Opt out of the lightbox for a single image by ending its title with
+       "#noZoom", e.g. ![logo](logo.png "Our logo #noZoom"). */ -}}
+{{- $alt := .Text -}}
+{{- $title := .Title -}}
+{{- $noZoom := false -}}
+{{- if strings.HasSuffix $title "#noZoom" -}}
+  {{- $noZoom = true -}}
+  {{- $title = strings.TrimSuffix "#noZoom" $title | strings.TrimRight " " -}}
+{{- end -}}
+<figure class="post-figure">
+  <img src="{{ .Destination | safeURL }}" alt="{{ $alt }}"
+    {{- with $title }} title="{{ . }}"{{ end }}
+    loading="lazy" decoding="async"
+    {{- if not $noZoom }} class="zoomable"{{ end }} />
+  {{- with $title }}<figcaption>{{ . }}</figcaption>{{ end }}
+</figure>

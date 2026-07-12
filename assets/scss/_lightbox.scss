@@ -1,0 +1,130 @@
+// Image preview / lightbox — full-screen overlay opened from content images.
+// Backdrop color is a CSS variable so it reads correctly in light and dark.
+
+// Zoomable content images signal they can be opened.
+.post-content img.zoomable {
+  cursor: zoom-in;
+}
+
+// Lock background scroll while the preview is open.
+.lightbox-open {
+  overflow: hidden;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 5vw, 56px);
+  background: var(--color-lightbox-backdrop);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+
+  &.is-open {
+    display: flex;
+    opacity: 1;
+  }
+
+  &__stage {
+    margin: 0;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  &__img {
+    max-width: 100%;
+    max-height: 82vh;
+    border-radius: var(--radius);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    object-fit: contain;
+    cursor: zoom-out;
+    transform: scale(0.96);
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  &.is-open &__img {
+    transform: scale(1);
+  }
+
+  &__caption {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 0.9rem;
+    text-align: center;
+    max-width: 60ch;
+  }
+
+  // Close + prev/next controls — flat, high-contrast on the scrim.
+  &__close,
+  &__nav {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.24);
+    }
+  }
+
+  &__close {
+    top: clamp(12px, 3vw, 24px);
+    right: clamp(12px, 3vw, 24px);
+    width: 44px;
+    height: 44px;
+    font-size: 1.8rem;
+  }
+
+  &__nav {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    font-size: 2rem;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  &__prev {
+    left: clamp(8px, 2vw, 24px);
+  }
+  &__next {
+    right: clamp(8px, 2vw, 24px);
+  }
+
+  // Honor reduced-motion: no fade, no zoom.
+  &.no-motion,
+  &.no-motion .lightbox__img {
+    transition: none;
+  }
+  &.no-motion .lightbox__img {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox,
+  .lightbox__img {
+    transition: none;
+  }
+  .lightbox__img {
+    transform: none;
+  }
+}

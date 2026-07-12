@@ -66,6 +66,21 @@ other = "コピー"
 [copied]
 other = "コピーしました"
 
+[imagePreview]
+other = "画像プレビュー"
+
+[openImagePreview]
+other = "画像プレビューを開く"
+
+[closePreview]
+other = "閉じる"
+
+[prevImage]
+other = "前の画像"
+
+[nextImage]
+other = "次の画像"
+
 [skipToContent]
 other = "本文へスキップ"
 

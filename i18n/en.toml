@@ -66,6 +66,21 @@ other = "Copy"
 [copied]
 other = "Copied!"
 
+[imagePreview]
+other = "Image preview"
+
+[openImagePreview]
+other = "Open image preview"
+
+[closePreview]
+other = "Close"
+
+[prevImage]
+other = "Previous image"
+
+[nextImage]
+other = "Next image"
+
 [skipToContent]
 other = "Skip to content"
 

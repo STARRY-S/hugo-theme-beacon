@@ -28,6 +28,7 @@
   --color-primary: #0066d6;      // accent / links — deep enough for AA contrast on --color-bg
   --color-primary-hover: #0053b3;
   --color-tag-bg: #eeeeee;
+  --color-lightbox-backdrop: rgba(20, 22, 26, 0.82); // image-preview scrim
   --shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
   --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
@@ -46,6 +47,7 @@
   --color-primary: #64b5f6;      // accent / links — soft blue
   --color-primary-hover: #90caf9;
   --color-tag-bg: #34363c;
+  --color-lightbox-backdrop: rgba(0, 0, 0, 0.88); // image-preview scrim — deeper in dark
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   --shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.35);
 }

@@ -66,6 +66,21 @@ other = "複製"
 [copied]
 other = "已複製"
 
+[imagePreview]
+other = "圖片預覽"
+
+[openImagePreview]
+other = "開啟圖片預覽"
+
+[closePreview]
+other = "關閉"
+
+[prevImage]
+other = "上一張"
+
+[nextImage]
+other = "下一張"
+
 [skipToContent]
 other = "跳至主要內容"
 

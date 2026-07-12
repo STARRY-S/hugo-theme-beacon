@@ -13,6 +13,7 @@ A clean, fast blog theme for [Hugo](https://gohugo.io/) — two-column card layo
 - Light / Dark / Auto theme toggle (remembers choice, no flash)
 - Post-list homepage, reading time, word count, tags, breadcrumbs
 - Table of contents and one-click code copy
+- Click-to-zoom image preview (lightbox) with captions and keyboard navigation
 - Prev/next navigation and share buttons
 - SEO ready: OpenGraph, Twitter cards, JSON-LD, hreflang alternates, RSS, canonical URLs
 - Responsive, with an optional sidebar and multilingual UI
@@ -148,6 +149,10 @@ Your content here.
 ```
 
 Per-post front matter overrides: `showToc`, `showBreadcrumbs`, `draft`, `private` (excludes the page from search engines).
+
+**Images** use plain Markdown — `![alt](/path.png "optional caption")`. The quoted
+title becomes a caption and the image opens in a full-screen preview on click.
+End the title with `#noZoom` to keep a specific image from zooming.
 
 ## Customizing
 
