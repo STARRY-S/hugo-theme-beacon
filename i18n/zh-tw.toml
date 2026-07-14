@@ -107,3 +107,12 @@ other = "麵包屑導覽"
 
 [galleryEmpty]
 other = "尚無照片。"
+
+[comments]
+other = "留言"
+
+[poweredBy]
+other = "基於"
+
+[hostedOn]
+other = "託管於"

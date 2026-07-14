@@ -141,6 +141,10 @@
   gap: var(--space-sm);
 
   a {
+    // Match .sidebar-button — without this they inherit the 20px body size and
+    // end up louder than the contact buttons above them.
+    font-size: 0.95rem;
+    font-weight: 500;
     color: var(--color-text);
     &:hover { color: var(--color-primary); }
   }

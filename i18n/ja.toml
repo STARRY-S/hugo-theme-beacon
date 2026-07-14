@@ -107,3 +107,12 @@ other = "パンくずリスト"
 
 [galleryEmpty]
 other = "まだ写真がありません。"
+
+[comments]
+other = "コメント"
+
+[poweredBy]
+other = "Powered by"
+
+[hostedOn]
+other = "ホスティング:"

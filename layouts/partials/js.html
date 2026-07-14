@@ -3,7 +3,8 @@
 {{- $sidebar := resources.Get "js/sidebar-toggle.js" }}
 {{- $backToTop := resources.Get "js/back-to-top.js" }}
 {{- $imagePreview := resources.Get "js/image-preview.js" }}
-{{- $bundle := slice $toggle $copy $sidebar $backToTop $imagePreview | resources.Concat "js/bundle.js" }}
+{{- $comments := resources.Get "js/comments.js" }}
+{{- $bundle := slice $toggle $copy $sidebar $backToTop $imagePreview $comments | resources.Concat "js/bundle.js" }}
 {{- if hugo.IsProduction }}
   {{- $bundle = $bundle | minify | fingerprint }}
   <script src="{{ $bundle.RelPermalink }}" integrity="{{ $bundle.Data.Integrity }}" defer></script>

@@ -117,6 +117,71 @@ Avatar, bio, stats, links, and a friends list beside your content. Off by defaul
 
 Sidebar social icons reuse your `[[params.social]]` config.
 
+### Footer (optional)
+
+Renders `© 2016 - 2026 Owner | License | Hosted on Host`, then `· Powered by Hugo & Pascal`. Every part is optional — with no `[params.footer]` you get `© <this year> <site title>` plus the Powered-by line. The footer carries no social icons; those belong to the sidebar and profile-mode homepage.
+
+```toml
+[params.footer]
+  since = 2016                # start year; omit for the current year alone
+  owner = "Your Name"         # defaults to the site title
+  showPoweredBy = true        # set false to drop the second line
+
+  [params.footer.license]
+    name = "CC BY-NC-SA 4.0"
+    url  = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+
+  [params.footer.hostedOn]
+    name = "GitHub Pages"
+    url  = "https://pages.github.com/"
+```
+
+`url` is optional in both blocks — leave it out and the name renders as plain text. If `since` equals the current year, only that year is shown.
+
+### Comments (optional)
+
+Off by default. Choose one provider and fill in its table. The widget is only fetched once a reader scrolls near the bottom of a post, and it follows the light/dark toggle.
+
+```toml
+[params.comments]
+  enabled  = true
+  provider = "disqus"          # disqus | giscus | utterances | waline
+
+  [params.comments.disqus]
+    shortname = "your-disqus-shortname"
+
+  [params.comments.giscus]
+    repo       = "user/repo"
+    repoId     = "R_xxxxxxxxxx"
+    category   = "Announcements"
+    categoryId = "DIC_xxxxxxxxxx"
+    mapping    = "pathname"     # optional
+    inputPosition = "bottom"    # optional
+
+  [params.comments.utterances]
+    repo      = "user/repo"
+    issueTerm = "pathname"      # optional
+    label     = "comment"       # optional
+
+  [params.comments.waline]
+    serverURL = "https://your-waline.vercel.app"
+```
+
+| Provider | Backed by | Setup |
+| --- | --- | --- |
+| `giscus` | GitHub Discussions | Public repo with Discussions on; get the IDs from [giscus.app](https://giscus.app) |
+| `utterances` | GitHub Issues | Public repo with the [utterances app](https://github.com/apps/utterances) installed |
+| `disqus` | Disqus (hosted) | Register a site at [disqus.com](https://disqus.com); use its shortname |
+| `waline` | Your own server | Self-host [Waline](https://waline.js.org) (Vercel + a database); readers need no account |
+
+Only providers with valid credentials render — a half-filled table produces no comments section.
+
+Disable comments on one post with `comments: false` in its front matter. For Disqus, `disqus_identifier: "some-id"` pins a thread to a post whose URL has changed.
+
+Notes: Disqus is the heaviest option and loads third-party trackers. giscus and utterances re-theme instantly when the reader flips the theme; Disqus reloads its thread, since it infers colors from the page background.
+
+If you used the earlier giscus stub, move its settings from the top-level `[params.giscus]` into `[params.comments.giscus]` and replace `comments = true` with the `[params.comments]` table above.
+
 ### Multilingual (optional)
 
 Fully translatable. Bundled UI strings: English (`en`), Simplified Chinese (`zh-cn`), Traditional Chinese (`zh-tw`), Japanese (`ja`). Add more via `i18n/<lang>.toml`.
