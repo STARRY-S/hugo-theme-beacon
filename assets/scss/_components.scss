@@ -276,3 +276,21 @@
 @media (max-width: 640px) {
   .back-to-top { right: 1rem; bottom: 1rem; }
 }
+
+// Comments — flat, no card: the provider draws its own box inside .comments-body
+.comments {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-divider);
+
+  .comments-title {
+    margin: 0 0 var(--space-lg);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  // Widgets embed as iframes that default to inline layout, which leaves a
+  // stray baseline gap under the thread.
+  iframe { display: block; }
+}

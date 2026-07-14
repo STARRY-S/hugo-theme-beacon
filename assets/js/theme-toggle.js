@@ -5,6 +5,11 @@
 
   function apply(isDark) {
     root.classList.toggle("dark", isDark);
+    // Embeds that can't read our CSS variables (comment widgets in iframes)
+    // listen for this to re-theme themselves.
+    document.dispatchEvent(
+      new CustomEvent("pascal:themechange", { detail: { isDark: isDark } })
+    );
   }
 
   var btn = document.getElementById("theme-toggle");

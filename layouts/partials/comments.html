@@ -1,14 +1,61 @@
-{{- /* Comments placeholder. Configure a provider (giscus, utterances, disqus)
-       by overriding this partial in your site's layouts/partials/comments.html */ -}}
-{{- with site.Params.giscus }}
-  <script src="https://giscus.app/client.js"
-    data-repo="{{ .repo }}"
-    data-repo-id="{{ .repoId }}"
-    data-category="{{ .category }}"
-    data-category-id="{{ .categoryId }}"
-    data-mapping="{{ .mapping | default "pathname" }}"
-    data-reactions-enabled="{{ .reactionsEnabled | default "1" }}"
-    data-theme="{{ .theme | default "preferred_color_scheme" }}"
-    crossorigin="anonymous" async>
-  </script>
+{{- /* Comment systems. Pick one with [params.comments]: provider = "disqus" |
+       "giscus" | "utterances" | "waline", then fill in that provider's table.
+       This partial only emits a placeholder — comments.js reads the data-*
+       attributes and injects the provider script once the section scrolls
+       into view, so no third-party code loads on pages nobody scrolls.
+
+       Attribute names are written out per provider rather than ranged over a
+       dict: html/template can't escape an attribute whose *name* is dynamic
+       and emits ZgotmplZ instead.
+
+       Disqus: front matter `disqus_identifier` keeps a thread attached to its
+       post when the URL changes; it defaults to the permalink path. */ -}}
+{{- $c := site.Params.comments }}
+{{- if and $c $c.enabled $c.provider }}
+  {{- $provider := lower $c.provider }}
+  {{- $d := $c.disqus }}
+  {{- $g := $c.giscus }}
+  {{- $u := $c.utterances }}
+  {{- $w := $c.waline }}
+
+  {{- /* Each provider needs its credentials before we render anything; a half
+         configured one gets no empty "Comments" heading. */ -}}
+  {{- $ready := false }}
+  {{- if eq $provider "disqus" }}
+    {{- $ready = and $d $d.shortname }}
+  {{- else if eq $provider "giscus" }}
+    {{- $ready = and $g $g.repo $g.repoId $g.category $g.categoryId }}
+  {{- else if eq $provider "utterances" }}
+    {{- $ready = and $u $u.repo }}
+  {{- else if eq $provider "waline" }}
+    {{- $ready = and $w $w.serverURL }}
+  {{- end }}
+
+  {{- if $ready }}
+    <section class="comments" id="comments">
+      <h2 class="comments-title">{{ i18n "comments" | default "Comments" }}</h2>
+      <div class="comments-body" id="comments-body"
+        data-provider="{{ $provider }}"
+        data-lang="{{ site.Language.Lang }}"
+        {{- if eq $provider "disqus" }}
+        data-shortname="{{ $d.shortname }}"
+        data-page-url="{{ .Permalink }}"
+        data-page-id="{{ .Params.disqus_identifier | default .RelPermalink }}"
+        {{- else if eq $provider "giscus" }}
+        data-repo="{{ $g.repo }}"
+        data-repo-id="{{ $g.repoId }}"
+        data-category="{{ $g.category }}"
+        data-category-id="{{ $g.categoryId }}"
+        data-mapping="{{ $g.mapping | default "pathname" }}"
+        data-reactions-enabled="{{ $g.reactionsEnabled | default "1" }}"
+        data-input-position="{{ $g.inputPosition | default "bottom" }}"
+        {{- else if eq $provider "utterances" }}
+        data-repo="{{ $u.repo }}"
+        data-issue-term="{{ $u.issueTerm | default "pathname" }}"
+        data-label="{{ $u.label | default "" }}"
+        {{- else if eq $provider "waline" }}
+        data-server-url="{{ $w.serverURL }}"
+        {{- end }}></div>
+    </section>
+  {{- end }}
 {{- end }}

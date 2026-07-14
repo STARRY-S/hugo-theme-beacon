@@ -84,6 +84,38 @@ exampleSite/              # demo content + config for previewing
   in `.layout` (a CSS grid) and adds `partials/sidebar.html` + a mobile overlay;
   `header.html` has the hamburger; `sidebar-toggle.js` runs the mobile drawer.
   When disabled the layout falls back to the plain 720px centered column.
+- **Fonts**: `--font-sans` in `_variables.scss` is the stock system stack plus
+  `"Noto Sans"` and the `"Noto Sans CJK SC/TC/JP"` faces, and it **deliberately ends
+  on real families — no `sans-serif` generic**. On the owner's Arch box Chrome
+  resolves the generic `sans-serif` to a *serif* face (Liberation Serif; Firefox is
+  unaffected), so the generic is a trap, not a safety net. Family names must be
+  exact: `"Noto Sans CJK"` matches nothing in a browser (only the SC/TC/JP names do),
+  even though `fc-match` happily resolves it. Don't re-add the generic, and don't
+  restyle fonts without asking the owner.
+  Testing note: screenshot with `--headless=new`. Chrome's **old** `--headless` mode
+  has broken font prefs and renders everything serif — that artifact once led to a
+  bogus "the theme is serif" diagnosis.
+- **Footer**: `partials/footer.html` renders one pipe-separated line
+  (`© <years> <owner> | <license> | Hosted on <host>`) plus an optional
+  "· Powered by Hugo & Pascal" line, all driven by `[params.footer]`
+  (`since`, `owner`, `license`, `hostedOn`, `showPoweredBy`). **No social icons
+  in the footer** — the owner does not want them there; `.social-icons` is shared
+  by `sidebar.html` and `home-profile.html` only.
+- **Comments**: `[params.comments]` picks one `provider` (disqus / giscus /
+  utterances / waline) and fills that provider's sub-table. `partials/comments.html`
+  emits **markup only** — a `#comments-body` div carrying the config as `data-*`
+  attributes — and self-gates (missing credentials → nothing renders, so `single.html`
+  only checks the per-page `comments: false` override). `comments.js` injects the
+  provider script from an `IntersectionObserver` (the repo's only one) when the
+  section nears the viewport, so no third-party code loads on unscrolled pages.
+  Attribute names must be written out literally per provider: `html/template` can't
+  escape a *dynamic* attribute name and silently emits `ZgotmplZ`.
+- **Theme change event**: `theme-toggle.js` dispatches `pascal:themechange`
+  (`detail.isDark`) on `document` whenever the theme flips — from the button *or*
+  a system change. Iframed embeds that can't see our CSS variables listen for it;
+  `comments.js` re-themes giscus/utterances via `postMessage` and re-renders Disqus
+  via `DISQUS.reset()` (Disqus infers colors from the page background). Waline
+  watches `html.dark` itself. Reuse this event for any future embed.
 
 ## Conventions
 
@@ -104,12 +136,13 @@ language switcher, per-filename content translations), accessibility pass (skip
 link, `.visually-hidden` h1 fallbacks, shared `:focus-visible` ring, `%hit-area`
 tap targets, i18n'd aria-labels), markdown tables in a scroll container
 (`layouts/_default/_markup/render-table.html`), spacing tokens
-(`--space-xs`…`--space-xl` in `_variables.scss`).
+(`--space-xs`…`--space-xl` in `_variables.scss`), comments (disqus / giscus /
+utterances / waline, lazy-loaded + theme-synced — see above; off by default,
+example config commented out in `exampleSite/hugo.toml`).
 
 **Not done yet (stubbed):** search (Fuse.js — no UI ships; add a header entry
-back when implemented), archives page, full comments setup (giscus is wired but
-unconfigured; `single.html` requires both `params.comments` and
-`[params.giscus]`). Profile-mode homepage is scaffolded but off by default.
+back when implemented), archives page. Profile-mode homepage is scaffolded but
+off by default.
 
 Robots default: pages are indexable; `noindex = true` (site) or `private: true`
 (front matter) opts out — the old `enableRobots` flag is gone.

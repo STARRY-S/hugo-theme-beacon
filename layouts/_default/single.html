@@ -38,10 +38,10 @@
       {{- end }}
     </footer>
 
-    {{- if and site.Params.comments site.Params.giscus }}
-      <section class="comments">
-        {{ partial "comments.html" . }}
-      </section>
+    {{- /* An explicit comments = false in front matter must win, so compare
+           against false rather than using `default` (it treats false as unset). */ -}}
+    {{- if ne .Params.comments false }}
+      {{ partial "comments.html" . }}
     {{- end }}
   </article>
 

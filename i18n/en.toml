@@ -107,3 +107,12 @@ other = "Breadcrumb"
 
 [galleryEmpty]
 other = "No photos yet."
+
+[comments]
+other = "Comments"
+
+[poweredBy]
+other = "Powered by"
+
+[hostedOn]
+other = "Hosted on"

@@ -31,6 +31,51 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
   # entry below). Curated short names still render as inline SVG regardless.
   iconify = true
 
+  # ── Footer ────────────────────────────────────────────────
+  [params.footer]
+    since = ""                     # start year; omit for the current year alone
+    owner = "Jane Doe"           # defaults to the site title
+    showPoweredBy = true
+
+    [params.footer.license]
+      name = "CC BY-NC-SA 4.0"
+      url  = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+
+    [params.footer.hostedOn]
+      name = "GitHub Pages"
+      url  = "https://pages.github.com/"
+
+  # ── Comments ──────────────────────────────────────────────
+  # Pick one provider and fill in its table. The widget is only fetched once a
+  # reader scrolls near the bottom of a post, and it follows the theme toggle.
+  # The demo runs giscus against this theme's own repo — comments land in its
+  # GitHub Discussions.
+  [params.comments]
+    enabled  = true
+    provider = "giscus"          # disqus | giscus | utterances | waline
+
+    [params.comments.giscus]
+      repo = "STARRY-S/hugo-theme-pascal"
+      repoId = "R_kgDOTVjf5g"
+      category = "Announcements"
+      categoryId = "DIC_kwDOTVjf5s4DBMRo"
+      mapping = "pathname"
+      reactionsEnabled = "1"
+      inputPosition = "bottom"
+
+  # Other providers — swap `provider` above and fill one of these in:
+  #
+  #   [params.comments.disqus]
+  #     shortname = "your-disqus-shortname"
+  #
+  #   [params.comments.utterances]
+  #     repo = "user/repo"
+  #     issueTerm = "pathname"
+  #     label = "comment"
+  #
+  #   [params.comments.waline]
+  #     serverURL = "https://your-waline.vercel.app"
+
   [[params.social]]
     name = "GitHub"
     icon = "github"

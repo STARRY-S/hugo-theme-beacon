@@ -176,19 +176,30 @@
 .footer {
   flex-shrink: 0;
   padding: 28px 0;
-  border-top: 1px solid var(--color-border);
   text-align: center;
   color: var(--color-text-soft);
-  font-size: 0.92rem;
+  font-size: 0.8rem;
 }
 
-.copyright {
+// One line per row: "© 2016 - 2026 Owner | License | Hosted on Host", then
+// "Powered by …". Items wrap as a group on narrow screens.
+.footer-line {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 14px;
+  gap: 4px 10px;
   justify-content: center;
 }
 
+.footer-sep { opacity: 0.5; }
+
+// Plain inline flow, not flex: "Powered by Hugo & Pascal" should read with
+// normal word spacing rather than the gap used between the pipe-separated items.
+.footer-powered {
+  display: block;
+  margin-top: var(--space-sm);
+}
+
+// Shared by the sidebar and profile-mode homepage (the footer has no icons)
 .social-icons {
   display: flex;
   gap: var(--space-md);

@@ -107,3 +107,12 @@ other = "面包屑导航"
 
 [galleryEmpty]
 other = "暂无照片。"
+
+[comments]
+other = "评论"
+
+[poweredBy]
+other = "基于"
+
+[hostedOn]
+other = "托管于"
