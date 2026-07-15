@@ -1,21 +1,21 @@
 ---
-title: "歡迎使用 Pascal"
+title: "歡迎使用 Beacon"
 date: 2026-07-01T09:00:00+08:00
 draft: false
 tags: ["hugo", "theme", "getting-started"]
 categories: ["announcements"]
-description: "認識 Pascal —— 一款簡潔、快速的 Hugo 主題，採用雙欄卡片版面與現代深灰配色。"
+description: "認識 Beacon —— 一款簡潔、快速的 Hugo 主題，採用雙欄卡片版面與現代深灰配色。"
 cover:
   image: ""
   caption: ""
 ---
 
-Pascal 是一款為速度與可讀性打造的極簡部落格主題。這篇文章展示了排版與各項功能，
+Beacon 是一款為速度與可讀性打造的極簡部落格主題。這篇文章展示了排版與各項功能，
 讓你預覽自己的內容會呈現出怎樣的效果。
 
 ## 有哪些功能
 
-Pascal 將雙欄卡片版面與現代深灰配色、清晰的排版以及細膩的動效結合在一起，
+Beacon 將雙欄卡片版面與現代深灰配色、清晰的排版以及細膩的動效結合在一起，
 帶來平靜而專注的閱讀體驗。它內建了：
 
 - 淺色 / 深色 / 自動 三種配色模式，並會記住你的選擇
@@ -46,7 +46,7 @@ package main
 import "fmt"
 
 func main() {
-    fmt.Println("Hello, Pascal!")
+    fmt.Println("Hello, Beacon!")
 }
 ```
 

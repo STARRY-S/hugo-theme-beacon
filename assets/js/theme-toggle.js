@@ -1,6 +1,6 @@
 // Light/Dark/Auto theme toggle with persistence
 (function () {
-  var STORAGE_KEY = "pascal-theme";
+  var STORAGE_KEY = "beacon-theme";
   var root = document.documentElement;
 
   function apply(isDark) {
@@ -8,7 +8,7 @@
     // Embeds that can't read our CSS variables (comment widgets in iframes)
     // listen for this to re-theme themselves.
     document.dispatchEvent(
-      new CustomEvent("pascal:themechange", { detail: { isDark: isDark } })
+      new CustomEvent("beacon:themechange", { detail: { isDark: isDark } })
     );
   }
 

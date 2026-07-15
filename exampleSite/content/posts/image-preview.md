@@ -4,7 +4,7 @@ date: 2026-07-12T21:00:00+08:00
 draft: false
 tags: ["demo", "images", "design"]
 categories: ["guides"]
-description: "A look at the Pascal theme, plus a demo of the built-in click-to-zoom image preview."
+description: "A look at the Beacon theme, plus a demo of the built-in click-to-zoom image preview."
 ---
 
 Every image in a post is **click-to-zoom**. Click (or focus and press Enter on)
@@ -14,21 +14,21 @@ backdrop to close. When a post has several images, use the arrows or the
 
 ## The theme at a glance
 
-Here is Pascal's homepage in dark mode — a two-column card layout with a profile
+Here is Beacon's homepage in dark mode — a two-column card layout with a profile
 sidebar and a paginated post list.
 
-![Pascal homepage in dark mode](/images/screenshots/pascal-home-dark.png "Pascal homepage — dark mode")
+![Beacon homepage in dark mode](/images/screenshots/beacon-home-dark.png "Beacon homepage — dark mode")
 
 The exact same layout in light mode. Light and dark are designed to read
 identically; the theme toggle in the header switches between them (and remembers
 your choice).
 
-![Pascal homepage in light mode](/images/screenshots/pascal-home-light.png "Pascal homepage — light mode")
+![Beacon homepage in light mode](/images/screenshots/beacon-home-light.png "Beacon homepage — light mode")
 
 A single post shows a breadcrumb trail, post meta, a collapsible table of
 contents, and comfortable reading typography.
 
-![A single Pascal post with its table of contents](/images/screenshots/pascal-post-dark.png "Single post view with table of contents")
+![A single Beacon post with its table of contents](/images/screenshots/beacon-post-dark.png "Single post view with table of contents")
 
 ## How the image preview works
 
@@ -36,7 +36,7 @@ Nothing to configure — it is on by default. Write a normal Markdown image and
 the theme handles the rest:
 
 ```markdown
-![alt text](/images/screenshots/pascal-home-dark.png "An optional caption")
+![alt text](/images/screenshots/beacon-home-dark.png "An optional caption")
 ```
 
 - The text in quotes becomes a **caption** under the image and the title in the

@@ -9,7 +9,7 @@
 {{- /* Prevent theme flash: set color scheme before paint */ -}}
 <script>
   (function () {
-    var theme = localStorage.getItem("pascal-theme");
+    var theme = localStorage.getItem("beacon-theme");
     if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
       document.documentElement.classList.add("dark");
     }

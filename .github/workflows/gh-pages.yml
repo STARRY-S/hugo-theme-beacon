@@ -32,7 +32,7 @@ jobs:
       - name: Link theme into example site
         run: |
           mkdir -p exampleSite/themes
-          ln -sfn ../.. exampleSite/themes/pascal
+          ln -sfn ../.. exampleSite/themes/beacon
 
       - name: Configure Pages
         id: pages

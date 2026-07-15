@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Notes for working on the **Pascal** Hugo theme.
+Notes for working on the **Beacon** Hugo theme.
 
 ## What this is
 
@@ -21,11 +21,11 @@ hugo server --disableFastRender -p 1314   # http://localhost:1314
 `localhost:1313`. When Claude starts a server (hugo or otherwise), use another
 port such as 1414 or 1314 (`hugo server -p 1314`).
 
-The example site finds the theme via a symlink: `exampleSite/themes/pascal -> ../..`.
+The example site finds the theme via a symlink: `exampleSite/themes/beacon -> ../..`.
 If it's missing, recreate it:
 
 ```bash
-cd exampleSite && mkdir -p themes && ln -sfn ../.. themes/pascal
+cd exampleSite && mkdir -p themes && ln -sfn ../.. themes/beacon
 ```
 
 To just check it builds:
@@ -62,7 +62,7 @@ exampleSite/              # demo content + config for previewing
 
 - **Theming (dark mode)**: an inline script in `head.html` sets a `.dark` class on
   `<html>` before paint (no flash). `theme-toggle.js` flips it and saves the choice
-  in `localStorage` under `pascal-theme`. All colors are CSS variables in
+  in `localStorage` under `beacon-theme`. All colors are CSS variables in
   `_variables.scss`, swapped under `:root.dark`.
 - **Styles**: SCSS compiled via Hugo Pipes in `head.html` (minified + fingerprinted
   in production). Requires Hugo **extended**.
@@ -101,7 +101,7 @@ exampleSite/              # demo content + config for previewing
   bogus "the theme is serif" diagnosis.
 - **Footer**: `partials/footer.html` renders one dot-separated line
   (`© <years> <owner> · <license> · Hosted on <host>`) under a short centered
-  rule, plus an optional smaller "Powered by Hugo & Pascal" line, all driven
+  rule, plus an optional smaller "Powered by Hugo & Beacon" line, all driven
   by `[params.footer]`. Footer links stay the muted text color (faint
   underline, accent on hover) — they're metadata, not calls to action.
   (`since`, `owner`, `license`, `hostedOn`, `showPoweredBy`). **No social icons
@@ -126,7 +126,7 @@ exampleSite/              # demo content + config for previewing
   `$…$` single-dollar inline is deliberately not in the recommended delimiters
   (collides with prices). `.katex-display` gets `overflow-x: auto` in
   `_content.scss` so wide equations scroll like tables.
-- **Theme change event**: `theme-toggle.js` dispatches `pascal:themechange`
+- **Theme change event**: `theme-toggle.js` dispatches `beacon:themechange`
   (`detail.isDark`) on `document` whenever the theme flips — from the button *or*
   a system change. Iframed embeds that can't see our CSS variables listen for it;
   `comments.js` re-themes giscus/utterances via `postMessage` and re-renders Disqus

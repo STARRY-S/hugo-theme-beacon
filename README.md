@@ -1,4 +1,4 @@
-# Pascal
+# Beacon
 
 A clean, fast blog theme for [Hugo](https://gohugo.io/) — two-column card layout, deep-charcoal palette, light/dark mode.
 
@@ -26,20 +26,20 @@ Hugo **extended** v0.146.0 or newer (for SCSS). Check with `hugo version`.
 
 ## Install
 
-Add as a submodule (or download into `themes/pascal/`), then set the theme:
+Add as a submodule (or download into `themes/beacon/`), then set the theme:
 
 ```bash
-git submodule add https://github.com/starry-s/hugo-theme-pascal themes/pascal
+git submodule add https://github.com/starry-s/hugo-theme-beacon themes/beacon
 ```
 
 ```toml
-theme = "pascal"
+theme = "beacon"
 ```
 
 ## Quick start
 
 ```bash
-cp -r themes/pascal/exampleSite/* .
+cp -r themes/beacon/exampleSite/* .
 hugo server   # http://localhost:1313
 ```
 
@@ -120,7 +120,7 @@ Sidebar social icons reuse your `[[params.social]]` config.
 
 ### Footer (optional)
 
-Renders `© 2016 - 2026 Owner | License | Hosted on Host`, then `· Powered by Hugo & Pascal`. Every part is optional — with no `[params.footer]` you get `© <this year> <site title>` plus the Powered-by line. The footer carries no social icons; those belong to the sidebar and profile-mode homepage.
+Renders `© 2016 - 2026 Owner | License | Hosted on Host`, then `· Powered by Hugo & Beacon`. Every part is optional — with no `[params.footer]` you get `© <this year> <site title>` plus the Powered-by line. The footer carries no social icons; those belong to the sidebar and profile-mode homepage.
 
 ```toml
 [params.footer]
@@ -316,7 +316,7 @@ breaks.
 ## Customizing
 
 - **Colors & fonts**: `assets/scss/_variables.scss` (light + dark palettes).
-- **Layout**: copy any file from `themes/pascal/layouts/` into your site's `layouts/` — your copy wins.
+- **Layout**: copy any file from `themes/beacon/layouts/` into your site's `layouts/` — your copy wins.
 
 ## License
 

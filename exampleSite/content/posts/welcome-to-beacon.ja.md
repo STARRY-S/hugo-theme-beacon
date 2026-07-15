@@ -1,21 +1,21 @@
 ---
-title: "Pascal へようこそ"
+title: "Beacon へようこそ"
 date: 2026-07-01T09:00:00+08:00
 draft: false
 tags: ["hugo", "theme", "getting-started"]
 categories: ["announcements"]
-description: "Pascal のご紹介 —— デュアルカラムのカードレイアウトとモダンな深いチャコール配色を備えた、クリーンで高速な Hugo テーマ。"
+description: "Beacon のご紹介 —— デュアルカラムのカードレイアウトとモダンな深いチャコール配色を備えた、クリーンで高速な Hugo テーマ。"
 cover:
   image: ""
   caption: ""
 ---
 
-Pascal は、速度と読みやすさのために作られたミニマルなブログテーマです。この記事では
+Beacon は、速度と読みやすさのために作られたミニマルなブログテーマです。この記事では
 タイポグラフィと各機能を紹介し、あなたのコンテンツがどのように見えるかを確認できます。
 
 ## 主な機能
 
-Pascal はデュアルカラムのカードレイアウトに、モダンな深いチャコール配色、くっきりとした
+Beacon はデュアルカラムのカードレイアウトに、モダンな深いチャコール配色、くっきりとした
 タイポグラフィ、そして控えめなモーションを組み合わせ、落ち着いた集中できる読書体験を
 提供します。次の機能を備えています：
 
@@ -48,7 +48,7 @@ package main
 import "fmt"
 
 func main() {
-    fmt.Println("Hello, Pascal!")
+    fmt.Println("Hello, Beacon!")
 }
 ```
 

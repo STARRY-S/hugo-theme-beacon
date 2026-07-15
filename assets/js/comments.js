@@ -149,7 +149,7 @@
   // Follow the theme toggle. Only giscus and utterances need telling; Waline
   // watches the class itself, and Disqus infers its colors from the page
   // background, so the thread has to be re-rendered.
-  document.addEventListener("pascal:themechange", function (e) {
+  document.addEventListener("beacon:themechange", function (e) {
     if (!loaded) return;
     var dark = e.detail.isDark;
 

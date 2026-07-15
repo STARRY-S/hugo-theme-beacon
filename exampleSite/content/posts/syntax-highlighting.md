@@ -4,10 +4,10 @@ date: 2026-07-11T09:00:00+08:00
 draft: false
 tags: ["code", "highlighting", "demo"]
 categories: ["guides"]
-description: "A reference post showing how Pascal renders fenced code blocks across many languages, with the copy button and light/dark syntax colors."
+description: "A reference post showing how Beacon renders fenced code blocks across many languages, with the copy button and light/dark syntax colors."
 ---
 
-This post demonstrates how Pascal highlights fenced code blocks. Every block
+This post demonstrates how Beacon highlights fenced code blocks. Every block
 below has a one-click **copy** button, and the colors adapt to light and dark
 mode (GitHub in light, GitHub Dark in dark).
 
@@ -138,7 +138,7 @@ jobs:
 
 ```json
 {
-  "name": "pascal",
+  "name": "beacon",
   "version": "0.1.0",
   "features": ["dark-mode", "sidebar", "i18n"],
   "config": {

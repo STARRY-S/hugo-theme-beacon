@@ -4,10 +4,10 @@ date: 2026-07-15T10:00:00+08:00
 draft: false
 tags: ["markdown", "math"]
 categories: ["guides"]
-description: "Pascal typesets LaTeX at build time with KaTeX — no client-side JavaScript."
+description: "Beacon typesets LaTeX at build time with KaTeX — no client-side JavaScript."
 ---
 
-Pascal supports LaTeX math. Equations are typeset **at build time** with KaTeX
+Beacon supports LaTeX math. Equations are typeset **at build time** with KaTeX
 (via Hugo's `transform.ToMath`), so no JavaScript is shipped to readers — the
 KaTeX stylesheet is only included on pages that actually contain math.
 

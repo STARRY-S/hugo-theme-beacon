@@ -12,7 +12,7 @@ in action, along with headings, images, and more.
 
 ## Introduction
 
-Pascal renders standard Markdown with sensible defaults. Everything below is
+Beacon renders standard Markdown with sensible defaults. Everything below is
 just plain Markdown.
 
 ## Working with headings
