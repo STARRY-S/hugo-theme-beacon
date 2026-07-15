@@ -1,5 +1,5 @@
 baseURL = "https://pascal-demo.starry-s.moe/"
-title = "Pascal"
+title = "Pascal Demo"
 theme = "pascal"
 enableRobotsTXT = true
 
@@ -159,7 +159,7 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
     label ="English"
     locale ="en-US"
     weight = 1
-    title = "Pascal"
+    title = "Pascal Demo"
     [languages.en.params]
       description = "A clean, fast, modern blog theme for Hugo with a dual-column card layout."
     [languages.en.menu]
@@ -184,7 +184,7 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
     label ="简体中文"
     locale ="zh-CN"
     weight = 2
-    title = "Pascal"
+    title = "Pascal Demo"
     [languages.zh-cn.params]
       author = "张三"
       description = "一款简洁、快速、现代的 Hugo 博客主题，采用双栏卡片布局。"
@@ -210,7 +210,7 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
     label ="繁體中文"
     locale ="zh-TW"
     weight = 3
-    title = "Pascal"
+    title = "Pascal Demo"
     [languages.zh-tw.params]
       author = "張三"
       description = "一款簡潔、快速、現代的 Hugo 部落格主題，採用雙欄卡片版面。"
@@ -236,7 +236,7 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
     label ="日本語"
     locale ="ja-JP"
     weight = 4
-    title = "Pascal"
+    title = "Pascal Demo"
     [languages.ja.params]
       author = "山田花子"
       description = "デュアルカラムのカードレイアウトを備えた、クリーンで高速なモダンな Hugo ブログテーマ。"
