@@ -116,3 +116,6 @@ other = "Powered by"
 
 [hostedOn]
 other = "Hosted on"
+
+[sponsor]
+other = "Buy Me a Coffee"

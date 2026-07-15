@@ -126,6 +126,49 @@ exampleSite/              # demo content + config for previewing
   `$…$` single-dollar inline is deliberately not in the recommended delimiters
   (collides with prices). `.katex-display` gets `overflow-x: auto` in
   `_content.scss` so wide equations scroll like tables.
+  There are also `{{< mathjax/inline >}}…{{< /mathjax/inline >}}` and
+  `{{< mathjax/block >}}…{{< /mathjax/block >}}` **shortcodes**
+  (`layouts/shortcodes/mathjax/`) for authors who prefer the shortcode syntax
+  (or are porting content that used the client-side MathJax shortcode of the
+  same name). Despite the name they typeset with the same **build-time KaTeX**
+  (`transform.ToMath`) as the render hook — no MathJax, no client JS — and set
+  the same `hasMath` store flag. They tolerate the expression with or without
+  `\( \)` / `$$` / `\[ \]` delimiters (stripped before `ToMath`). No site config
+  beyond the passthrough extension is needed for the shortcodes, but enabling
+  passthrough is still recommended so bare delimiters work too.
+- **Music**: `{{< music >}}` (`layouts/shortcodes/music.html`) embeds an APLayer +
+  MetingJS player — positional `{{< music netease song 594295 >}}` (server type id),
+  named params (`server`/`type`/`id`, or `url`/`name`/`artist`/`cover` for a local
+  file, or `auto=<share url>`), plus the usual APLayer options. `url`/`cover` accept
+  a page-bundle resource path or absolute URL. The player library (APLayer + Meting
+  CSS/JS, CDN) loads **only on pages that use the shortcode** — `head.html` gates it
+  with `.HasShortcode "music"`, like the KaTeX CSS. The meting API endpoint defaults
+  to injahow's public instance; override with `[params.meting].api`. Player accent
+  defaults to the theme blue (`theme=` overrides). NOTE: this pulls in a third-party
+  CDN + API — heavier than the rest of the theme; it's opt-in per page by design.
+- **Sponsor**: a **global**, config-driven collapsible "buy me a coffee" block at the
+  bottom of single pages (`partials/sponsor.html`, rendered from `single.html` after
+  the post footer). Not a shortcode — configured once in `[params.sponsor]`:
+  `enabled` (global on/off), optional `text` (button label; defaults to i18n key
+  `sponsor`), and `[[params.sponsor.items]]` cards (`title`, `badge`/`subtitle`,
+  `address`, `qr`, `qrtext`). Self-gating like `comments.html` (no config / no items →
+  nothing renders); per-page front matter `sponsor = false` hides it, default is
+  shown. The QR per item resolves in order: `qr` image (an `assets/` resource or a
+  `static/`/URL path) → `qrtext` → `address`; when it falls through to text the QR is
+  generated **at build time** with Hugo's `images.QR` (tiny 1-bit PNG, no client-side
+  QR library, no external request — same build-time spirit as the math), so a crypto
+  wallet needs only `address` and both QR and the click-to-copy line come for free.
+  Optional per-item `color` recolors the QR modules: `images.QR` only emits
+  black-on-white, so `.sponsor-qr-wrap::after` paints a solid `--qr-color` overlay in
+  `mix-blend-mode: screen` (white bg stays white, black modules become the color;
+  broadly supported, no-op when unset). The custom property is passed via an inline
+  `style` with `safeCSS` — without it html/template sanitizes the `--…` property to
+  `ZgotmplZ`. Keep colors reasonably dark: very light shades (bright yellow/orange)
+  cut module/background contrast and hurt scanning.
+  Styling is `_sponsor.scss` (Beacon variables + shadow/spacing tokens, light/dark in
+  step); behaviour is `sponsor.js` (event-delegated toggle + copy in the JS bundle,
+  no inline handlers; reuses the body `data-copied` label). Demo config in
+  `exampleSite/hugo.toml`; the block shows at the bottom of every post.
 - **Theme change event**: `theme-toggle.js` dispatches `beacon:themechange`
   (`detail.isDark`) on `document` whenever the theme flips — from the button *or*
   a system change. Iframed embeds that can't see our CSS variables listen for it;
@@ -155,7 +198,10 @@ tap targets, i18n'd aria-labels), markdown tables in a scroll container
 (`--space-xs`…`--space-xl` in `_variables.scss`), comments (disqus / giscus /
 utterances / waline, lazy-loaded + theme-synced — see above; off by default,
 example config commented out in `exampleSite/hugo.toml`), LaTeX math
-(build-time KaTeX via passthrough render hook — see above).
+(build-time KaTeX via passthrough render hook + `mathjax/inline` & `mathjax/block`
+shortcodes — see above), shortcodes: gallery, music (APLayer/MetingJS, lazy CDN),
+global sponsor / buy-me-a-coffee block (config-driven, collapsible QR cards with
+click-to-copy, build-time QR — see above).
 
 **Not done yet (stubbed):** search (Fuse.js — no UI ships; add a header entry
 back when implemented), archives page. Profile-mode homepage is scaffolded but

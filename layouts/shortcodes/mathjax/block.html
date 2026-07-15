@@ -1,0 +1,18 @@
+{{- /* Display (block) math — {{< mathjax/block >}} … {{< /mathjax/block >}}.
+       Kept for authoring-syntax compatibility; unlike the client-side MathJax
+       version this shortcode is named after, it typesets at BUILD TIME with
+       KaTeX (transform.ToMath), like the passthrough render hook, so no JS
+       ships and head.html links the KaTeX CSS via the shared "hasMath" flag.
+       Accepts the expression with or without $$ / \[ \] delimiters. */ -}}
+{{- $tex := trim .Inner " \t\r\n" -}}
+{{- $tex = $tex | strings.TrimPrefix "$$" | strings.TrimSuffix "$$" -}}
+{{- $tex = $tex | strings.TrimPrefix "\\[" | strings.TrimSuffix "\\]" -}}
+{{- $tex = trim $tex " \t\r\n" -}}
+{{- with try (transform.ToMath $tex (dict "displayMode" true)) -}}
+  {{- with .Err -}}
+    {{- errorf "KaTeX: %s — see %s" . $.Position -}}
+  {{- else -}}
+    {{- .Value -}}
+    {{- $.Page.Store.Set "hasMath" true -}}
+  {{- end -}}
+{{- end -}}

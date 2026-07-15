@@ -1,0 +1,15 @@
+{{- /* Inline math — {{< mathjax/inline >}} … {{< /mathjax/inline >}}.
+       Build-time KaTeX, no client JS — see mathjax/block.html for the why.
+       Accepts the expression with or without \( \) / $ delimiters. */ -}}
+{{- $tex := trim .Inner " \t\r\n" -}}
+{{- $tex = $tex | strings.TrimPrefix "\\(" | strings.TrimSuffix "\\)" -}}
+{{- $tex = $tex | strings.TrimPrefix "$" | strings.TrimSuffix "$" -}}
+{{- $tex = trim $tex " \t\r\n" -}}
+{{- with try (transform.ToMath $tex (dict "displayMode" false)) -}}
+  {{- with .Err -}}
+    {{- errorf "KaTeX: %s — see %s" . $.Position -}}
+  {{- else -}}
+    {{- .Value -}}
+    {{- $.Page.Store.Set "hasMath" true -}}
+  {{- end -}}
+{{- end -}}

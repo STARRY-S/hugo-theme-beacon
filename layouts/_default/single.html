@@ -38,6 +38,8 @@
       {{- end }}
     </footer>
 
+    {{ partial "sponsor.html" . }}
+
     {{- /* An explicit comments = false in front matter must win, so compare
            against false rather than using `default` (it treats false as unset). */ -}}
     {{- if ne .Params.comments false }}

@@ -56,6 +56,16 @@
         crossorigin="anonymous">
 {{- end -}}
 
+{{- /* Music player (APlayer + MetingJS) — loaded from a CDN, but only on pages
+       that use the {{< music >}} shortcode. The meting API endpoint can be
+       overridden with [params.meting].api in the site config. */ -}}
+{{- if .HasShortcode "music" -}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/meting/dist/Meting.min.js" defer></script>
+  <script>var meting_api = {{ site.Params.meting.api | default "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&auth=:auth&r=:r" }};</script>
+{{- end -}}
+
 {{- /* Feed */ -}}
 {{- with .OutputFormats.Get "rss" -}}
   <link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ site.Title }}">

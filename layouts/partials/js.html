@@ -4,7 +4,8 @@
 {{- $backToTop := resources.Get "js/back-to-top.js" }}
 {{- $imagePreview := resources.Get "js/image-preview.js" }}
 {{- $comments := resources.Get "js/comments.js" }}
-{{- $bundle := slice $toggle $copy $sidebar $backToTop $imagePreview $comments | resources.Concat "js/bundle.js" }}
+{{- $sponsor := resources.Get "js/sponsor.js" }}
+{{- $bundle := slice $toggle $copy $sidebar $backToTop $imagePreview $comments $sponsor | resources.Concat "js/bundle.js" }}
 {{- if hugo.IsProduction }}
   {{- $bundle = $bundle | minify | fingerprint }}
   <script src="{{ $bundle.RelPermalink }}" integrity="{{ $bundle.Data.Integrity }}" defer></script>

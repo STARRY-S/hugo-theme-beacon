@@ -1,0 +1,178 @@
+// Sponsor / "buy me a coffee" block (shortcodes/sponsor.html + sponsor-item.html).
+// All colors come from the theme variables so light and dark stay in step.
+
+.sponsor-wrapper {
+  text-align: center;
+  margin: var(--space-xl) 0;
+}
+
+.sponsor-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  background-color: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--color-border-hover);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.sponsor-content {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+
+  &.expanded {
+    max-height: 1000px;
+    opacity: 1;
+    margin-top: var(--space-xl);
+  }
+}
+
+.sponsor-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 160px;
+}
+
+// The QR sits in a wrapper so an optional brand color can recolor its modules.
+// images.QR only emits a black-on-white PNG; a solid color overlay in
+// `mix-blend-mode: screen` leaves the white background white and turns the black
+// modules into --qr-color (screen: white stays white, black becomes the blend).
+// Well-supported across browsers, and a no-op when --qr-color is unset.
+.sponsor-qr-wrap {
+  position: relative;
+  display: block;
+  width: 160px;
+  height: 160px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-hover);
+  transition: transform 0.3s ease;
+
+  &:hover { transform: translateY(-5px); }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--qr-color, transparent);
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+}
+
+.sponsor-qr {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
+.sponsor-title {
+  margin-bottom: var(--space-xs);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-heading);
+  text-align: center;
+}
+
+.sponsor-badge {
+  margin-bottom: var(--space-sm);
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  border-radius: 10px;
+}
+
+.sponsor-subtitle {
+  margin-bottom: var(--space-sm);
+  font-size: 0.85rem;
+  color: var(--color-text-soft);
+  text-align: center;
+}
+
+.sponsor-address {
+  position: relative;
+  width: 100%;
+  padding: 4px 24px 4px 8px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-soft);
+  background: var(--color-bg-code);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+
+  &:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  // copy glyph
+  &::before {
+    content: "❐";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    opacity: 0.4;
+  }
+
+  &:hover::before { opacity: 1; }
+
+  // "Copied!" toast (label injected by sponsor.js as data-copied)
+  &::after {
+    content: attr(data-copied);
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    color: var(--color-bg-soft);
+    background: var(--color-primary);
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  &.copied::after { opacity: 1; }
+}

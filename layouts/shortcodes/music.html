@@ -1,0 +1,55 @@
+{{- /* Music player (APlayer + MetingJS). The player library is loaded from a
+       CDN, but only on pages that use this shortcode — head.html gates it with
+       .HasShortcode "music". Usage:
+
+         {{< music netease song 594295 >}}                positional: server type id
+         {{< music server="netease" type="playlist" id="8433061690" >}}
+         {{< music auto="https://music.163.com/#/playlist?id=…" >}}
+         {{< music url="song.mp3" name="…" artist="…" cover="cover.jpg" >}}
+
+       url/cover accept a page-bundle resource path or an absolute URL. */ -}}
+{{- $theme := "#0066d6" -}}
+{{- if .IsNamedParams -}}
+    {{- $theme = .Get "theme" | default $theme -}}
+    {{- if .Get "url" -}}
+        {{- $url := .Get "url" -}}
+        {{- with .Page.Resources.Get $url }}{{ $url = .RelPermalink }}{{ end -}}
+        {{- $cover := .Get "cover" -}}
+        {{- with .Page.Resources.Get $cover }}{{ $cover = .RelPermalink }}{{ end -}}
+        <meting-js url="{{ $url }}" name="{{ .Get `name` }}" artist="{{ .Get `artist` }}" cover="{{ $cover }}" theme="{{ $theme }}"
+        {{- with .Get "fixed" }} fixed="{{ . }}"{{ end -}}
+        {{- with .Get "mini" }} mini="{{ . }}"{{ end -}}
+        {{- with .Get "autoplay" }} autoplay="{{ . }}"{{ end -}}
+        {{- with .Get "volume" }} volume="{{ . }}"{{ end -}}
+        {{- with .Get "mutex" }} mutex="{{ . }}"{{ end -}}
+        ></meting-js>
+    {{- else if .Get "auto" -}}
+        <meting-js auto="{{ .Get `auto` }}" theme="{{ $theme }}"
+        {{- with .Get "fixed" }} fixed="{{ . }}"{{ end -}}
+        {{- with .Get "mini" }} mini="{{ . }}"{{ end -}}
+        {{- with .Get "autoplay" }} autoplay="{{ . }}"{{ end -}}
+        {{- with .Get "loop" }} loop="{{ . }}"{{ end -}}
+        {{- with .Get "order" }} order="{{ . }}"{{ end -}}
+        {{- with .Get "volume" }} volume="{{ . }}"{{ end -}}
+        {{- with .Get "mutex" }} mutex="{{ . }}"{{ end -}}
+        {{- with .Get "list-folded" }} list-folded="{{ . }}"{{ end -}}
+        {{- with .Get "list-max-height" }} list-max-height="{{ . }}"{{ end -}}
+        ></meting-js>
+    {{- else -}}
+        <meting-js server="{{ .Get `server` }}" type="{{ .Get `type` }}" id="{{ .Get `id` }}" theme="{{ $theme }}"
+        {{- with .Get "fixed" }} fixed="{{ . }}"{{ end -}}
+        {{- with .Get "mini" }} mini="{{ . }}"{{ end -}}
+        {{- with .Get "autoplay" }} autoplay="{{ . }}"{{ end -}}
+        {{- with .Get "loop" }} loop="{{ . }}"{{ end -}}
+        {{- with .Get "order" }} order="{{ . }}"{{ end -}}
+        {{- with .Get "volume" }} volume="{{ . }}"{{ end -}}
+        {{- with .Get "mutex" }} mutex="{{ . }}"{{ end -}}
+        {{- with .Get "list-folded" }} list-folded="{{ . }}"{{ end -}}
+        {{- with .Get "list-max-height" }} list-max-height="{{ . }}"{{ end -}}
+        ></meting-js>
+    {{- end -}}
+{{- else if (.Get 0 | urls.Parse).Host -}}
+    <meting-js auto="{{ .Get 0 }}" theme="{{ $theme }}"></meting-js>
+{{- else -}}
+    <meting-js server="{{ .Get 0 }}" type="{{ .Get 1 }}" id="{{ .Get 2 }}" theme="{{ $theme }}"></meting-js>
+{{- end -}}

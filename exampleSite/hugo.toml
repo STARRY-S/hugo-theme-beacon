@@ -76,6 +76,44 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
   #   [params.comments.waline]
   #     serverURL = "https://your-waline.vercel.app"
 
+  # ── Sponsor ───────────────────────────────────────────────
+  # A collapsible "buy me a coffee" block at the bottom of single pages.
+  # enabled turns it on globally; front matter `sponsor = false` hides it on a
+  # given page. Each item shows a QR + title + badge/subtitle + optional copyable
+  # address. QR per item: `qr` image (assets/ or static/) → `qrtext` → `address`;
+  # the last two are rendered to a PNG at build time (Hugo images.QR, no JS).
+  [params.sponsor]
+    enabled = true
+    # text = "Buy Me a Coffee"   # optional label; defaults to i18n "sponsor"
+    # Optional per-item `color` recolors the QR modules (a solid overlay in
+    # mix-blend-mode: screen). Prefer reasonably dark shades — very light colors
+    # (bright yellow/orange) cut the module/background contrast and can hurt
+    # scanning. Omit `color` to keep a plain black QR.
+    [[params.sponsor.items]]
+      title = "Bitcoin"
+      address = "abcabcabcabcfakeaddressplacehoderfakeaddress"
+      badge = "BTC"
+      color = "#d9821a"   # ginger / orange
+    [[params.sponsor.items]]
+      title = "Ethereum"
+      address = "abcabcabcabcfakeaddressplacehoderfakeaddress"
+      badge = "ETH"
+      color = "#6f5bd1"   # purple
+    [[params.sponsor.items]]
+      title = "Arbitrum"
+      address = "abcabcabcabcfakeaddressplacehoderfakeaddress"
+      badge = "ARB"
+      color = "#1a86d9"   # blue / cyan
+    [[params.sponsor.items]]
+      title = "WeChat Pay"
+      qrtext = "wxp://demo-wechat-pay-placeholder"
+      subtitle = "Scan to Pay"
+      color = "#07a854"   # green
+  #   [[params.sponsor.items]]        # payment-app QR as an image instead:
+  #     title = "Alipay"
+  #     qr = "images/alipay.png"
+  #     subtitle = "Scan to Pay"
+
   [[params.social]]
     name = "GitHub"
     icon = "github"

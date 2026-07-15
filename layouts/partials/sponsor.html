@@ -1,0 +1,57 @@
+{{- /* Global "sponsor / buy me a coffee" block, shown at the bottom of single
+       pages. Configured once in the site config:
+
+         [params.sponsor]
+           enabled = true
+           # text = "Buy Me a Coffee"   # optional; defaults to i18n "sponsor"
+           [[params.sponsor.items]]
+             title = "Bitcoin"
+             address = "bc1…"            # copyable + QR source (build-time)
+             badge  = "BTC"
+           [[params.sponsor.items]]
+             title = "WeChat Pay"
+             qr = "images/wechat.png"    # explicit image (assets/ or static/)
+             subtitle = "Scan to Pay"
+
+       Per page: front matter `sponsor = false` hides it (default is shown).
+       Self-gating: no config / no items → nothing renders. QR resolution per
+       item: qr image → qrtext → address; the last two are rendered to a PNG at
+       build time with images.QR (no client JS). Styling: _sponsor.scss;
+       behaviour (expand + copy): sponsor.js. */ -}}
+{{- $s := site.Params.sponsor -}}
+{{- if and $s $s.enabled $s.items (ne .Params.sponsor false) -}}
+<div class="sponsor-wrapper">
+  <button type="button" class="sponsor-trigger" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <span>{{ with $s.text }}{{ . }}{{ else }}{{ i18n "sponsor" }}{{ end }}</span>
+  </button>
+  <div class="sponsor-content">
+    {{- range $s.items }}
+    {{- $title := .title -}}
+    {{- $color := .color -}}
+    {{- $qr := .qr -}}
+    {{- if $qr -}}
+      {{- with resources.Get $qr }}{{ $qr = .RelPermalink }}{{ else }}{{ $qr = $qr | relURL }}{{ end -}}
+    {{- else -}}
+      {{- with or .qrtext .address }}{{ $qr = (images.QR . (dict "level" "medium" "scale" 4)).RelPermalink }}{{ end -}}
+    {{- end }}
+    <div class="sponsor-card">
+      {{- with $qr }}
+      <div class="sponsor-qr-wrap"{{ with $color }} style="{{ printf "--qr-color:%s" . | safeCSS }}"{{ end }}>
+        <img class="sponsor-qr" src="{{ . }}" alt="{{ $title }}" loading="lazy">
+      </div>
+      {{- end }}
+      <span class="sponsor-title">{{ .title }}</span>
+      {{- with .badge }}
+      <span class="sponsor-badge">{{ . }}</span>
+      {{- else }}{{ with .subtitle }}
+      <span class="sponsor-subtitle">{{ . }}</span>
+      {{- end }}{{ end }}
+      {{- with .address }}
+      <button type="button" class="sponsor-address" data-copy="{{ . }}" title="{{ i18n `copy` }}">{{ . }}</button>
+      {{- end }}
+    </div>
+    {{- end }}
+  </div>
+</div>
+{{- end -}}
