@@ -16,6 +16,7 @@ A clean, fast blog theme for [Hugo](https://gohugo.io/) — two-column card layo
 - Click-to-zoom image preview (lightbox) with captions and keyboard navigation
 - Gallery — a masonry photo waterfall or a dated timeline (Photos-style), plus an inline shortcode; thumbnails auto-generated
 - Prev/next navigation and share buttons
+- LaTeX math, typeset at build time with KaTeX — no client-side JavaScript
 - SEO ready: OpenGraph, Twitter cards, JSON-LD, hreflang alternates, RSS, canonical URLs
 - Responsive, with an optional sidebar and multilingual UI
 
@@ -200,6 +201,25 @@ hasCJKLanguage = true
 ```
 
 Translate content with a filename suffix — `about.md` → `about.zh-cn.md`. A language switcher appears in the header automatically. See `exampleSite/` for a full setup.
+
+### Math / LaTeX (optional)
+
+Equations are typeset **at build time** with KaTeX (Hugo's `transform.ToMath`),
+so readers download no JavaScript — only the KaTeX stylesheet, and only on
+pages that actually contain math. Enable Goldmark's passthrough extension in
+your site config:
+
+```toml
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block = [['\[', '\]'], ['$$', '$$']]
+    inline = [['\(', '\)']]
+```
+
+Then write `\(e^{i\pi} + 1 = 0\)` inline or `$$ … $$` for display equations.
+Single-dollar inline delimiters (`$…$`) are deliberately left out of the
+recommended setup — they collide with ordinary prose like "$5 and $10".
 
 ## Writing a post
 

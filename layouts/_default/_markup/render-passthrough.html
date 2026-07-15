@@ -1,0 +1,13 @@
+{{- /* LaTeX math, rendered at build time with KaTeX (transform.ToMath) — no
+       client-side JS. Fires only when the site enables the Goldmark passthrough
+       extension (see README "Math"). Marks the page so head.html can include
+       the KaTeX stylesheet on pages that actually contain math. */ -}}
+{{- $opts := dict "displayMode" (eq .Type "block") -}}
+{{- with try (transform.ToMath .Inner $opts) -}}
+  {{- with .Err -}}
+    {{- errorf "KaTeX: %s — see %s" . $.Position -}}
+  {{- else -}}
+    {{- .Value -}}
+    {{- $.Page.Store.Set "hasMath" true -}}
+  {{- end -}}
+{{- end -}}

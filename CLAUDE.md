@@ -116,6 +116,16 @@ exampleSite/              # demo content + config for previewing
   section nears the viewport, so no third-party code loads on unscrolled pages.
   Attribute names must be written out literally per provider: `html/template` can't
   escape a *dynamic* attribute name and silently emits `ZgotmplZ`.
+- **Math (LaTeX)**: opt-in by enabling Goldmark's passthrough extension in the
+  *site* config (see README "Math"); the theme ships
+  `layouts/_default/_markup/render-passthrough.html`, which typesets with KaTeX
+  **at build time** via `transform.ToMath` — no client JS. The hook sets
+  `.Page.Store "hasMath"`, and `head.html` links the KaTeX CSS (CDN, pinned +
+  SRI, like iconify) only on pages with math; the `$noop := .WordCount` line
+  there is load-bearing — it forces content render before the store check.
+  `$…$` single-dollar inline is deliberately not in the recommended delimiters
+  (collides with prices). `.katex-display` gets `overflow-x: auto` in
+  `_content.scss` so wide equations scroll like tables.
 - **Theme change event**: `theme-toggle.js` dispatches `pascal:themechange`
   (`detail.isDark`) on `document` whenever the theme flips — from the button *or*
   a system change. Iframed embeds that can't see our CSS variables listen for it;
@@ -144,7 +154,8 @@ tap targets, i18n'd aria-labels), markdown tables in a scroll container
 (`layouts/_default/_markup/render-table.html`), spacing tokens
 (`--space-xs`…`--space-xl` in `_variables.scss`), comments (disqus / giscus /
 utterances / waline, lazy-loaded + theme-synced — see above; off by default,
-example config commented out in `exampleSite/hugo.toml`).
+example config commented out in `exampleSite/hugo.toml`), LaTeX math
+(build-time KaTeX via passthrough render hook — see above).
 
 **Not done yet (stubbed):** search (Fuse.js — no UI ships; add a header entry
 back when implemented), archives page. Profile-mode homepage is scaffolded but

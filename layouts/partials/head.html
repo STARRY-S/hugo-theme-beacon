@@ -45,6 +45,17 @@
   {{- end -}}
 {{- end -}}
 
+{{- /* Math (KaTeX) — equations are rendered at build time by the passthrough
+       render hook; only the stylesheet is needed, and only on pages that have
+       math. The .WordCount no-op forces content rendering first so the
+       "hasMath" store flag is already set when we check it. */ -}}
+{{- $noop := .WordCount -}}
+{{- if .Store.Get "hasMath" -}}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css"
+        integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP"
+        crossorigin="anonymous">
+{{- end -}}
+
 {{- /* Feed */ -}}
 {{- with .OutputFormats.Get "rss" -}}
   <link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ site.Title }}">

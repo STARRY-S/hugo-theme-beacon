@@ -151,6 +151,15 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
   [markup.tableOfContents]
     startLevel = 2
     endLevel = 4
+  # ── Math (LaTeX) ──────────────────────────────────────────
+  # Lets Goldmark hand $$…$$ / \(…\) spans to the theme's render hook, which
+  # typesets them with KaTeX at build time (no client-side JS). Inline `$…$`
+  # is deliberately not enabled — it collides with prose like "$5 and $10".
+  [markup.goldmark.extensions.passthrough]
+    enable = true
+    [markup.goldmark.extensions.passthrough.delimiters]
+      block = [['\[', '\]'], ['$$', '$$']]
+      inline = [['\(', '\)']]
 
 # ── Languages ───────────────────────────────────────────────
 [languages]

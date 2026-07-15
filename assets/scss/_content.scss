@@ -118,6 +118,13 @@
   // -bg-code, not -bg-soft: the latter equals the card bg, so headers wouldn't read
   th { background: var(--color-bg-code); }
 
+  // Math (KaTeX) — wide display equations scroll inside the card like tables do
+  .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 2px 0; // keep tall glyphs (integrals, fractions) from clipping
+  }
+
   kbd {
     font-family: var(--font-mono);
     background: var(--color-bg-soft);
