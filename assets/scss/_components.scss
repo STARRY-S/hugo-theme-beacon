@@ -120,15 +120,17 @@
 
 // Post navigation
 .post-nav {
-  display: flex;
-  justify-content: space-between;
+  // Two equal tracks so a link and the empty placeholder each take exactly
+  // half — a lone Newer/Older button stays 50% wide, matching the two-button
+  // rows. (Flexbox with flex-basis:0 gave the lone button ~half its own padding
+  // extra, because the empty placeholder carries no padding to balance it.)
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--space-md);
   margin: 40px 0;
 
-  // Links and the empty placeholder each claim half the row, so a lone
-  // Newer/Older button fills 50% instead of stretching full width.
   > a,
-  > span { flex: 1 1 0; min-width: 0; }
+  > span { min-width: 0; }
 
   a {
     @extend %btn;
