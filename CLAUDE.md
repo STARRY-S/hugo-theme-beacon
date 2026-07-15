@@ -14,8 +14,12 @@ to preview and test it.
 
 ```bash
 cd exampleSite
-hugo server --disableFastRender    # http://localhost:1313
+hugo server --disableFastRender -p 1314   # http://localhost:1314
 ```
+
+**Port note:** the owner may be running their own dev server on the default
+`localhost:1313`. When Claude starts a server (hugo or otherwise), use another
+port such as 1414 or 1314 (`hugo server -p 1314`).
 
 The example site finds the theme via a symlink: `exampleSite/themes/pascal -> ../..`.
 If it's missing, recreate it:
@@ -95,9 +99,11 @@ exampleSite/              # demo content + config for previewing
   Testing note: screenshot with `--headless=new`. Chrome's **old** `--headless` mode
   has broken font prefs and renders everything serif — that artifact once led to a
   bogus "the theme is serif" diagnosis.
-- **Footer**: `partials/footer.html` renders one pipe-separated line
-  (`© <years> <owner> | <license> | Hosted on <host>`) plus an optional
-  "· Powered by Hugo & Pascal" line, all driven by `[params.footer]`
+- **Footer**: `partials/footer.html` renders one dot-separated line
+  (`© <years> <owner> · <license> · Hosted on <host>`) under a short centered
+  rule, plus an optional smaller "Powered by Hugo & Pascal" line, all driven
+  by `[params.footer]`. Footer links stay the muted text color (faint
+  underline, accent on hover) — they're metadata, not calls to action.
   (`since`, `owner`, `license`, `hostedOn`, `showPoweredBy`). **No social icons
   in the footer** — the owner does not want them there; `.social-icons` is shared
   by `sidebar.html` and `home-profile.html` only.

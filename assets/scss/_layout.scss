@@ -175,13 +175,41 @@
 // Footer
 .footer {
   flex-shrink: 0;
-  padding: 28px 0;
+  margin-top: var(--space-lg);
+  padding: var(--space-lg) 0 var(--space-xl);
   text-align: center;
   color: var(--color-text-soft);
   font-size: 0.8rem;
+
+  // A short centered rule instead of a full-width border-top: pagination
+  // already draws a full hairline right above on list pages, so a second
+  // one would stack. --color-divider reads the same in both palettes.
+  &::before {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 1px;
+    margin: 0 auto var(--space-md);
+    background: var(--color-divider);
+  }
+
+  // Footer links are metadata, not calls to action: keep them the muted
+  // text color with a faint underline, tinting to the accent only on hover.
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: 3px;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+
+    &:hover {
+      color: var(--color-primary);
+      text-decoration-color: currentColor;
+    }
+  }
 }
 
-// One line per row: "© 2016 - 2026 Owner | License | Hosted on Host", then
+// One line per row: "© 2016–2026 Owner · License · Hosted on Host", then
 // "Powered by …". Items wrap as a group on narrow screens.
 .footer-line {
   display: flex;
@@ -190,13 +218,27 @@
   justify-content: center;
 }
 
-.footer-sep { opacity: 0.5; }
+.footer-sep { opacity: 0.45; }
 
 // Plain inline flow, not flex: "Powered by Hugo & Pascal" should read with
-// normal word spacing rather than the gap used between the pipe-separated items.
+// normal word spacing rather than the gap used between the dot-separated
+// items. A step smaller and fainter than the copyright line above it.
 .footer-powered {
   display: block;
   margin-top: var(--space-sm);
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+// Narrow screens: the dot-separated line wraps mid-way and strands a "·" at
+// a line end. Stack the items one per row instead and drop the separators.
+@media (max-width: 640px) {
+  .footer-line {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .footer-sep { display: none; }
 }
 
 // Shared by the sidebar and profile-mode homepage (the footer has no icons)

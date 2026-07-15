@@ -1,4 +1,4 @@
-{{- /* Footer: one pipe-separated line (copyright | license | host), then an
+{{- /* Footer: one dot-separated line (copyright · license · host), then an
        optional "Powered by" line. Everything past the copyright is opt-in via
        [params.footer]. No social icons here — those live in the sidebar and
        profile-mode homepage. */ -}}
@@ -7,7 +7,7 @@
 {{- $year := now.Year }}
 {{- $years := string $year }}
 {{- with $f.since }}
-  {{- if lt (int .) $year }}{{ $years = printf "%d - %d" (int .) $year }}{{ end }}
+  {{- if lt (int .) $year }}{{ $years = printf "%d–%d" (int .) $year }}{{ end }}
 {{- end }}
 <footer class="footer">
   <div class="footer-line">
@@ -15,7 +15,7 @@
 
     {{- with $f.license }}
       {{- with .name }}
-        <span class="footer-sep" aria-hidden="true">|</span>
+        <span class="footer-sep" aria-hidden="true">·</span>
         <span>
           {{- with $f.license.url }}<a href="{{ . }}" rel="license noopener noreferrer" target="_blank">{{ $f.license.name }}</a>
           {{- else }}{{ $f.license.name }}{{ end -}}
@@ -25,7 +25,7 @@
 
     {{- with $f.hostedOn }}
       {{- with .name }}
-        <span class="footer-sep" aria-hidden="true">|</span>
+        <span class="footer-sep" aria-hidden="true">·</span>
         <span>
           {{ i18n "hostedOn" | default "Hosted on" }}
           {{- with $f.hostedOn.url }} <a href="{{ . }}" rel="noopener noreferrer" target="_blank">{{ $f.hostedOn.name }}</a>
