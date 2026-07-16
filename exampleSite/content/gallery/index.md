@@ -4,40 +4,43 @@ description = "A photo timeline — grouped by day, click any image to view it f
 type = "gallery"
 
 # ── Timeline ────────────────────────────────────────────────
-# Group photos into dated sections (Apple/Google Photos style). Sections show
-# newest-first automatically. List images explicitly with `images` (ordered),
-# or select them with a `match` glob. Remove this whole block for a plain,
-# ungrouped waterfall of every image in the bundle.
+# Hand-written photo groups, shown here to demo the syntax. Sections render
+# newest-first. List images explicitly with `images` (ordered), or select them
+# with a `match` glob.
+#
+# This block is OPTIONAL: delete it and the page groups the bundle by each
+# photo's EXIF date automatically (that is the default). Use `timeline = false`
+# for a plain ungrouped waterfall instead.
 [[timeline]]
   date = "2026-03-20"
   title = "City nights"
   description = "A weekend wandering downtown after dark."
-  images = ["city-night.jpg", "coffee.jpg", "harbor.jpg"]
+  images = ["images/city-night.jpg", "images/coffee.jpg", "images/harbor.jpg"]
 
 [[timeline]]
   date = "2026-02-14"
   title = "Studio days"
   description = "Quiet afternoons at the desk and around the block."
-  images = ["desk.jpg", "alley.jpg"]
+  images = ["images/desk.jpg", "images/alley.jpg"]
 
 [[timeline]]
   date = "2026-01-10"
   title = "First snow"
   description = "Woke up to a white morning and went looking for the light."
-  images = ["snow.jpg", "mountains.jpg", "garden.jpg", "seaside.jpg"]
+  images = ["images/snow.jpg", "images/mountains.jpg", "images/garden.jpg", "images/seaside.jpg"]
 
 # ── Optional per-image captions ─────────────────────────────
 # Keyed by filename; `caption` shows on hover and in the lightbox.
 [[resources]]
-  src = "seaside.jpg"
+  src = "images/seaside.jpg"
   [resources.params]
     caption = "Low tide, early light"
 [[resources]]
-  src = "mountains.jpg"
+  src = "images/mountains.jpg"
   [resources.params]
     caption = "Ridge line before the clouds rolled in"
 [[resources]]
-  src = "city-night.jpg"
+  src = "images/city-night.jpg"
   [resources.params]
     caption = "Downtown, long exposure"
 +++

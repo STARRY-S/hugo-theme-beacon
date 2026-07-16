@@ -1,0 +1,67 @@
+{{- /* Gallery auto timeline — every image in the bundle, grouped into dated
+  sections with no front matter at all. The hand-written counterpart is
+  gallery-timeline.html ([[timeline]] front matter), which wins when present.
+
+  Dates come from partials/gallery-date.html (EXIF, else a filename stamp).
+  This needs [imaging.exif] in the site config — without it Hugo strips EXIF,
+  every photo comes back dateless, and the whole gallery collapses into the
+  "undated" group. See the README.
+
+  Order: days newest-first, but photos *within* a day run oldest-first, so a
+  day reads forward the way it happened. Photos we cannot date at all land in a
+  final "undated" group rather than being dropped — silently losing photos is
+  worse than an honest bucket.
+
+  Call with the page as context: {{ partial "gallery-auto-timeline.html" . }} */ -}}
+{{- $page := . -}}
+{{- $fmt := or site.Params.dateFormat "Jan 2, 2006" -}}
+
+{{- /* Decorate each image with its date once — resolving is not free. `ts` is a
+       sortable string because `sort` cannot order time.Time structs. */ -}}
+{{- $items := slice -}}
+{{- range $page.Resources.ByType "image" -}}
+  {{- $t := partial "gallery-date.html" . -}}
+  {{- $key := "" -}}
+  {{- $ts := "" -}}
+  {{- if not $t.IsZero -}}
+    {{- $key = $t.Format "2006-01-02" -}}
+    {{- $ts = $t.Format "2006-01-02T15:04:05" -}}
+  {{- end -}}
+  {{- $items = $items | append (dict "img" . "t" $t "key" $key "ts" $ts) -}}
+{{- end -}}
+
+{{- $dated := where $items "key" "!=" "" -}}
+{{- $undated := where $items "key" "" -}}
+
+{{- $keys := slice -}}
+{{- range $dated }}{{ $keys = $keys | append .key }}{{ end -}}
+{{- $keys = $keys | uniq | sort | collections.Reverse -}}
+
+{{- if $items }}
+<div class="timeline">
+  {{- range $key := $keys }}
+    {{- $group := sort (where $dated "key" $key) "ts" -}}
+    {{- $imgs := slice -}}
+    {{- range $group }}{{ $imgs = $imgs | append .img }}{{ end -}}
+    <section class="timeline__group">
+      <header class="timeline__head">
+        <span class="timeline__marker" aria-hidden="true"></span>
+        {{- $t := (index $group 0).t }}
+        <time class="timeline__date" datetime="{{ $key }}">{{ $t.Format $fmt }}</time>
+      </header>
+      {{ partial "gallery.html" (dict "images" $imgs "page" $page) }}
+    </section>
+  {{- end }}
+  {{- with $undated }}
+    {{- $imgs := slice -}}
+    {{- range . }}{{ $imgs = $imgs | append .img }}{{ end -}}
+    <section class="timeline__group">
+      <header class="timeline__head">
+        <span class="timeline__marker" aria-hidden="true"></span>
+        <h2 class="timeline__title">{{ i18n "undated" | default "Undated" }}</h2>
+      </header>
+      {{ partial "gallery.html" (dict "images" $imgs "page" $page) }}
+    </section>
+  {{- end }}
+</div>
+{{- end -}}

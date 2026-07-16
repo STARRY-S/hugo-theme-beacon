@@ -1,11 +1,21 @@
 // Beacon theme styles
-@import "variables";
-@import "base";
-@import "layout";
-@import "components";
-@import "content";
-@import "sidebar";
-@import "syntax";
-@import "lightbox";
-@import "gallery";
-@import "sponsor";
+//
+// Dart Sass module system (@use, not @import — @import is deprecated and goes
+// away in Dart Sass 3.0). Load order still matters for the emitted CSS: later
+// modules override earlier ones at equal specificity.
+//
+// Files that pull in placeholders (%card, %btn, …) @use "base" themselves —
+// module members are scoped per-file, so each consumer declares its own
+// dependency rather than relying on one global namespace.
+@use "variables";
+@use "base";
+@use "layout";
+@use "components";
+@use "timeline";
+@use "content";
+@use "sidebar";
+@use "syntax";
+@use "lightbox";
+@use "gallery";
+@use "music";
+@use "sponsor";

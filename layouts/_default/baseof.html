@@ -26,5 +26,8 @@
   </div>
   {{- if $showSidebar }}<div class="sidebar-overlay" hidden></div>{{ end }}
   {{ partialCached "js.html" . }}
+  {{- /* Site escape hatch — after the JS bundle, so third-party scripts can rely
+         on it. Deliberately NOT partialCached: an override may vary per page. */ -}}
+  {{ partial "extend_footer.html" . }}
 </body>
 </html>

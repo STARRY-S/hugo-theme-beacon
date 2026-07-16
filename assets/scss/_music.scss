@@ -1,0 +1,19 @@
+// ── Music player (APlayer + MetingJS) ──────────────────────────────────
+// APlayer ships a light-only skin, and it is not theme-aware: it hardcodes
+// `background: #fff` on the player, `#e9e9e9` on the active list row, and an
+// explicit `fill` on every icon (no `currentColor` anywhere). The one thing it
+// leaves to the page is the text `color` on `.aplayer-title` and the
+// `.aplayer-list` rows — under `:root.dark` those inherit our light-on-dark
+// body color and turn near-invisible on the player's white.
+//
+// So pin the widget's text to a dark value instead of trying to re-skin the
+// player dark: it's a third-party island with its own fixed palette, not our
+// chrome. This is deliberately NOT a theme variable and NOT scoped to .dark —
+// the value matches what the light palette already inherits into it, so light
+// is unchanged and both themes render the player identically.
+.aplayer {
+  // Both leaks inherit from here, so this single declaration covers the title
+  // and the track list. Everything else APlayer colors itself.
+  --aplayer-text: #212121; // = the light palette's --color-text
+  color: var(--aplayer-text);
+}

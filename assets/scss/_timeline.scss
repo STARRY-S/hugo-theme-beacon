@@ -1,0 +1,90 @@
+@use "base";
+
+// ── Post timeline ──────────────────────────────────────────────────────
+// Section list pages (_default/section.html) — posts grouped by year as
+// title rows on a single vertical rail. Deliberately quieter than the
+// homepage cards: no borders, no lift, no per-item animation.
+//
+// NB: the class is `.post-timeline`, not `.timeline` — _gallery.scss already
+// owns `.timeline` for the dated photo groups, and a bare `.timeline` here
+// leaked its padding onto that.
+
+.post-timeline {
+  position: relative;
+  padding-left: var(--space-lg);
+
+  // The rail. Inset top/bottom so it starts and ends at the first/last
+  // year dot instead of overshooting into the surrounding whitespace.
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    bottom: 0.6em;
+    width: 1px;
+    background: var(--color-divider);
+  }
+
+  &__year + &__year { margin-top: var(--space-xl); }
+
+  &__year-label {
+    position: relative;
+    margin: 0 0 var(--space-sm);
+    font-size: 1.3rem;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
+
+    // Dot on the rail. The label is the positioning context, so back the dot
+    // out of the timeline's padding to reach the rail, then center it on that 1px.
+    &::before {
+      content: "";
+      position: absolute;
+      left: calc(var(--space-lg) * -1);
+      top: 0.62em;
+      width: 7px;
+      height: 7px;
+      margin-left: -3px;
+      border-radius: 50%;
+      background: var(--color-primary);
+    }
+  }
+
+  &__count {
+    margin-left: var(--space-sm);
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--color-text-soft);
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__link {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding: 6px 0;
+    text-decoration: none;
+
+    &:hover .post-timeline__title {
+      color: var(--color-primary);
+    }
+  }
+
+  &__date {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--color-text-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__title {
+    color: var(--color-heading);
+    line-height: 1.5;
+    transition: color 0.15s ease;
+  }
+}

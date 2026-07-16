@@ -1,0 +1,8 @@
+{{- /* Escape hatch: extra <head> markup (meta tags, verification tokens, custom
+       CSS). Empty on purpose — this stub only exists so head.html can call it
+       unconditionally; Hugo errors on a partial that does not exist.
+
+       Sites using Beacon override it by creating their own
+       layouts/partials/extend_head.html, which wins over this file in Hugo's
+       lookup order. Nothing here should ever be filled in by the theme itself:
+       theme-owned <head> output belongs in head.html. */ -}}

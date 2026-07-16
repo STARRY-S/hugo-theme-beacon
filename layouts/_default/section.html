@@ -1,0 +1,37 @@
+{{ define "main" }}
+  {{- /* Section lists (e.g. /posts/) render as a year-grouped timeline of titles,
+         not cards — the homepage is the card view. Taxonomy term pages keep the
+         cards and fall through to _default/list.html. No pagination: an archive
+         only reads as a timeline when every year is on the page, and title rows
+         are cheap enough to ship in full.
+
+         Classes are `.post-timeline*` — `.timeline` belongs to the gallery's
+         dated photo groups (partials/gallery-timeline.html). */ -}}
+  <header class="list-header">
+    <h1 class="list-title">{{ .Title }}</h1>
+    {{- with .Description }}<p class="list-description">{{ . | markdownify }}</p>{{ end }}
+    {{- with .Content }}<div class="list-content">{{ . }}</div>{{ end }}
+  </header>
+
+  {{- $format := or site.Params.timelineDateFormat "01-02" }}
+  <div class="post-timeline">
+    {{- range .Pages.GroupByPublishDate "2006" }}
+      <section class="post-timeline__year">
+        <h2 class="post-timeline__year-label">
+          {{ .Key }}
+          <span class="post-timeline__count">{{ len .Pages }} {{ i18n "postCount" (len .Pages) }}</span>
+        </h2>
+        <ul class="post-timeline__list">
+          {{- range .Pages }}
+            <li class="post-timeline__item">
+              <a href="{{ .RelPermalink }}" class="post-timeline__link">
+                <time class="post-timeline__date" datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format $format }}</time>
+                <span class="post-timeline__title">{{ .Title }}</span>
+              </a>
+            </li>
+          {{- end }}
+        </ul>
+      </section>
+    {{- end }}
+  </div>
+{{ end }}

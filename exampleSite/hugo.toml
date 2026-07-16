@@ -9,13 +9,15 @@ defaultContentLanguage = "en"      # English served at "/", others under /zh-cn/
 hasCJKLanguage = true              # correct word/character counts for CJK content
 
 # ── Pagination ──────────────────────────────────────────────
-# Posts per page on the homepage, section lists, and taxonomy pages.
+# Posts per page on the homepage and taxonomy pages. Section lists (/posts/)
+# are a year timeline and show everything on one page.
 [pagination]
   pagerSize = 5
 
 # ── Shared params (translatable strings are overridden per language below) ──
 [params]
   dateFormat = "Jan 2, 2006"
+  timelineDateFormat = "01-02"   # month/day on section timelines (year is the heading)
   mainSections = ["posts"]
   author = "Jane Doe"
 

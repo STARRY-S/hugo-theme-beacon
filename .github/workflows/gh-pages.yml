@@ -29,6 +29,11 @@ jobs:
           hugo-version: latest
           extended: true
 
+      # Hugo does not embed Dart Sass; the SCSS is transpiled with it (main.scss
+      # uses the @use module system, which libsass never supported).
+      - name: Install Dart Sass
+        run: sudo snap install dart-sass
+
       - name: Link theme into example site
         run: |
           mkdir -p exampleSite/themes

@@ -1,17 +1,22 @@
 {{- /* Gallery page — a photo waterfall built from a leaf bundle's images.
 
-  Create a bundle and drop photos next to it:
+  Create a bundle and drop photos in it — beside index.md or in a subfolder:
 
     content/gallery/
       index.md          # front matter: type = "gallery"
-      seaside.jpg
-      alley.jpg
-      ...
+      images/
+        seaside.jpg
+        alley.jpg
+        ...
 
   Every image resource in the bundle is laid out as a masonry grid with
-  click-to-zoom. Any Markdown in index.md renders above the grid as an intro.
-  Set `galleryReverse = true` in front matter to flip the order, and give an
-  image a caption via [[resources]] params (see the partial). */ -}}
+  click-to-zoom, grouped by date unless the front matter says otherwise (see
+  below). Any Markdown in index.md renders above the grid as an intro.
+
+  NB: a subfolder is part of the resource name, so front matter that names an
+  image by hand ([[timeline]] images, [[resources]] src) must say
+  "images/seaside.jpg", not "seaside.jpg" — a wrong name silently matches
+  nothing and the photo just never appears. */ -}}
 {{ define "main" }}
   <article class="post gallery-page">
     <header class="post-header">
@@ -26,13 +31,20 @@
       <div class="post-content gallery-intro">{{ . }}</div>
     {{- end }}
 
+    {{- /* Three ways to lay out a bundle, in order of how explicit they are:
+             [[timeline]] sections  -> hand-authored groups (gallery-timeline)
+             timeline = false       -> plain ungrouped waterfall
+             neither                -> auto-group by date (gallery-auto-timeline) */ -}}
     {{- $images := .Resources.ByType "image" }}
-    {{- if .Params.timeline }}
+    {{- $tl := .Params.timeline }}
+    {{- if reflect.IsSlice $tl }}
       {{ partial "gallery-timeline.html" . }}
-    {{- else if $images }}
+    {{- else if not $images }}
+      <p class="gallery-empty">{{ i18n "galleryEmpty" | default "No photos yet." }}</p>
+    {{- else if and (isset .Params "timeline") (not $tl) }}
       {{ partial "gallery.html" (dict "images" $images "page" . "reverse" .Params.galleryReverse) }}
     {{- else }}
-      <p class="gallery-empty">{{ i18n "galleryEmpty" | default "No photos yet." }}</p>
+      {{ partial "gallery-auto-timeline.html" . }}
     {{- end }}
   </article>
 

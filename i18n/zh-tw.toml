@@ -119,3 +119,10 @@ other = "託管於"
 
 [sponsor]
 other = "請我喝杯咖啡"
+
+[postCount]
+one = "篇"
+other = "篇"
+
+[undated]
+other = "無日期"

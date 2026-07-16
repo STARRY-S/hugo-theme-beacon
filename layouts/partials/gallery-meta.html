@@ -1,0 +1,35 @@
+{{- /* Read a photo's sidecar JSON and return its Title (or "").
+
+  A sidecar is a JSON file next to the image holding `{ "Title": …, "Rating": … }`.
+  Both naming styles are accepted, since tooling emits both:
+
+      photo.jpg.meta      (keep the image extension)
+      photo.meta          (replace it)
+
+  Hugo has no media type for `.meta`, so the resource arrives typeless — hence
+  reading .Content and unmarshalling the *string*, which Hugo sniffs as JSON.
+  Everything is optional: no sidecar, an empty `{}`, or a blank Title all mean
+  "no caption". A malformed sidecar is ignored rather than failing the build —
+  one bad file should not take down the whole gallery.
+
+  Call: {{ partial "gallery-meta.html" (dict "img" $img "page" $page) }} */ -}}
+{{- $title := "" -}}
+{{- $page := .page -}}
+{{- $img := .img -}}
+{{- with $page -}}
+  {{- $name := $img.Name -}}
+  {{- $stem := strings.TrimSuffix (path.Ext $name) $name -}}
+  {{- range (slice (printf "%s.meta" $name) (printf "%s.meta" $stem)) -}}
+    {{- if not $title -}}
+      {{- with $page.Resources.Get . -}}
+        {{- with try (transform.Unmarshal .Content) -}}
+          {{- with .Err -}}
+          {{- else -}}
+            {{- with .Value.Title }}{{ $title = . }}{{ end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $title -}}

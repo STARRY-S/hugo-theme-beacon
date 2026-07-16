@@ -41,7 +41,8 @@ layouts/
   _default/baseof.html    # HTML shell — every page extends this
   index.html              # homepage (post list or profile mode)
   _default/single.html    # a single post
-  _default/list.html      # section & list pages (e.g. /posts/)
+  _default/section.html   # section pages (e.g. /posts/) — year timeline
+  _default/list.html      # taxonomy term pages (e.g. /tags/hugo/) — cards
   _default/terms.html     # taxonomy index (e.g. /tags/)
   404.html
   partials/               # head, header, footer, meta, post-entry, toc, etc.
@@ -65,7 +66,19 @@ exampleSite/              # demo content + config for previewing
   in `localStorage` under `beacon-theme`. All colors are CSS variables in
   `_variables.scss`, swapped under `:root.dark`.
 - **Styles**: SCSS compiled via Hugo Pipes in `head.html` (minified + fingerprinted
-  in production). Requires Hugo **extended**.
+  in production). Requires Hugo **extended** *and* **Dart Sass**, which Hugo does not
+  embed — install it (`sudo snap install dart-sass`) or every build dies with
+  "You need to install Dart Sass". CI installs it in both workflows.
+  `head.html` pins `"transpiler" "dartsass"`: libsass is deprecated (Hugo v0.153.0),
+  and it never supported the module system. `main.scss` therefore uses **`@use`, not
+  `@import`** — `@import` is deprecated in Dart Sass and is removed in 3.0, and it
+  warned once per import. The two go together: you cannot use `@use` on libsass, so
+  don't "fix" one without the other. All five placeholders (`%card`, `%btn`,
+  `%avatar`, `%hit-area`, `%section-label`) live in `_base.scss`, so every file that
+  `@extend`s one (`_layout`, `_components`, `_content`, `_sidebar`) declares its own
+  `@use "base";` at the top — module members are per-file, not global. `@extend` does
+  reach across module boundaries; the only effect of the migration on output was the
+  order of selectors *within* extend groups (cosmetic — same cascade).
 - **Scripts**: `partials/js.html` concatenates the JS files into one bundle.
 - **Icons**: `partials/svg.html` maps a name to an icon — `{{ partial "svg.html" "github" }}`.
   A curated set (github, x/twitter, email, rss, linkedin, mastodon, bluesky, youtube,
@@ -77,11 +90,50 @@ exampleSite/              # demo content + config for previewing
   stays on the inline set. To add a curated icon, drop an `{{ else if }}` branch in
   `svg.html` (24×24 viewBox, `fill`/`stroke="currentColor"`; grab paths from Simple
   Icons (CC0) or Feather (MIT)).
-- **Pagination**: homepage (`index.html`), section lists and taxonomy pages
-  (`list.html`) all use `.Paginate` + `partials/pagination.html` (Prev / "n / total"
+- **Pagination**: the homepage (`index.html`) and taxonomy term pages
+  (`list.html`) use `.Paginate` + `partials/pagination.html` (Prev / "n / total"
   / Next). Page size is `[pagination].pagerSize` in the site config (the old
   top-level `paginate` key is deprecated — use the table form). Scales to hundreds
-  of posts automatically.
+  of posts automatically. Section lists are **not** paginated — see Timeline.
+- **Timeline (section lists)**: `/posts/` and any other section render via
+  `_default/section.html` as a title-only archive grouped by year
+  (`.Pages.GroupByPublishDate "2006"`), styled by `_timeline.scss` — a single
+  vertical rail with an accent dot per year. Classes are `.post-timeline*`: a bare
+  `.timeline` collides with the gallery's photo groups, which own that name. Deliberately **unpaginated**: an
+  archive only reads as a timeline when every year is on one page, and title rows
+  are cheap. The card view lives on the homepage; taxonomy term pages keep cards
+  by falling through to `list.html` (Hugo picks `section.html` for `Kind=section`
+  before `list.html`, so the split needs no branching). Dates use `PublishDate`
+  (matching `post-meta.html`) formatted with `[params].timelineDateFormat`,
+  default `01-02` — numeric and language-neutral, since the year is already the
+  heading and month names would not fit the CJK translations.
+- **Gallery**: `layouts/gallery/single.html` picks one of three layouts for a
+  `type = "gallery"` bundle: a `[[timeline]]` **slice** in front matter → hand-written
+  groups (`gallery-timeline.html`); `timeline = false` → plain waterfall
+  (`gallery.html`); **otherwise → auto-group by date** (`gallery-auto-timeline.html`),
+  which is the default. Auto grouping is by day, days newest-first but photos within
+  a day oldest-first. Dates come from `gallery-date.html`: EXIF `DateTimeOriginal`
+  (via `.Meta.Date`) first, else a `YYYYMMDD-HHMMSS` filename stamp — that fallback
+  exists because such names usually come from a file's **mtime**, which can be days
+  (or a year) off the capture date, so EXIF must always win. Undatable photos go to a
+  final "undated" group, never dropped. **This needs `[imaging.exif]` in the site
+  config** — Hugo strips EXIF otherwise and every photo falls through. Captions:
+  front matter `[[resources]]` params first, else a **sidecar JSON** read by
+  `gallery-meta.html` (`photo.jpg.meta` or `photo.meta` — both conventions exist in
+  the wild; `{ "Title": …, "Rating": … }`, only Title used). Hugo has no media type
+  for `.meta`, so the resource is typeless: read `.Content` and unmarshal the
+  *string*, which Hugo sniffs as JSON — `transform.Unmarshal` on the resource fails.
+  Both sidecar reads are wrapped in `try`; a bad file must not kill the build.
+  Note `.timeline`/`.timeline__*` (photo groups, `_gallery.scss`) is a different
+  component from `.post-timeline` (post archive, `_timeline.scss`) — don't merge them.
+- **Extend hooks**: `partials/extend_head.html` (called last in `head.html`) and
+  `partials/extend_footer.html` (called from `baseof.html` after the JS bundle) are
+  **empty stubs** the theme ships so a site can drop in its own copy — Hugo's lookup
+  order makes the site's file win, and the stub has to exist because Hugo errors on a
+  missing partial. Same idea as PaperMod's hooks. Never put theme output in them, and
+  keep `extend_footer` on plain `partial` (not `partialCached`) — an override may vary
+  per page. This is the supported way to add analytics/custom tags; it's what keeps
+  people from forking `baseof.html`.
 - **Config-driven**: most features are toggled by `[params]` flags in the site
   config (see README). Check `site.Params.*` in partials before adding UI.
 - **Sidebar**: `[params.sidebar].enabled` gates it. `baseof.html` wraps `<main>`
@@ -146,6 +198,15 @@ exampleSite/              # demo content + config for previewing
   to injahow's public instance; override with `[params.meting].api`. Player accent
   defaults to the theme blue (`theme=` overrides). NOTE: this pulls in a third-party
   CDN + API — heavier than the rest of the theme; it's opt-in per page by design.
+  APlayer is **not theme-aware**: it hardcodes `background: #fff` and explicit icon
+  `fill`s (no `currentColor`), but leaves the text color on `.aplayer-title` and the
+  `.aplayer-list` rows to inherit — under `:root.dark` those inherited our light body
+  color and went invisible on its white. `_music.scss` pins `.aplayer { color }` to a
+  fixed dark value (one declaration; both leaks inherit from `.aplayer`). It is
+  deliberately *not* a theme variable and *not* scoped to `.dark` — the player keeps
+  its own light skin in both modes, which is also what the light palette already fed
+  it, so light is unchanged. Don't try to re-skin the player dark; it's a third-party
+  island, not our chrome.
 - **Sponsor**: a **global**, config-driven collapsible "buy me a coffee" block at the
   bottom of single pages (`partials/sponsor.html`, rendered from `single.html` after
   the post footer). Not a shortcode — configured once in `[params.sponsor]`:
@@ -204,8 +265,8 @@ global sponsor / buy-me-a-coffee block (config-driven, collapsible QR cards with
 click-to-copy, build-time QR — see above).
 
 **Not done yet (stubbed):** search (Fuse.js — no UI ships; add a header entry
-back when implemented), archives page. Profile-mode homepage is scaffolded but
-off by default.
+back when implemented). Profile-mode homepage is scaffolded but off by default.
+(The archives page is effectively covered by the section timeline — see above.)
 
 Robots default: pages are indexable; `noindex = true` (site) or `private: true`
 (front matter) opts out — the old `enableRobots` flag is gone.

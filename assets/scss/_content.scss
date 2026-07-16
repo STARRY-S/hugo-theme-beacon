@@ -1,3 +1,5 @@
+@use "base";
+
 // Single post — clean card
 .post {
   @extend %card;

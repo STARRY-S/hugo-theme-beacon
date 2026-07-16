@@ -10,15 +10,17 @@
 
   Keys:
     images   - a slice of image resources (e.g. .Resources.ByType "image").
-    page     - the page (used for error context); optional.
+    page     - the page the images belong to; needed to find sidecars.
     thumb    - thumbnail width in px (default 800).
     reverse  - reverse the given order (default false).
 
-  Per-image caption comes from the resource's front-matter params: set
-  `caption` (and optionally `alt`) under [[resources]] in the page front matter;
-  otherwise the image shows no caption. */ -}}
+  Per-image caption, first hit wins:
+    1. `caption` under [[resources]] in the page front matter (with `alt`),
+    2. the Title in a sidecar JSON next to the image (see gallery-meta.html),
+    3. none. */ -}}
 
 {{- $images := .images -}}
+{{- $page := .page -}}
 {{- if .reverse }}{{ $images = collections.Reverse $images }}{{ end -}}
 {{- $thumbW := .thumb | default 800 -}}
 {{- $fullW := 2000 -}}
@@ -33,6 +35,9 @@
     {{- if gt $img.Width $fullW }}{{ $full = $img.Resize (printf "%dx q85" $fullW) }}{{ end -}}
     {{- $caption := "" -}}
     {{- with $img.Params.caption }}{{ $caption = . }}{{ end -}}
+    {{- /* Fall back to a sidecar JSON's Title. Front matter wins: it is the
+           explicit, in-repo choice. */ -}}
+    {{- if not $caption }}{{ $caption = partial "gallery-meta.html" (dict "img" $img "page" $page) }}{{ end -}}
     {{- $alt := or $img.Params.alt $caption "" -}}
     {{- $exif := partial "gallery-exif.html" $img -}}
     <a class="gallery__item" href="{{ $full.RelPermalink }}"

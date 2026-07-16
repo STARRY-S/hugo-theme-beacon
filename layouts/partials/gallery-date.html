@@ -1,0 +1,31 @@
+{{- /* Resolve a photo's capture date. Returns a time.Time — check .IsZero for
+       "unknown".
+
+  Order:
+    1. EXIF DateTimeOriginal (via .Meta.Date) — the real capture time, and the
+       only trustworthy source. Requires [imaging.exif] in the site config;
+       Hugo strips EXIF otherwise and every photo lands here dateless.
+    2. A YYYYMMDD-HHMMSS stamp in the filename, e.g. 20230126-180452.jpg.
+       This is a fallback, not an equal: such names are typically minted from a
+       file's mtime (when it was imported), which can differ from the capture
+       date by days. Only used when there is no EXIF at all.
+
+  Parsing stays in the filename's own wall-clock zone: we format the group key
+  from the same time we parsed, so no timezone shifts the calendar day. */ -}}
+{{- $t := time.AsTime "0001-01-01T00:00:00Z" -}}
+{{- with .Meta -}}
+  {{- if not .Date.IsZero }}{{ $t = .Date }}{{ end -}}
+{{- end -}}
+{{- if $t.IsZero -}}
+  {{- with findRE `[0-9]{8}-[0-9]{6}` (path.Base $.Name) 1 -}}
+    {{- $s := index . 0 -}}
+    {{- $iso := printf "%s-%s-%sT%s:%s:%s"
+          (substr $s 0 4) (substr $s 4 2) (substr $s 6 2)
+          (substr $s 9 2) (substr $s 11 2) (substr $s 13 2) -}}
+    {{- with try (time.AsTime $iso) -}}
+      {{- with .Err -}}{{- /* not a real date (e.g. 20239999-...) — stay zero */ -}}
+      {{- else }}{{ $t = .Value }}{{ end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $t -}}

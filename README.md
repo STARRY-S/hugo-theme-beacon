@@ -12,6 +12,7 @@ A clean, fast blog theme for [Hugo](https://gohugo.io/) — two-column card layo
 
 - Light / Dark / Auto theme toggle (remembers choice, no flash)
 - Post-list homepage, reading time, word count, tags, breadcrumbs
+- Section pages (`/posts/`) as a year-grouped timeline archive
 - Table of contents and one-click code copy
 - Click-to-zoom image preview (lightbox) with captions and keyboard navigation
 - Gallery — a masonry photo waterfall or a dated timeline (Photos-style), plus an inline shortcode; thumbnails auto-generated
@@ -22,7 +23,17 @@ A clean, fast blog theme for [Hugo](https://gohugo.io/) — two-column card layo
 
 ## Requirements
 
-Hugo **extended** v0.146.0 or newer (for SCSS). Check with `hugo version`.
+- Hugo **extended** v0.146.0 or newer (for SCSS). Check with `hugo version`.
+- **Dart Sass** — Hugo does not embed it, and the styles are transpiled with it
+  (libsass is deprecated and does not support the `@use` module system this theme
+  uses). Without it the build fails with `You need to install Dart Sass`:
+
+  ```bash
+  sudo pacman -S dart-sass         # Arch
+  sudo snap install dart-sass      # other Linux
+  brew install sass/sass/sass      # macOS
+  npm install -g sass-embedded     # any platform
+  ```
 
 ## Install
 
@@ -52,6 +63,11 @@ Options live under `[params]` in `hugo.toml`:
   description = "My blog"
   author = "Your Name"
   mainSections = ["posts"]      # folders shown on the homepage
+
+  # Section pages (e.g. /posts/) list every post as a year-grouped timeline of
+  # titles — the cards live on the homepage. The year is the heading, so this
+  # formats just the month/day (Go reference-time layout).
+  timelineDateFormat = "01-02"
 
   showReadingTime  = true
   showWordCount    = true
@@ -253,17 +269,36 @@ find them as resources.
 ```
 content/gallery/
   index.md        # front matter: type = "gallery"
-  seaside.jpg
-  alley.jpg
+  images/
+    seaside.jpg
+    alley.jpg
 ```
 
-Every image in the bundle is laid out automatically; any Markdown in `index.md`
-renders as an intro above the grid. Set `galleryReverse = true` to flip the
-order.
+The photos can sit next to `index.md` or in a subfolder like `images/` — Hugo
+finds them either way. A subfolder keeps the bundle tidy once you have a few
+hundred; just remember the subfolder becomes part of each image's resource name
+(`images/seaside.jpg`) wherever you refer to one by hand.
 
-**Timeline mode** (Apple/Google Photos style) — group the photos into dated
-sections down a timeline rail. Add a `timeline` array to the page front matter;
-sections render newest-first automatically:
+Every image in the bundle is laid out automatically; any Markdown in `index.md`
+renders as an intro above the grid.
+
+**Timeline is the default.** With no configuration at all, photos group into
+dated sections (Apple/Google Photos style) down a timeline rail, newest day
+first, photos within a day in the order you shot them. The date comes from each
+photo's **EXIF** capture time — so you must opt EXIF back in (see *EXIF details*
+below), or every photo lands in one "undated" pile. Photos with no EXIF fall back
+to a `YYYYMMDD-HHMMSS` stamp in
+the filename (e.g. `20230126-180452.jpg`); anything still undatable is grouped
+last rather than dropped.
+
+Note the fallback is a *fallback*: such filenames usually come from a file's
+mtime, which can be days off the real capture date. EXIF always wins when present.
+
+For a plain ungrouped waterfall instead, set `timeline = false` (with
+`galleryReverse = true` to flip the order).
+
+**Hand-written sections** — to caption and curate the groups yourself, add a
+`timeline` array to the front matter. It overrides the automatic grouping:
 
 ```toml
 [[timeline]]
@@ -277,8 +312,9 @@ sections render newest-first automatically:
   match = "snow*.jpg"                        # …or select with a glob
 ```
 
-Drop the `timeline` block and the same page falls back to a plain waterfall of
-every image.
+Image names are resource paths: if the photos sit in a subfolder of the bundle,
+write `images/city-night.jpg`, not `city-night.jpg`. Drop the whole block and the
+page returns to grouping itself.
 
 **An inline gallery** — inside any post that is a bundle, use the shortcode:
 
@@ -299,6 +335,24 @@ page front matter:
     alt = "A rocky beach at dawn"        # alt text (defaults to the caption)
 ```
 
+Or keep captions **next to the photos** as sidecar JSON, which is easier to
+maintain for a large gallery — no front matter to edit when you add a photo.
+Name the file after the image, with or without the image's extension:
+
+```
+content/gallery/images/
+  20230126-180452.jpg
+  20230126-180452.jpg.meta     # or 20230126-180452.meta
+```
+```json
+{ "Title": "Low tide, early light", "Rating": 3 }
+```
+
+`Title` becomes the caption. Everything is optional — a missing file, an empty
+`{}`, or a blank `Title` just means no caption, and a malformed one is ignored
+rather than breaking the build. Front matter captions win over sidecars.
+(`Rating` is not used by the theme.)
+
 **EXIF details** — the lightbox shows each photo's camera, lens, exposure
 (focal length · aperture · shutter · ISO) and capture date, read straight from
 the file. Hugo strips EXIF by default, so opt the fields back in once in your
@@ -313,10 +367,34 @@ site config:
 Photos without EXIF (or with it stripped) simply show no details — nothing
 breaks.
 
+## Custom HTML / scripts (optional)
+
+Two hooks let you inject your own markup without forking a theme partial. Create
+either file in **your site's** `layouts/partials/` and it replaces the theme's
+empty stub:
+
+| File | Rendered |
+| --- | --- |
+| `layouts/partials/extend_head.html` | last inside `<head>` — meta tags, verification tokens, custom CSS |
+| `layouts/partials/extend_footer.html` | end of `<body>`, after the theme's JS — analytics, third-party widgets |
+
+```html
+<!-- layouts/partials/extend_footer.html -->
+<script defer src="https://analytics.example.com/script.js"></script>
+```
+
+Both receive the current page as context, so you can scope output to a page or
+section:
+
+```html
+{{ if .IsHome }}<meta name="google-site-verification" content="…">{{ end }}
+```
+
 ## Customizing
 
 - **Colors & fonts**: `assets/scss/_variables.scss` (light + dark palettes).
 - **Layout**: copy any file from `themes/beacon/layouts/` into your site's `layouts/` — your copy wins.
+- **Extra HTML/JS**: prefer the `extend_head` / `extend_footer` hooks above over copying `baseof.html`.
 
 ## License
 

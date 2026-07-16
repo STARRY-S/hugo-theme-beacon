@@ -119,3 +119,10 @@ other = "ホスティング:"
 
 [sponsor]
 other = "コーヒーを奢る"
+
+[postCount]
+one = "件"
+other = "件"
+
+[undated]
+other = "日付なし"

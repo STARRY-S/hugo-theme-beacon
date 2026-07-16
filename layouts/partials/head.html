@@ -34,7 +34,7 @@
 {{- partial "json-ld.html" . -}}
 
 {{- /* Styles */ -}}
-{{- $opts := dict "transpiler" "libsass" "targetPath" "css/main.css" "enableSourceMap" hugo.IsDevelopment -}}
+{{- $opts := dict "transpiler" "dartsass" "targetPath" "css/main.css" "enableSourceMap" hugo.IsDevelopment -}}
 {{- with resources.Get "scss/main.scss" | toCSS $opts -}}
   {{- if hugo.IsProduction -}}
     {{- with . | minify | fingerprint -}}
@@ -77,3 +77,7 @@
 {{- end -}}
 
 {{- with hugo.Generator -}}{{ . }}{{- end -}}
+
+{{- /* Site escape hatch — must stay last so an override can react to (or
+       override) anything the theme emitted above. */ -}}
+{{- partial "extend_head.html" . -}}

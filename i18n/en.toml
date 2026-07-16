@@ -119,3 +119,10 @@ other = "Hosted on"
 
 [sponsor]
 other = "Buy Me a Coffee"
+
+[postCount]
+one = "post"
+other = "posts"
+
+[undated]
+other = "Undated"
