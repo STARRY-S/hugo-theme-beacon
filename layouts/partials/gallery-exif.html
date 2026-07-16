@@ -13,8 +13,10 @@
 {{- $lens := "" -}}
 {{- $settings := "" -}}
 {{- $shot := "" -}}
-{{- with .Exif -}}
-  {{- $t := .Tags -}}
+{{- with .Meta -}}
+  {{- /* .Meta.Exif is the tag map itself — the old .Exif.Tags. The shot date
+         moves up to .Meta.Date. */ -}}
+  {{- $t := .Exif -}}
   {{- $make := index $t "Make" -}}
   {{- with index $t "Model" -}}
     {{- $camera = . -}}
