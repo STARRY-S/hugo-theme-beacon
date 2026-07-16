@@ -5,6 +5,8 @@ showToc: false
 showBreadcrumbs: false
 ---
 
+![Beacon homepage in dark mode](/images/screenshots/beacon-home-dark.png "Beacon homepage — dark mode")
+
 Hi, I'm **Jane Doe** — a developer who writes about code, design, and the
 occasional side project.
 
