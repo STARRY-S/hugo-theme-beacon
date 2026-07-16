@@ -2,7 +2,9 @@
        client-side JS. Fires only when the site enables the Goldmark passthrough
        extension (see README "Math"). Marks the page so head.html can include
        the KaTeX stylesheet on pages that actually contain math. */ -}}
-{{- $opts := dict "displayMode" (eq .Type "block") -}}
+{{- /* strict=ignore: KaTeX's default aborts on CJK/Unicode text in math mode,
+       which is routine in mixed-language posts. */ -}}
+{{- $opts := dict "displayMode" (eq .Type "block") "strict" "ignore" -}}
 {{- with try (transform.ToMath .Inner $opts) -}}
   {{- with .Err -}}
     {{- errorf "KaTeX: %s — see %s" . $.Position -}}

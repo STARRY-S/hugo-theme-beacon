@@ -8,7 +8,7 @@
 {{- $tex = $tex | strings.TrimPrefix "$$" | strings.TrimSuffix "$$" -}}
 {{- $tex = $tex | strings.TrimPrefix "\\[" | strings.TrimSuffix "\\]" -}}
 {{- $tex = trim $tex " \t\r\n" -}}
-{{- with try (transform.ToMath $tex (dict "displayMode" true)) -}}
+{{- with try (transform.ToMath $tex (dict "displayMode" true "strict" "ignore")) -}}
   {{- with .Err -}}
     {{- errorf "KaTeX: %s — see %s" . $.Position -}}
   {{- else -}}
