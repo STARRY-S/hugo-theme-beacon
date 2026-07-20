@@ -56,7 +56,10 @@
     var s = document.createElement("script");
     s.src = src;
     s.async = true;
-    s.crossOrigin = "anonymous";
+    // crossOrigin forces a CORS fetch, which only Waline's SRI check needs;
+    // Disqus/giscus/utterances don't send CORS headers and the request
+    // outright fails if it's set on their scripts.
+    if (attrs && attrs.integrity) s.crossOrigin = "anonymous";
     Object.keys(attrs || {}).forEach(function (k) {
       s.setAttribute(k, attrs[k]);
     });
