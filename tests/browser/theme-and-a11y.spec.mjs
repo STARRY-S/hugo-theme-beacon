@@ -133,6 +133,41 @@ test("lightbox traps focus and restores the image trigger", async ({ page }) => 
   await expect(trigger).toBeFocused();
 });
 
+test("lightbox does not flash the previous image while a new preview loads", async ({ page }) => {
+  await page.goto("/gallery/");
+  const thumbnails = page.locator(".gallery img.zoomable");
+  const firstFull = await thumbnails.nth(0).getAttribute("data-full");
+  const secondFull = await thumbnails.nth(1).getAttribute("data-full");
+  const firstUrl = new URL(firstFull, page.url()).href;
+  const secondUrl = new URL(secondFull, page.url()).href;
+  const preview = page.locator(".lightbox__img");
+
+  await thumbnails.nth(0).click();
+  await expect(preview).not.toHaveClass(/is-loading/);
+  expect(new URL(await preview.getAttribute("src"), page.url()).href).toBe(firstUrl);
+  await page.keyboard.press("Escape");
+  expect(await preview.getAttribute("src")).toBeNull();
+
+  let releaseSecond;
+  const secondResponse = new Promise((resolve) => { releaseSecond = resolve; });
+  let secondRequested = false;
+  await page.route(secondUrl, async (route) => {
+    secondRequested = true;
+    await secondResponse;
+    await route.continue();
+  });
+
+  await thumbnails.nth(1).click();
+  await expect.poll(() => secondRequested).toBe(true);
+  expect(new URL(await preview.getAttribute("src"), page.url()).href).toBe(secondUrl);
+  await expect(preview).toHaveClass(/is-loading/);
+  await expect(preview).toHaveCSS("opacity", "0");
+
+  releaseSecond();
+  await expect(preview).not.toHaveClass(/is-loading/);
+  await expect(preview).toHaveCSS("opacity", "1");
+});
+
 test("Sponsor disclosure hides controls when collapsed", async ({ page }) => {
   await page.goto("/posts/welcome-to-beacon/");
   const details = page.locator("details.sponsor-wrapper");

@@ -27,7 +27,8 @@
     next: d.nextImage || "Next image",
   };
 
-  var overlay, imgEl, capEl, exifEl, lastFocused, current = -1;
+  var overlay, stageEl, imgEl, capEl, exifEl, lastFocused, current = -1;
+  var imageRequest = 0;
   var backgroundState = [];
 
   function build() {
@@ -49,6 +50,7 @@
       '<div class="lightbox__exif" hidden></div>' +
       "</figure>";
 
+    stageEl = overlay.querySelector(".lightbox__stage");
     imgEl = overlay.querySelector(".lightbox__img");
     capEl = overlay.querySelector(".lightbox__caption");
     exifEl = overlay.querySelector(".lightbox__exif");
@@ -77,7 +79,22 @@
     current = (index + images.length) % images.length;
     var src = images[current];
     // Gallery thumbnails carry the size-capped original in data-full.
-    imgEl.src = src.getAttribute("data-full") || src.currentSrc || src.src;
+    var fullSrc = src.getAttribute("data-full") || src.currentSrc || src.src;
+    var expectedSrc = new URL(fullSrc, document.baseURI).href;
+    var request = ++imageRequest;
+
+    // A reused <img> keeps painting its previous bitmap until the replacement
+    // is ready. Hide it first, then reveal only the matching decoded request;
+    // the request guard also prevents rapid navigation from revealing a stale
+    // load that completed out of order.
+    imgEl.classList.add("is-loading");
+    stageEl.setAttribute("aria-busy", "true");
+    imgEl.onload = function () { revealImage(request, expectedSrc); };
+    imgEl.onerror = function () { settleImage(request); };
+    imgEl.src = fullSrc;
+    if (imgEl.complete && imgEl.naturalWidth > 0) {
+      revealImage(request, expectedSrc);
+    }
     var caption =
       src.getAttribute("data-caption") ||
       src.getAttribute("title") ||
@@ -92,6 +109,34 @@
     var single = images.length < 2;
     overlay.querySelector(".lightbox__prev").hidden = single;
     overlay.querySelector(".lightbox__next").hidden = single;
+  }
+
+  function revealImage(request, expectedSrc) {
+    var decoded = imgEl.decode ? imgEl.decode() : Promise.resolve();
+    decoded.catch(function () {
+      // A decode can be superseded by another navigation; the request and URL
+      // checks below decide whether this image is still current.
+    }).then(function () {
+      if (request !== imageRequest) return;
+      if ((imgEl.currentSrc || imgEl.src) !== expectedSrc) return;
+      settleImage(request);
+    });
+  }
+
+  function settleImage(request) {
+    if (request !== imageRequest) return;
+    imgEl.classList.remove("is-loading");
+    stageEl.setAttribute("aria-busy", "false");
+  }
+
+  function resetImage() {
+    imageRequest += 1;
+    imgEl.onload = null;
+    imgEl.onerror = null;
+    imgEl.classList.add("is-loading");
+    imgEl.removeAttribute("src");
+    imgEl.alt = "";
+    stageEl.setAttribute("aria-busy", "false");
   }
 
   // Populate the EXIF panel from a gallery item's data-* attributes. Values are
@@ -141,6 +186,7 @@
     if (!overlay) return;
     overlay.classList.remove("is-open");
     overlay.setAttribute("aria-hidden", "true");
+    resetImage();
     document.documentElement.classList.remove("lightbox-open");
     document.removeEventListener("keydown", onKey);
     backgroundState.forEach(function (state) {
