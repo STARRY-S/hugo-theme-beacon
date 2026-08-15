@@ -5,6 +5,19 @@ test.beforeEach(async ({ page }) => {
   await page.route(/^https?:\/\/(?!127\.0\.0\.1:1414)/, (route) => route.abort());
 });
 
+function contrastRatio(foreground, background) {
+  const luminance = (color) => {
+    const channels = color.match(/[\d.]+/g).slice(0, 3).map((value) => Number(value) / 255);
+    const linear = channels.map((value) => value <= 0.04045
+      ? value / 12.92
+      : ((value + 0.055) / 1.055) ** 2.4);
+    return (0.2126 * linear[0]) + (0.7152 * linear[1]) + (0.0722 * linear[2]);
+  };
+  const [lighter, darker] = [luminance(foreground), luminance(background)]
+    .sort((a, b) => b - a);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 test("theme cycles Auto, Light, Dark and follows the system", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/");
@@ -37,6 +50,45 @@ test("theme cycles Auto, Light, Dark and follows the system", async ({ page }) =
   await expect(root).not.toHaveClass(/dark/);
   const detail = await page.evaluate(() => window.__beaconEvents.at(-1));
   expect(detail).toEqual({ mode: "auto", isDark: false });
+});
+
+test("dark palette keeps content rules and component boundaries visible", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("beacon-theme", "dark"));
+  await page.goto("/posts/welcome-to-beacon/");
+
+  const colors = await page.evaluate(() => {
+    const content = document.querySelector(".post-content");
+    const rule = document.createElement("hr");
+    const divider = document.createElement("div");
+    divider.style.borderTop = "1px solid var(--color-divider)";
+    content.append(rule, divider);
+
+    const style = (element) => getComputedStyle(element);
+    const post = document.querySelector(".post");
+    const tag = document.querySelector(".post-tags .tag");
+    const tableCell = document.querySelector(".post-content td");
+
+    return {
+      surface: style(post).backgroundColor,
+      componentBorder: style(post).borderTopColor,
+      divider: style(divider).borderTopColor,
+      rule: style(rule).borderTopColor,
+      tableBorder: style(tableCell).borderTopColor,
+      tag: style(tag).backgroundColor,
+    };
+  });
+
+  expect(contrastRatio(colors.componentBorder, colors.surface)).toBeGreaterThanOrEqual(1.5);
+  expect(contrastRatio(colors.divider, colors.surface)).toBeGreaterThanOrEqual(1.9);
+  expect(contrastRatio(colors.tableBorder, colors.surface)).toBeGreaterThanOrEqual(1.9);
+  expect(contrastRatio(colors.rule, colors.surface)).toBeGreaterThanOrEqual(3);
+  expect(contrastRatio(colors.tag, colors.surface)).toBeGreaterThanOrEqual(1.3);
+
+  // The post and sidebar fade in for 500ms; audit the settled colors rather
+  // than the deliberately translucent animation frames.
+  await page.waitForTimeout(600);
+  const results = await new AxeBuilder({ page }).withRules(["color-contrast"]).analyze();
+  expect(results.violations).toEqual([]);
 });
 
 test("mobile sidebar traps focus, closes with Escape, and restores focus", async ({ page }) => {

@@ -24,7 +24,8 @@
   --color-text-soft: #5a6570;    // muted / metadata — AA contrast even at body size
   --color-heading: #1a1a1a;      // crisp titles
   --color-border: #e0e0e0;
-  --color-divider: #e6e6e6;      // section dividers (sidebar) — a touch softer than border
+  --color-divider: #d6d9de;      // structural separators between sections
+  --color-rule: #8f959e;         // strong content separator (Markdown hr)
   --color-border-hover: #0066d6; // card/button hover outline (light: full accent)
   --color-primary: #0066d6;      // accent / links — deep enough for AA contrast on --color-bg
   --color-primary-hover: #0053b3;
@@ -42,12 +43,13 @@
   --color-text: #e5e7eb;         // body text — gentle light gray
   --color-text-soft: #9ca3af;    // muted / metadata
   --color-heading: #ffffff;      // crisp white titles
-  --color-border: #2e3035;       // clean thin border
-  --color-divider: #40434a;      // section dividers (sidebar) — brighter than card so lines read
+  --color-border: #484b53;       // subtle component edges, distinct from the card surface
+  --color-divider: #565a64;      // structural separators between sections
+  --color-rule: #747985;         // content rules need stronger contrast than component borders
   --color-border-hover: #4d6d96; // card/button hover outline — muted, not glaring
   --color-primary: #64b5f6;      // accent / links — soft blue
   --color-primary-hover: #90caf9;
-  --color-tag-bg: #34363c;
+  --color-tag-bg: #3e424a;
   --color-lightbox-backdrop: rgba(0, 0, 0, 0.88); // image-preview scrim — deeper in dark
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   --shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.35);

@@ -96,7 +96,7 @@
   display: inline-block;
   padding: 5px 13px;
   background: var(--color-tag-bg);
-  color: var(--color-text-soft);
+  color: var(--color-text);
   border-radius: var(--radius);
   font-size: 0.85rem;
   margin: 4px 6px 0 0;
@@ -114,7 +114,7 @@
   justify-content: space-between;
   margin-top: var(--space-xl);
   padding-top: 20px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-divider);
 
   a {
     @extend %btn;
@@ -178,7 +178,7 @@
 // TOC
 .toc {
   background: var(--color-bg-soft);
-  // divider, not border: dark --color-border ≈ the card bg, so it disappears
+  // A structural divider keeps this nested surface distinct from the post card.
   border: 1px solid var(--color-divider);
   border-radius: var(--radius);
   padding: 12px 18px;
