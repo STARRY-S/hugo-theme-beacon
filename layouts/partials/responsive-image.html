@@ -18,26 +18,30 @@
 {{- $sizes := .sizes | default "100vw" -}}
 {{- $processable := and $resource (partial "image-processable.html" $resource) -}}
 {{- if $processable -}}
-  {{- $image := $resource.Filter images.AutoOrient -}}
   {{- $widths := .widths | default (slice 480 800 1200) -}}
-  {{- $fallbacks := slice -}}
+  {{- $targetWidths := slice -}}
   {{- $webps := slice -}}
   {{- range $widths -}}
-    {{- if ge $image.Width . -}}
-      {{- $fallbacks = $fallbacks | append ($image.Resize (printf "%dx q82" .)) -}}
-      {{- $webps = $webps | append ($image.Resize (printf "%dx webp q82" .)) -}}
-    {{- end -}}
+    {{- if ge $resource.Width . }}{{ $targetWidths = $targetWidths | append . }}{{ end -}}
   {{- end -}}
-  {{- if or (not $fallbacks) (lt (index $fallbacks (sub (len $fallbacks) 1)).Width $image.Width) -}}
-    {{- $fallbacks = $fallbacks | append $image -}}
-    {{- $webps = $webps | append ($image.Process "webp q82") -}}
+  {{- if not $targetWidths }}{{ $targetWidths = slice $resource.Width }}{{ end -}}
+  {{- range $targetWidths -}}
+    {{- $spec := cond (eq . $resource.Width) "webp q82" (printf "resize %dx webp q82" .) -}}
+    {{- $filters := slice images.AutoOrient (images.Process $spec) -}}
+    {{- $webps = $webps | append ($resource.Filter $filters) -}}
   {{- end -}}
-  {{- $fallback := index $fallbacks (sub (len $fallbacks) 1) -}}
+  {{- $fallbackWidth := index $targetWidths (sub (len $targetWidths) 1) -}}
+  {{- $fallback := $resource -}}
+  {{- if eq $fallbackWidth $resource.Width -}}
+    {{- $fallback = $resource.Filter images.AutoOrient -}}
+  {{- else -}}
+    {{- $filters := slice images.AutoOrient (images.Process (printf "resize %dx q82" $fallbackWidth)) -}}
+    {{- $fallback = $resource.Filter $filters -}}
+  {{- end -}}
   <picture>
     <source type="image/webp" srcset="{{ range $i, $img := $webps }}{{ if $i }}, {{ end }}{{ $img.RelPermalink }} {{ $img.Width }}w{{ end }}" sizes="{{ $sizes }}">
     <img{{ with $class }} class="{{ . }}"{{ end }} src="{{ $fallback.RelPermalink }}"
-      srcset="{{ range $i, $img := $fallbacks }}{{ if $i }}, {{ end }}{{ $img.RelPermalink }} {{ $img.Width }}w{{ end }}"
-      sizes="{{ $sizes }}" width="{{ $image.Width }}" height="{{ $image.Height }}" alt="{{ $alt }}"
+      width="{{ $fallback.Width }}" height="{{ $fallback.Height }}" alt="{{ $alt }}"
       loading="{{ $loading }}" decoding="async"{{ if .fetchpriority }} fetchpriority="{{ .fetchpriority }}"{{ end }}{{ with .title }} title="{{ . }}"{{ end }}>
   </picture>
 {{- else -}}

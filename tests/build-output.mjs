@@ -116,6 +116,11 @@ function assertExample(output, pathPrefix) {
   assert.match(gallery, /class="gallery__img zoomable"[^>]*width=\d+ height=\d+/);
   assert.match(gallery, /loading=eager fetchpriority=high/);
   assert.equal((gallery.match(/fetchpriority=high/g) || []).length, 1);
+  const gallerySource = gallery.match(/<source type=image\/webp[^>]+>/)?.[0] || "";
+  const galleryImage = gallery.match(/<img class="gallery__img zoomable"[^>]+>/)?.[0] || "";
+  assert.equal((gallerySource.match(/\.webp/g) || []).length, 2, "gallery should emit only its two responsive WebP widths");
+  assert.doesNotMatch(galleryImage, /\bsrcset=/, "gallery fallback should be a single original-format thumbnail");
+  assert.match(galleryImage, new RegExp(`data-full=${prefix}gallery/images/[\\w-]+\\.jpg`), "gallery lightbox should use the original resource");
 
   const sponsor = chinesePost.match(/<img class=sponsor-qr[^>]+>/)?.[0] || "";
   assert.match(sponsor, /width=\d+/);
