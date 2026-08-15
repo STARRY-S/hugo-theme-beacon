@@ -1,6 +1,8 @@
 baseURL = "https://beacon-demo.starry-s.moe/"
 title = "Beacon Demo"
-theme = "beacon"
+# Repository-only relative theme path. This file is a feature demo, not a
+# starter configuration; use the root hugo.example.toml for a new site.
+theme = "../.."
 enableRobotsTXT = true
 
 # ── Multilingual ────────────────────────────────────────────
@@ -16,7 +18,6 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
 
 # ── Shared params (translatable strings are overridden per language below) ──
 [params]
-  dateFormat = "Jan 2, 2006"
   timelineDateFormat = "01-02"   # month/day on section timelines (year is the heading)
   mainSections = ["posts"]
   author = "Jane Doe"
@@ -155,10 +156,10 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
 
     [[params.sidebar.items]]
       name = "Portfolio"
-      url = "/about/"
+      pageRef = "/about"
     [[params.sidebar.items]]
       name = "Résumé"
-      url = "/about/"
+      pageRef = "/about"
 
     [[params.sidebar.friends]]
       name = "Hugo"
@@ -177,9 +178,9 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
 # ── Image EXIF ──────────────────────────────────────────────
 # Hugo strips EXIF by default; opt the gallery's camera/lens/exposure fields
 # back in so the lightbox can show them. (Location/GPS stays disabled.)
-[imaging.exif]
-  includeFields = "Make|Model|LensModel|LensMake|FNumber|ExposureTime|ISOSpeedRatings|PhotographicSensitivity|ISO|FocalLength|FocalLengthIn35mmF.*|DateTimeOriginal"
-  disableLatLong = true
+[imaging.meta]
+  sources = ["exif"]
+  fields = ["**", "! *GPS*"]
 
 [markup]
   [markup.highlight]
@@ -205,11 +206,11 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
 [languages]
 
   [languages.en]
-    label ="English"
-    locale ="en-US"
+    locale = "en-US"
     weight = 1
     title = "Beacon Demo"
     [languages.en.params]
+      languageLabel = "English"
       description = "A clean, fast, modern blog theme for Hugo with a dual-column card layout."
     [languages.en.menu]
       [[languages.en.menu.main]]
@@ -230,11 +231,11 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
         weight = 4
 
   [languages.zh-cn]
-    label ="简体中文"
-    locale ="zh-CN"
+    locale = "zh-CN"
     weight = 2
     title = "Beacon Demo"
     [languages.zh-cn.params]
+      languageLabel = "简体中文"
       author = "张三"
       description = "一款简洁、快速、现代的 Hugo 博客主题，采用双栏卡片布局。"
       [languages.zh-cn.params.sidebar]
@@ -256,11 +257,11 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
         weight = 3
 
   [languages.zh-tw]
-    label ="繁體中文"
-    locale ="zh-TW"
+    locale = "zh-TW"
     weight = 3
     title = "Beacon Demo"
     [languages.zh-tw.params]
+      languageLabel = "繁體中文"
       author = "張三"
       description = "一款簡潔、快速、現代的 Hugo 部落格主題，採用雙欄卡片版面。"
       [languages.zh-tw.params.sidebar]
@@ -282,11 +283,11 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
         weight = 3
 
   [languages.ja]
-    label ="日本語"
-    locale ="ja-JP"
+    locale = "ja-JP"
     weight = 4
     title = "Beacon Demo"
     [languages.ja.params]
+      languageLabel = "日本語"
       author = "山田花子"
       description = "デュアルカラムのカードレイアウトを備えた、クリーンで高速なモダンな Hugo ブログテーマ。"
       [languages.ja.params.sidebar]

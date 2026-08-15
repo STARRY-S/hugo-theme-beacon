@@ -11,11 +11,16 @@
 {{- $theme := "#0066d6" -}}
 {{- if .IsNamedParams -}}
     {{- $theme = .Get "theme" | default $theme -}}
+    {{- if not (findRE `^#[0-9A-Fa-f]{6}$` $theme) -}}
+        {{- errorf "music shortcode: theme must use #RRGGBB; see %s" .Position -}}
+    {{- end -}}
     {{- if .Get "url" -}}
         {{- $url := .Get "url" -}}
         {{- with .Page.Resources.Get $url }}{{ $url = .RelPermalink }}{{ end -}}
         {{- $cover := .Get "cover" -}}
         {{- with .Page.Resources.Get $cover }}{{ $cover = .RelPermalink }}{{ end -}}
+        {{- if and $cover (not (or (strings.Contains $cover "://") (hasPrefix $cover "/"))) }}{{ $cover = partial "asset-url.html" $cover }}{{ end -}}
+        {{- if and (not (strings.Contains $url "://")) (not (hasPrefix $url "/")) }}{{ $url = partial "asset-url.html" $url }}{{ end -}}
         <meting-js url="{{ $url }}" name="{{ .Get `name` }}" artist="{{ .Get `artist` }}" cover="{{ $cover }}" theme="{{ $theme }}"
         {{- with .Get "fixed" }} fixed="{{ . }}"{{ end -}}
         {{- with .Get "mini" }} mini="{{ . }}"{{ end -}}
@@ -36,6 +41,9 @@
         {{- with .Get "list-max-height" }} list-max-height="{{ . }}"{{ end -}}
         ></meting-js>
     {{- else -}}
+        {{- if or (not (.Get "server")) (not (.Get "type")) (not (.Get "id")) -}}
+            {{- errorf "music shortcode: named usage requires server, type, and id; see %s" .Position -}}
+        {{- end -}}
         <meting-js server="{{ .Get `server` }}" type="{{ .Get `type` }}" id="{{ .Get `id` }}" theme="{{ $theme }}"
         {{- with .Get "fixed" }} fixed="{{ . }}"{{ end -}}
         {{- with .Get "mini" }} mini="{{ . }}"{{ end -}}
@@ -48,8 +56,11 @@
         {{- with .Get "list-max-height" }} list-max-height="{{ . }}"{{ end -}}
         ></meting-js>
     {{- end -}}
+{{- else if lt (len .Params) 1 -}}
+    {{- errorf "music shortcode: provide an auto URL or server, type, and id; see %s" .Position -}}
 {{- else if (.Get 0 | urls.Parse).Host -}}
     <meting-js auto="{{ .Get 0 }}" theme="{{ $theme }}"></meting-js>
 {{- else -}}
+    {{- if lt (len .Params) 3 -}}{{ errorf "music shortcode: positional usage requires server, type, and id; see %s" .Position }}{{ end -}}
     <meting-js server="{{ .Get 0 }}" type="{{ .Get 1 }}" id="{{ .Get 2 }}" theme="{{ $theme }}"></meting-js>
 {{- end -}}

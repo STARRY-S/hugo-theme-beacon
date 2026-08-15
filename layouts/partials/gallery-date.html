@@ -3,7 +3,7 @@
 
   Order:
     1. EXIF DateTimeOriginal (via .Meta.Date) — the real capture time, and the
-       only trustworthy source. Requires [imaging.exif] in the site config;
+       only trustworthy source. Requires [imaging.meta] in the site config;
        Hugo strips EXIF otherwise and every photo lands here dateless.
     2. A YYYYMMDD-HHMMSS stamp in the filename, e.g. 20230126-180452.jpg.
        This is a fallback, not an equal: such names are typically minted from a
@@ -13,8 +13,10 @@
   Parsing stays in the filename's own wall-clock zone: we format the group key
   from the same time we parsed, so no timezone shifts the calendar day. */ -}}
 {{- $t := time.AsTime "0001-01-01T00:00:00Z" -}}
-{{- with .Meta -}}
-  {{- if not .Date.IsZero }}{{ $t = .Date }}{{ end -}}
+{{- if partial "image-processable.html" . -}}
+  {{- with .Meta -}}
+    {{- if not .Date.IsZero }}{{ $t = .Date }}{{ end -}}
+  {{- end -}}
 {{- end -}}
 {{- if $t.IsZero -}}
   {{- with findRE `[0-9]{8}-[0-9]{6}` (path.Base $.Name) 1 -}}

@@ -65,6 +65,8 @@ other = "コピー"
 
 [copied]
 other = "コピーしました"
+[copyFailed]
+other = "コピーに失敗しました"
 
 [imagePreview]
 other = "画像プレビュー"
@@ -85,7 +87,13 @@ other = "次の画像"
 other = "本文へスキップ"
 
 [toggleTheme]
-other = "テーマを切り替え"
+other = "テーマ"
+[themeAuto]
+other = "自動"
+[themeLight]
+other = "ライト"
+[themeDark]
+other = "ダーク"
 
 [shareTwitter]
 other = "X/Twitter でシェア"
@@ -123,6 +131,9 @@ other = "コーヒーを奢る"
 [postCount]
 one = "件"
 other = "件"
+
+[page]
+other = "ページ"
 
 [undated]
 other = "日付なし"

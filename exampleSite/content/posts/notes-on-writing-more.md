@@ -5,6 +5,8 @@ draft: false
 tags: ["writing", "habits"]
 categories: ["life"]
 description: "Lowering the bar until publishing a post feels lighter than not publishing one."
+showSummary: false
+showToc: false
 ---
 
 I write more when the process gets out of the way. Most of that is about

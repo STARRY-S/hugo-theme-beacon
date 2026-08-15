@@ -1,0 +1,7 @@
+{{- $url := strings.TrimSpace (string .) -}}
+{{- $result := $url -}}
+{{- if and $url (not (or (strings.Contains $url "://") (hasPrefix $url "//") (hasPrefix $url "data:") (hasPrefix $url "#"))) -}}
+  {{- $basePath := (urls.Parse site.BaseURL).Path | default "/" -}}
+  {{- $result = urls.JoinPath $basePath (strings.TrimPrefix "/" $url) -}}
+{{- end -}}
+{{- return $result -}}

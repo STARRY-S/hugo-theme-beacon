@@ -16,7 +16,7 @@
     {{- end }}
 
     <section class="post-list">
-      {{- $pages := where site.RegularPages "Type" "in" (site.Params.mainSections | default (slice "posts")) }}
+      {{- $pages := partial "pagination-pages.html" . }}
       {{- $paginator := .Paginate $pages }}
       {{- range $paginator.Pages }}
         {{ partial "post-entry.html" . }}

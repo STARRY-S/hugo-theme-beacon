@@ -1,23 +1,4 @@
-{{- /* Gallery / photo waterfall.
-
-  Renders a slice of image page-resources as a masonry (CSS columns) grid with
-  click-to-zoom via the shared lightbox (image-preview.js). Thumbnails and a
-  size-capped full image are generated with Hugo image processing — no external
-  service, all fingerprinted and cached.
-
-  Call with a dict:
-    {{ partial "gallery.html" (dict "images" $images "page" .) }}
-
-  Keys:
-    images   - a slice of image resources (e.g. .Resources.ByType "image").
-    page     - the page the images belong to; needed to find sidecars.
-    thumb    - thumbnail width in px (default 800).
-    reverse  - reverse the given order (default false).
-
-  Per-image caption, first hit wins:
-    1. `caption` under [[resources]] in the page front matter (with `alt`),
-    2. the Title in a sidecar JSON next to the image (see gallery-meta.html),
-    3. none. */ -}}
+{{- /* Masonry gallery. Resource params take precedence over sidecar captions. */ -}}
 
 {{- $images := .images -}}
 {{- $page := .page -}}
@@ -29,30 +10,57 @@
 <div class="gallery">
   {{- range $images -}}
     {{- $img := . -}}
-    {{- $thumb := $img -}}
-    {{- if gt $img.Width $thumbW }}{{ $thumb = $img.Resize (printf "%dx q82" $thumbW) }}{{ end -}}
+    {{- $processable := partial "image-processable.html" $img -}}
+    {{- $base := $img -}}
+    {{- $fallbacks := slice -}}
+    {{- $webps := slice -}}
     {{- $full := $img -}}
-    {{- if gt $img.Width $fullW }}{{ $full = $img.Resize (printf "%dx q85" $fullW) }}{{ end -}}
+    {{- if $processable -}}
+      {{- $base = $img.Filter images.AutoOrient -}}
+      {{- range (slice 400 $thumbW | uniq | sort) -}}
+        {{- if ge $base.Width . -}}
+          {{- $fallbacks = $fallbacks | append ($base.Resize (printf "%dx q82" .)) -}}
+          {{- $webps = $webps | append ($base.Resize (printf "%dx webp q82" .)) -}}
+        {{- end -}}
+      {{- end -}}
+      {{- if or (not $fallbacks) (lt (index $fallbacks (sub (len $fallbacks) 1)).Width $base.Width) -}}
+        {{- $fallbacks = $fallbacks | append $base -}}
+        {{- $webps = $webps | append ($base.Process "webp q82") -}}
+      {{- end -}}
+      {{- if gt $base.Width $fullW }}{{ $full = $base.Resize (printf "%dx q85" $fullW) }}{{ else }}{{ $full = $base }}{{ end -}}
+    {{- end -}}
+    {{- $thumb := $img -}}
+    {{- if $fallbacks }}{{ $thumb = index $fallbacks (sub (len $fallbacks) 1) }}{{ end -}}
     {{- $caption := "" -}}
     {{- with $img.Params.caption }}{{ $caption = . }}{{ end -}}
-    {{- /* Fall back to a sidecar JSON's Title. Front matter wins: it is the
-           explicit, in-repo choice. */ -}}
+    {{- /* Explicit front matter captions win over sidecars. */ -}}
     {{- if not $caption }}{{ $caption = partial "gallery-meta.html" (dict "img" $img "page" $page) }}{{ end -}}
     {{- $alt := or $img.Params.alt $caption "" -}}
     {{- $exif := partial "gallery-exif.html" $img -}}
+    {{- $imageIndex := $page.Store.Get "beaconGalleryImageIndex" | default 0 -}}
+    {{- $eager := eq $imageIndex 0 -}}
+    {{- $page.Store.Set "beaconGalleryImageIndex" (add $imageIndex 1) -}}
     <a class="gallery__item" href="{{ $full.RelPermalink }}"
        {{ with $caption }}data-caption="{{ . }}"{{ end }}
        {{- with $exif.camera }} data-camera="{{ . }}"{{ end }}
        {{- with $exif.lens }} data-lens="{{ . }}"{{ end }}
        {{- with $exif.settings }} data-settings="{{ . }}"{{ end }}
        {{- with $exif.shot }} data-shot="{{ . }}"{{ end }}>
-      <img class="gallery__img zoomable"
-           src="{{ $thumb.RelPermalink }}"
-           width="{{ $thumb.Width }}" height="{{ $thumb.Height }}"
-           data-full="{{ $full.RelPermalink }}"
-           alt="{{ $alt }}"{{ with $caption }} title="{{ . }}"{{ end }}
-           loading="lazy" decoding="async" />
-      {{- with $caption }}<span class="gallery__caption">{{ . | markdownify }}</span>{{ end -}}
+      {{- if $processable }}
+      <picture>
+        <source type="image/webp" srcset="{{ range $i, $candidate := $webps }}{{ if $i }}, {{ end }}{{ $candidate.RelPermalink }} {{ $candidate.Width }}w{{ end }}" sizes="(max-width: 480px) 100vw, (max-width: 900px) 50vw, 33vw">
+        <img class="gallery__img zoomable" src="{{ $thumb.RelPermalink }}"
+             srcset="{{ range $i, $candidate := $fallbacks }}{{ if $i }}, {{ end }}{{ $candidate.RelPermalink }} {{ $candidate.Width }}w{{ end }}"
+             sizes="(max-width: 480px) 100vw, (max-width: 900px) 50vw, 33vw"
+             width="{{ $base.Width }}" height="{{ $base.Height }}" data-full="{{ $full.RelPermalink }}"
+             alt="{{ $alt }}"{{ with $caption }} title="{{ . }}"{{ end }}
+             loading="{{ if $eager }}eager{{ else }}lazy{{ end }}"{{ if $eager }} fetchpriority="high"{{ end }} decoding="async" />
+      </picture>
+      {{- else }}
+      <img class="gallery__img zoomable" src="{{ $img.RelPermalink }}" data-full="{{ $img.RelPermalink }}"
+           alt="{{ $alt }}"{{ with $caption }} title="{{ . }}"{{ end }} loading="{{ if $eager }}eager{{ else }}lazy{{ end }}" decoding="async" />
+      {{- end }}
+      {{- with $caption }}<div class="gallery__caption">{{ . | markdownify }}</div>{{ end -}}
     </a>
   {{- end -}}
 </div>

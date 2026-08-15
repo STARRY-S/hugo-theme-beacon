@@ -6,17 +6,23 @@
 
        Opt out of the lightbox for a single image by ending its title with
        "#noZoom", e.g. ![logo](logo.png "Our logo #noZoom"). */ -}}
-{{- $alt := .Text -}}
+{{- $alt := .PlainText -}}
 {{- $title := .Title -}}
 {{- $noZoom := false -}}
 {{- if strings.HasSuffix $title "#noZoom" -}}
   {{- $noZoom = true -}}
   {{- $title = strings.TrimSuffix "#noZoom" $title | strings.TrimRight " " -}}
 {{- end -}}
-<figure class="post-figure">
-  <img src="{{ .Destination | safeURL }}" alt="{{ $alt }}"
-    {{- with $title }} title="{{ . }}"{{ end }}
-    loading="lazy" decoding="async"
-    {{- if not $noZoom }} class="zoomable"{{ end }} />
+{{- if .IsBlock }}<figure class="post-figure">{{ end -}}
+{{- partial "responsive-image.html" (dict
+      "src" .Destination
+      "page" .Page
+      "alt" $alt
+      "title" $title
+      "class" (cond $noZoom "" "zoomable")
+      "sizes" "(max-width: 760px) 100vw, 720px"
+      "widths" (slice 480 720 1200)
+) -}}
+{{- if .IsBlock -}}
   {{- with $title }}<figcaption>{{ . }}</figcaption>{{ end }}
-</figure>
+</figure>{{- end -}}

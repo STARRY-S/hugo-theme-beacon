@@ -2,30 +2,58 @@
 (function () {
   var STORAGE_KEY = "beacon-theme";
   var root = document.documentElement;
+  var media = window.matchMedia("(prefers-color-scheme: dark)");
+  var modes = ["auto", "light", "dark"];
+  var labels = document.body.dataset;
+  var names = {
+    auto: labels.themeAuto || "Auto",
+    light: labels.themeLight || "Light",
+    dark: labels.themeDark || "Dark",
+  };
 
-  function apply(isDark) {
+  function storedMode() {
+    var value = null;
+    try { value = localStorage.getItem(STORAGE_KEY); } catch {}
+    return value === "light" || value === "dark" ? value : "auto";
+  }
+
+  var mode = storedMode();
+
+  function updateButton() {
+    var btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+    var next = modes[(modes.indexOf(mode) + 1) % modes.length];
+    var label = (labels.toggleTheme || "Theme") + ": " + names[mode] + " → " + names[next];
+    btn.setAttribute("aria-label", label);
+    btn.setAttribute("title", label);
+  }
+
+  function apply(nextMode) {
+    mode = nextMode;
+    var isDark = mode === "dark" || (mode === "auto" && media.matches);
+    root.dataset.theme = mode;
     root.classList.toggle("dark", isDark);
-    // Embeds that can't read our CSS variables (comment widgets in iframes)
-    // listen for this to re-theme themselves.
+    updateButton();
     document.dispatchEvent(
-      new CustomEvent("beacon:themechange", { detail: { isDark: isDark } })
+      new CustomEvent("beacon:themechange", { detail: { mode: mode, isDark: isDark } })
     );
   }
 
   var btn = document.getElementById("theme-toggle");
   if (btn) {
     btn.addEventListener("click", function () {
-      var isDark = !root.classList.contains("dark");
-      apply(isDark);
-      localStorage.setItem(STORAGE_KEY, isDark ? "dark" : "light");
+      var next = modes[(modes.indexOf(mode) + 1) % modes.length];
+      try {
+        if (next === "auto") localStorage.removeItem(STORAGE_KEY);
+        else localStorage.setItem(STORAGE_KEY, next);
+      } catch {}
+      apply(next);
     });
   }
 
-  // Follow system changes only when the user hasn't chosen explicitly
-  var media = window.matchMedia("(prefers-color-scheme: dark)");
-  media.addEventListener("change", function (e) {
-    if (!localStorage.getItem(STORAGE_KEY)) {
-      apply(e.matches);
-    }
+  media.addEventListener("change", function () {
+    if (mode === "auto") apply("auto");
   });
+
+  apply(mode);
 })();

@@ -1,0 +1,47 @@
+{{- $raw := .src -}}
+{{- $page := .page -}}
+{{- $resource := false -}}
+{{- if reflect.IsImageResource $raw -}}
+  {{- $resource = $raw -}}
+{{- else -}}
+  {{- $path := strings.TrimPrefix "/" (string $raw) -}}
+  {{- if and $page (not (strings.Contains $path "://")) -}}
+    {{- with $page.Resources.GetMatch $path }}{{ $resource = . }}{{ end -}}
+  {{- end -}}
+  {{- if not $resource -}}
+    {{- with resources.Get $path }}{{ $resource = . }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- $alt := .alt | default "" -}}
+{{- $class := .class | default "" -}}
+{{- $loading := .loading | default "lazy" -}}
+{{- $sizes := .sizes | default "100vw" -}}
+{{- $processable := and $resource (partial "image-processable.html" $resource) -}}
+{{- if $processable -}}
+  {{- $image := $resource.Filter images.AutoOrient -}}
+  {{- $widths := .widths | default (slice 480 800 1200) -}}
+  {{- $fallbacks := slice -}}
+  {{- $webps := slice -}}
+  {{- range $widths -}}
+    {{- if ge $image.Width . -}}
+      {{- $fallbacks = $fallbacks | append ($image.Resize (printf "%dx q82" .)) -}}
+      {{- $webps = $webps | append ($image.Resize (printf "%dx webp q82" .)) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if or (not $fallbacks) (lt (index $fallbacks (sub (len $fallbacks) 1)).Width $image.Width) -}}
+    {{- $fallbacks = $fallbacks | append $image -}}
+    {{- $webps = $webps | append ($image.Process "webp q82") -}}
+  {{- end -}}
+  {{- $fallback := index $fallbacks (sub (len $fallbacks) 1) -}}
+  <picture>
+    <source type="image/webp" srcset="{{ range $i, $img := $webps }}{{ if $i }}, {{ end }}{{ $img.RelPermalink }} {{ $img.Width }}w{{ end }}" sizes="{{ $sizes }}">
+    <img{{ with $class }} class="{{ . }}"{{ end }} src="{{ $fallback.RelPermalink }}"
+      srcset="{{ range $i, $img := $fallbacks }}{{ if $i }}, {{ end }}{{ $img.RelPermalink }} {{ $img.Width }}w{{ end }}"
+      sizes="{{ $sizes }}" width="{{ $image.Width }}" height="{{ $image.Height }}" alt="{{ $alt }}"
+      loading="{{ $loading }}" decoding="async"{{ if .fetchpriority }} fetchpriority="{{ .fetchpriority }}"{{ end }}{{ with .title }} title="{{ . }}"{{ end }}>
+  </picture>
+{{- else -}}
+  <img{{ with $class }} class="{{ . }}"{{ end }} src="{{ partial `asset-url.html` $raw }}" alt="{{ $alt }}"
+    {{- with .width }} width="{{ . }}"{{ end }}{{ with .height }} height="{{ . }}"{{ end }}
+    loading="{{ $loading }}" decoding="async"{{ if .fetchpriority }} fetchpriority="{{ .fetchpriority }}"{{ end }}{{ with .title }} title="{{ . }}"{{ end }}>
+{{- end -}}

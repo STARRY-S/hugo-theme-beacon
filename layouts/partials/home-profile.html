@@ -1,21 +1,27 @@
 {{- $p := site.Params.profileMode }}
 <section class="profile">
   {{- with $p.imageUrl }}
-    <img class="profile-avatar" src="{{ . | relURL }}" alt="{{ $p.title }}"
+    <img class="profile-avatar" src="{{ partial `asset-url.html` . }}" alt="{{ $p.title }}"
       width="{{ $p.imageWidth | default 120 }}" height="{{ $p.imageHeight | default 120 }}">
   {{- end }}
   {{- with $p.title }}<h1 class="profile-title">{{ . }}</h1>{{ else }}<h1 class="visually-hidden">{{ site.Title }}</h1>{{ end }}
-  {{- with $p.subtitle }}<p class="profile-subtitle">{{ . | markdownify }}</p>{{ end }}
+  {{- with $p.subtitle }}<div class="profile-subtitle">{{ . | markdownify }}</div>{{ end }}
   {{- with site.Params.social }}
     <div class="social-icons profile-social">
       {{- range . }}
-        <a href="{{ .url }}" target="_blank" rel="noopener noreferrer me" aria-label="{{ .name }}">{{ partial "svg.html" .icon }}</a>
+        {{- $url := partial "link-url.html" (dict "item" . "page" $) -}}
+        {{- $external := partial "is-external-url.html" $url -}}
+        <a href="{{ $url }}"{{ if $external }} target="_blank" rel="noopener noreferrer me"{{ end }} aria-label="{{ .name }}">{{ partial "svg.html" .icon }}</a>
       {{- end }}
     </div>
   {{- end }}
   {{- with $p.buttons }}
     <div class="profile-buttons">
-      {{- range . }}<a class="profile-button" href="{{ .url | relURL }}">{{ .name }}</a>{{ end }}
+      {{- range . -}}
+        {{- $url := partial "link-url.html" (dict "item" . "page" $) -}}
+        {{- $external := partial "is-external-url.html" $url -}}
+        <a class="profile-button" href="{{ $url }}"{{ if $external }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .name }}</a>
+      {{- end }}
     </div>
   {{- end }}
 </section>

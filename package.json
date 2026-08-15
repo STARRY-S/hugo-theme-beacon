@@ -1,0 +1,27 @@
+{
+  "name": "hugo-theme-beacon",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "lint": "npm run lint:js && npm run lint:css",
+    "lint:js": "eslint assets/js tests playwright.config.mjs",
+    "lint:css": "stylelint \"assets/scss/**/*.scss\"",
+    "test:output": "node tests/build-output.mjs",
+    "test:browser": "playwright test",
+    "test": "npm run lint && npm run test:output && npm run test:browser"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.62.1",
+    "eslint": "10.8.1",
+    "globals": "17.11.0",
+    "postcss-scss": "4.0.9",
+    "sass-embedded": "1.102.0",
+    "stylelint": "17.14.1"
+  }
+}

@@ -3,6 +3,8 @@ title: "About"
 layout: "single"
 showToc: false
 showBreadcrumbs: false
+comments: false
+sponsor: false
 ---
 
 ![Beacon homepage in dark mode](/images/screenshots/beacon-home-dark.png "Beacon homepage — dark mode")

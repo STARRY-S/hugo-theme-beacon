@@ -17,7 +17,7 @@
       {{- with .name }}
         <span class="footer-sep" aria-hidden="true">·</span>
         <span>
-          {{- with $f.license.url }}<a href="{{ . }}" rel="license noopener noreferrer" target="_blank">{{ $f.license.name }}</a>
+          {{- with $f.license.url }}{{ $url := partial "link-url.html" (dict "item" (dict "url" .) "page" $) }}<a href="{{ $url }}" rel="license noopener noreferrer"{{ if partial "is-external-url.html" $url }} target="_blank"{{ end }}>{{ $f.license.name }}</a>
           {{- else }}{{ $f.license.name }}{{ end -}}
         </span>
       {{- end }}
@@ -28,7 +28,7 @@
         <span class="footer-sep" aria-hidden="true">·</span>
         <span>
           {{ i18n "hostedOn" | default "Hosted on" }}
-          {{- with $f.hostedOn.url }} <a href="{{ . }}" rel="noopener noreferrer" target="_blank">{{ $f.hostedOn.name }}</a>
+          {{- with $f.hostedOn.url }}{{ $url := partial "link-url.html" (dict "item" (dict "url" .) "page" $) }} <a href="{{ $url }}" rel="noopener noreferrer"{{ if partial "is-external-url.html" $url }} target="_blank"{{ end }}>{{ $f.hostedOn.name }}</a>
           {{- else }} {{ $f.hostedOn.name }}{{ end -}}
         </span>
       {{- end }}

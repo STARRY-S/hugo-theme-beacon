@@ -1,0 +1,5 @@
+{{- $pages := .Pages -}}
+{{- if .IsHome -}}
+  {{- $pages = where site.RegularPages "Type" "in" (site.Params.mainSections | default (slice "posts")) -}}
+{{- end -}}
+{{- return $pages -}}

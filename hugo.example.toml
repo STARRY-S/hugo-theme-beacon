@@ -1,0 +1,40 @@
+baseURL = "https://example.com/"
+title = "My Blog"
+theme = "beacon"
+enableRobotsTXT = true
+
+[pagination]
+  pagerSize = 10
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[params]
+  description = "Notes and articles"
+  author = "Your Name"
+  mainSections = ["posts"]
+  dateFormat = ":date_long"
+  showReadingTime = true
+  showWordCount = true
+  showSummary = true
+  showToc = true
+  showBreadcrumbs = true
+  showShareButtons = true
+
+[[menus.main]]
+  name = "Posts"
+  pageRef = "/posts"
+  weight = 10
+
+[[menus.main]]
+  name = "Tags"
+  pageRef = "/tags"
+  weight = 20
+
+[markup.highlight]
+  noClasses = false
+
+[imaging.meta]
+  sources = ["exif"]
+  fields = ["**", "! *GPS*"]

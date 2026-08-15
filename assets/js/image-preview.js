@@ -28,6 +28,7 @@
   };
 
   var overlay, imgEl, capEl, exifEl, lastFocused, current = -1;
+  var backgroundState = [];
 
   function build() {
     overlay = document.createElement("div");
@@ -35,6 +36,7 @@
     overlay.setAttribute("role", "dialog");
     overlay.setAttribute("aria-modal", "true");
     overlay.setAttribute("aria-label", L.dialog);
+    overlay.setAttribute("aria-hidden", "true");
     if (reduceMotion) overlay.classList.add("no-motion");
 
     overlay.innerHTML =
@@ -55,6 +57,7 @@
       if (
         e.target === overlay ||
         e.target.classList.contains("lightbox__stage") ||
+        e.target.classList.contains("lightbox__img") ||
         e.target.classList.contains("lightbox__close")
       ) {
         close();
@@ -119,6 +122,15 @@
     if (!overlay) build();
     lastFocused = document.activeElement;
     show(index);
+    backgroundState = Array.prototype.slice.call(document.body.children)
+      .filter(function (el) { return el !== overlay; })
+      .map(function (el) {
+        var state = { el: el, inert: el.inert, ariaHidden: el.getAttribute("aria-hidden") };
+        el.inert = true;
+        el.setAttribute("aria-hidden", "true");
+        return state;
+      });
+    overlay.setAttribute("aria-hidden", "false");
     overlay.classList.add("is-open");
     document.documentElement.classList.add("lightbox-open");
     document.addEventListener("keydown", onKey);
@@ -128,8 +140,15 @@
   function close() {
     if (!overlay) return;
     overlay.classList.remove("is-open");
+    overlay.setAttribute("aria-hidden", "true");
     document.documentElement.classList.remove("lightbox-open");
     document.removeEventListener("keydown", onKey);
+    backgroundState.forEach(function (state) {
+      state.el.inert = state.inert;
+      if (state.ariaHidden === null) state.el.removeAttribute("aria-hidden");
+      else state.el.setAttribute("aria-hidden", state.ariaHidden);
+    });
+    backgroundState = [];
     if (lastFocused && lastFocused.focus) lastFocused.focus();
   }
 
@@ -137,6 +156,19 @@
     if (e.key === "Escape") close();
     else if (e.key === "ArrowLeft") show(current - 1);
     else if (e.key === "ArrowRight") show(current + 1);
+    else if (e.key === "Tab") {
+      var controls = Array.prototype.slice.call(overlay.querySelectorAll("button:not([hidden])"));
+      if (!controls.length) return;
+      var first = controls[0];
+      var last = controls[controls.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
   }
 
   images.forEach(function (img, i) {

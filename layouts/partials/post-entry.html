@@ -3,7 +3,7 @@
   {{- with .Params.cover.image }}
     <a href="{{ $.RelPermalink }}" class="entry-cover" aria-label="{{ $.Title }}">
       {{- /* alt is empty on purpose: the wrapping link already carries the title */ -}}
-      <img src="{{ . | relURL }}" alt="" loading="lazy">
+      {{ partial "responsive-image.html" (dict "src" . "page" $ "alt" "" "sizes" "(max-width: 760px) 100vw, 720px" "widths" (slice 480 720 1200)) }}
     </a>
   {{- end }}
   <div class="entry-body">
@@ -11,13 +11,13 @@
       <a href="{{ .RelPermalink }}">{{ .Title }}</a>
     </h2>
     {{ partial "post-meta.html" . }}
-    {{- if site.Params.showSummary | default true }}
+    {{- if partial "param-bool.html" (dict "page" . "key" "showSummary" "default" true) }}
       <p class="entry-summary">{{ .Summary | plainify | truncate (or site.Params.summaryLength 200) }}</p>
     {{- end }}
-    {{- with .Params.tags }}
+    {{- with .GetTerms "tags" }}
       <div class="entry-tags">
         {{- range . }}
-          <a href="{{ (urls.JoinPath "tags" (. | urlize)) | relURL }}" class="tag">{{ . }}</a>
+          <a href="{{ .RelPermalink }}" class="tag">{{ .LinkTitle }}</a>
         {{- end }}
       </div>
     {{- end }}

@@ -65,6 +65,8 @@ other = "Copy"
 
 [copied]
 other = "Copied!"
+[copyFailed]
+other = "Copy failed"
 
 [imagePreview]
 other = "Image preview"
@@ -85,7 +87,13 @@ other = "Next image"
 other = "Skip to content"
 
 [toggleTheme]
-other = "Toggle theme"
+other = "Theme"
+[themeAuto]
+other = "Auto"
+[themeLight]
+other = "Light"
+[themeDark]
+other = "Dark"
 
 [shareTwitter]
 other = "Share on X/Twitter"
@@ -123,6 +131,9 @@ other = "Buy Me a Coffee"
 [postCount]
 one = "post"
 other = "posts"
+
+[page]
+other = "Page"
 
 [undated]
 other = "Undated"

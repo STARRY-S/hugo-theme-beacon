@@ -1,229 +1,190 @@
 # Beacon
 
-A clean, fast blog theme for [Hugo](https://gohugo.io/) — two-column card layout, deep-charcoal palette, light/dark mode.
+A clean, fast blog theme for [Hugo](https://gohugo.io/) with a two-column card layout, responsive images, multilingual navigation, and an Auto / Light / Dark color scheme.
 
-![Hugo](https://img.shields.io/badge/Hugo-0.146+-ff4088?logo=hugo) ![License](https://img.shields.io/badge/License-MIT-blue)
+![Hugo](https://img.shields.io/badge/Hugo-0.155.3+-ff4088?logo=hugo) ![License](https://img.shields.io/badge/License-MIT-blue)
 
-> **Status: Work in progress.** Under active development — expect large refactors and breaking changes.
->
-> **Mainly for my personal use.** This is a vibe-coding project, built for my own blog. You're welcome to try it, but there are no stability or support guarantees.
+> Beacon is a work in progress, maintained primarily for a personal blog. Public reuse is welcome, but review release notes before upgrading.
 
 ## Features
 
-- Light / Dark / Auto theme toggle (remembers choice, no flash)
-- Post-list homepage, reading time, word count, tags, breadcrumbs
-- Section pages (`/posts/`) as a year-grouped timeline archive
-- Table of contents and one-click code copy
-- Click-to-zoom image preview (lightbox) with captions and keyboard navigation
-- Gallery — a masonry photo waterfall or a dated timeline (Photos-style), plus an inline shortcode; thumbnails auto-generated
-- Prev/next navigation and share buttons
-- LaTeX math, typeset at build time with KaTeX — no client-side JavaScript
-- SEO ready: OpenGraph, Twitter cards, JSON-LD, hreflang alternates, RSS, canonical URLs
-- Responsive, with an optional sidebar and multilingual UI
+- Auto → Light → Dark theme control with system-theme tracking and persistence
+- Post cards, nested section archives, taxonomies, breadcrumbs, TOC, code copy, and share links
+- Responsive local images with orientation correction, WebP candidates, intrinsic dimensions, and safe fallbacks
+- Gallery waterfall/timeline layouts with captions, EXIF details, and an accessible lightbox
+- Optional accessible sidebar, Sponsor cards, comments, build-time math, music, and Profile homepage
+- Multilingual UI: English, Simplified Chinese, Traditional Chinese, and Japanese
+- Pagination-aware canonical/OpenGraph metadata, JSON-LD, hreflang, RSS, robots, and sitemap output
 
 ## Requirements
 
-- Hugo **extended** v0.146.0 or newer (for SCSS). Check with `hugo version`.
-- **Dart Sass** — Hugo does not embed it, and the styles are transpiled with it
-  (libsass is deprecated and does not support the `@use` module system this theme
-  uses). Without it the build fails with `You need to install Dart Sass`:
+- Hugo **extended** 0.155.3 or newer
+- Dart Sass 1.102.0 (the theme uses Hugo's external Dart Sass transpiler and SCSS modules)
+- Node.js 24 only when contributing or running the repository test suite
 
-  ```bash
-  sudo pacman -S dart-sass         # Arch
-  sudo snap install dart-sass      # other Linux
-  brew install sass/sass/sass      # macOS
-  npm install -g sass-embedded     # any platform
-  ```
-
-## Install
-
-Add as a submodule (or download into `themes/beacon/`), then set the theme:
+Install Dart Sass with a version-aware package manager. For example:
 
 ```bash
+npm install --global sass-embedded@1.102.0
+```
+
+Verify both tools before building:
+
+```bash
+hugo version
+sass --version
+```
+
+## Install and start safely
+
+Add the theme, then copy the deliberately minimal starter configuration. Do not copy `exampleSite/`: it is a feature demo and intentionally contains third-party integrations and placeholder payment data.
+
+```bash
+hugo new site my-blog
+cd my-blog
+git init
 git submodule add https://github.com/starry-s/hugo-theme-beacon themes/beacon
+cp themes/beacon/hugo.example.toml hugo.toml
+hugo new content posts/hello.md
+hugo server -D
 ```
 
-```toml
-theme = "beacon"
-```
+The starter has no comments, music, Iconify, Sponsor provider, or real external account configured.
 
-## Quick start
-
-```bash
-cp -r themes/beacon/exampleSite/* .
-hugo server   # http://localhost:1313
-```
-
-## Configuration
-
-Options live under `[params]` in `hugo.toml`:
+## Core configuration
 
 ```toml
 [params]
   description = "My blog"
   author = "Your Name"
-  mainSections = ["posts"]      # folders shown on the homepage
-
-  # Section pages (e.g. /posts/) list every post as a year-grouped timeline of
-  # titles — the cards live on the homepage. The year is the heading, so this
-  # formats just the month/day (Go reference-time layout).
+  mainSections = ["posts"]
+  dateFormat = ":date_long"       # Hugo-localized; any Go time layout also works
   timelineDateFormat = "01-02"
 
-  showReadingTime  = true
-  showWordCount    = true
-  showToc          = true
-  showBreadcrumbs  = true
+  showReadingTime = true
+  showWordCount = true
+  showAuthor = true
+  showSummary = true
+  showToc = true
+  showBreadcrumbs = true
   showShareButtons = true
-
-  # Pages are indexable by default. Set noindex = true to ask search
-  # engines to skip the whole site (per-page: `private: true` front matter).
-  noindex = false
-
-  # Optional: load the Iconify CDN so any "prefix:name" icon works.
-  iconify = false
-
-  [params.homeInfo]             # homepage greeting block
-    title = "Hi there"
-    content = "Welcome to my blog."
-
-  # Social links. icon = a built-in name (github, x, rss, email, linkedin,
-  # youtube, bilibili, tiktok, instagram, telegram, discord, zhihu, weibo,
-  # wechat, globe, link) or any Iconify "prefix:name" when iconify = true.
-  [[params.social]]
-    name = "GitHub"
-    icon = "github"
-    url  = "https://github.com/you"
 ```
 
-### Menu
+All `show…` values may be overridden in page front matter. An explicit `false` always wins over the site default.
+
+### URLs and links
+
+Use `pageRef` for links to content. It resolves against the current language and survives taxonomy, permalink, base URL, and subpath changes:
 
 ```toml
-[[menu.main]]
+[[menus.main]]
   name = "Posts"
-  url  = "/posts/"
-  weight = 1
+  pageRef = "/posts"
+  weight = 10
+
+[[params.social]]
+  name = "About"
+  icon = "link"
+  pageRef = "/about"
 ```
 
-### Sidebar (optional)
+Configuration fields for static files, such as `logo`, `favicon`, `avatar`, and image covers, accept either `images/logo.svg` or `/images/logo.svg`; both remain under a base URL such as `https://example.com/blog/`. Fully qualified URLs, protocol-relative URLs, `mailto:`, `tel:`, and fragments remain unchanged.
 
-Avatar, bio, stats, links, and a friends list beside your content. Off by default; sticky on desktop, a drawer on mobile.
+For external links, Beacon adds the appropriate new-window isolation attributes where it controls the markup. Hugo menu entries may set `params.rel` explicitly when needed.
+
+### Indexing
+
+Pages are indexable by default. Set `noindex = true` in site params or page front matter to emit `noindex, follow` and exclude the page from the sitemap:
+
+```yaml
+---
+title: Draft notes
+noindex: true
+---
+```
+
+The legacy page parameter `private: true` remains an alias for compatibility but is deprecated. Neither setting restricts access: published HTML is still public. Use server-side authentication or do not publish sensitive content.
+
+## Optional features
+
+### Sidebar and Profile homepage
 
 ```toml
 [params.sidebar]
-  enabled     = true
-  position    = "left"        # "left" or "right"
-  avatar      = "/images/avatar.svg"
-  author      = "Your Name"
-  description = "A short line about you."
-  showStats   = true
-  itemsTitle  = "Elsewhere"
+  enabled = true
+  position = "left"
+  avatar = "images/avatar.svg"
+  author = "Your Name"
+  description = "A short biography."
+  showStats = true
 
-  [[params.sidebar.buttons]]  # contact buttons (icon optional)
-    name = "Follow me"
-    icon = "github"
-    url  = "https://github.com/you"
+  [[params.sidebar.items]]
+    name = "About"
+    pageRef = "/about"
 
-  [[params.sidebar.items]]    # custom link list
-    name = "Portfolio"
-    url  = "/about/"
-
-  [[params.sidebar.friends]]  # blogroll
-    name = "Hugo"
-    url  = "https://gohugo.io/"
+[params.profileMode]
+  enabled = false
 ```
 
-Sidebar social icons reuse your `[[params.social]]` config.
+The sidebar becomes a focus-trapped drawer on mobile. Avatar dimensions can be customized with your own layout override if the source is not square.
 
-### Footer (optional)
+### Comments
 
-Renders `© 2016 - 2026 Owner | License | Hosted on Host`, then `· Powered by Hugo & Beacon`. Every part is optional — with no `[params.footer]` you get `© <this year> <site title>` plus the Powered-by line. The footer carries no social icons; those belong to the sidebar and profile-mode homepage.
-
-```toml
-[params.footer]
-  since = 2016                # start year; omit for the current year alone
-  owner = "Your Name"         # defaults to the site title
-  showPoweredBy = true        # set false to drop the second line
-
-  [params.footer.license]
-    name = "CC BY-NC-SA 4.0"
-    url  = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
-
-  [params.footer.hostedOn]
-    name = "GitHub Pages"
-    url  = "https://pages.github.com/"
-```
-
-`url` is optional in both blocks — leave it out and the name renders as plain text. If `since` equals the current year, only that year is shown.
-
-### Comments (optional)
-
-Off by default. Choose one provider and fill in its table. The widget is only fetched once a reader scrolls near the bottom of a post, and it follows the light/dark toggle.
+Comments are disabled unless explicitly configured. The selected provider is fetched only when a reader approaches the comments section.
 
 ```toml
 [params.comments]
-  enabled  = true
-  provider = "disqus"          # disqus | giscus | utterances | waline
-
-  [params.comments.disqus]
-    shortname = "your-disqus-shortname"
+  enabled = true
+  provider = "giscus" # giscus | utterances | disqus | waline
 
   [params.comments.giscus]
-    repo       = "user/repo"
-    repoId     = "R_xxxxxxxxxx"
-    category   = "Announcements"
+    repo = "user/repo"
+    repoId = "R_xxxxxxxxxx"
+    category = "Announcements"
     categoryId = "DIC_xxxxxxxxxx"
-    mapping    = "pathname"     # optional
-    inputPosition = "bottom"    # optional
-
-  [params.comments.utterances]
-    repo      = "user/repo"
-    issueTerm = "pathname"      # optional
-    label     = "comment"       # optional
-
-  [params.comments.waline]
-    serverURL = "https://your-waline.vercel.app"
 ```
 
-| Provider | Backed by | Setup |
-| --- | --- | --- |
-| `giscus` | GitHub Discussions | Public repo with Discussions on; get the IDs from [giscus.app](https://giscus.app) |
-| `utterances` | GitHub Issues | Public repo with the [utterances app](https://github.com/apps/utterances) installed |
-| `disqus` | Disqus (hosted) | Register a site at [disqus.com](https://disqus.com); use its shortname |
-| `waline` | Your own server | Self-host [Waline](https://waline.js.org) (Vercel + a database); readers need no account |
+Provider scripts send the page URL and browser/network metadata to their operators and may set cookies. Review the provider's privacy terms before enabling it. Set `comments: false` on a page to disable comments there.
 
-Only providers with valid credentials render — a half-filled table produces no comments section.
+### Sponsor
 
-Disable comments on one post with `comments: false` in its front matter. For Disqus, `disqus_identifier: "some-id"` pins a thread to a post whose URL has changed.
-
-Notes: Disqus is the heaviest option and loads third-party trackers. giscus and utterances re-theme instantly when the reader flips the theme; Disqus reloads its thread, since it infers colors from the page background.
-
-If you used the earlier giscus stub, move its settings from the top-level `[params.giscus]` into `[params.comments.giscus]` and replace `comments = true` with the `[params.comments]` table above.
-
-### Multilingual (optional)
-
-Fully translatable. Bundled UI strings: English (`en`), Simplified Chinese (`zh-cn`), Traditional Chinese (`zh-tw`), Japanese (`ja`). Add more via `i18n/<lang>.toml`.
+Sponsor is global configuration, not a shortcode. It renders native `<details>` cards and build-time QR images:
 
 ```toml
-defaultContentLanguage = "en"
-hasCJKLanguage = true
+[params.sponsor]
+  enabled = true
 
-[languages]
-  [languages.en]
-    label = "English"
-    weight = 1
-  [languages.zh-cn]
-    label = "简体中文"
-    weight = 2
+  [[params.sponsor.items]]
+    title = "Support this site"
+    address = "replace-with-a-real-value"
+    badge = "COPY"
 ```
 
-Translate content with a filename suffix — `about.md` → `about.zh-cn.md`. A language switcher appears in the header automatically. See `exampleSite/` for a full setup.
+Use `qr = "images/payment.png"`, `qrtext`, or `address` as the QR source. Set `sponsor: false` per page to hide the block. Never publish secret keys or credentials; addresses in `exampleSite/` are visibly fake demonstration values.
 
-### Math / LaTeX (optional)
+### Music
 
-Equations are typeset **at build time** with KaTeX (Hugo's `transform.ToMath`),
-so readers download no JavaScript — only the KaTeX stylesheet, and only on
-pages that actually contain math. Enable Goldmark's passthrough extension in
-your site config:
+The shortcode supports provider metadata or a direct audio URL:
+
+```md
+{{</* music server="netease" type="song" id="594295" */>}}
+{{</* music url="song.mp3" name="Song" artist="Artist" cover="cover.jpg" */>}}
+```
+
+It loads APlayer 1.10.1 and MetingJS 2.0.2 from jsDelivr only on pages containing the shortcode. Provider-based playback also contacts a Meting API. The public default is not an availability or privacy guarantee; run your own endpoint and configure it when reliability matters:
+
+```toml
+[params.meting]
+  api = "https://music-api.example.com/?server=:server&type=:type&id=:id&auth=:auth&r=:r"
+```
+
+### Iconify
+
+The built-in icon set is inline and makes no network request. Setting `params.iconify = true` loads the pinned Iconify web component from its CDN so names such as `simple-icons:telegram` can be used. Keep it disabled if the extra third-party request is undesirable.
+
+### Math
+
+Enable Goldmark passthrough to render KaTeX at build time:
 
 ```toml
 [markup.goldmark.extensions.passthrough]
@@ -233,168 +194,86 @@ your site config:
     inline = [['\(', '\)']]
 ```
 
-Then write `\(e^{i\pi} + 1 = 0\)` inline or `$$ … $$` for display equations.
-Single-dollar inline delimiters (`$…$`) are deliberately left out of the
-recommended setup — they collide with ordinary prose like "$5 and $10".
+The KaTeX stylesheet is fetched only on pages that use math. Single-dollar delimiters are intentionally omitted because they conflict with currency text.
 
-## Writing a post
+## Images and galleries
 
-```markdown
----
-title: "My First Post"
-date: 2026-07-10
-tags: ["hugo", "blog"]
-description: "A short summary for SEO."
----
-
-Your content here.
-```
-
-Per-post front matter overrides: `showToc`, `showBreadcrumbs`, `draft`, `private` (excludes the page from search engines).
-
-**Images** use plain Markdown — `![alt](/path.png "optional caption")`. The quoted
-title becomes a caption and the image opens in a full-screen preview on click.
-End the title with `#noZoom` to keep a specific image from zooming.
-
-## Gallery / photo waterfall
-
-Two ways to lay out photos as a masonry grid with click-to-zoom. Both generate
-resized thumbnails and a size-capped full image with Hugo's image processing —
-no external service, all cached and fingerprinted. Put the photos in a
-[page bundle](https://gohugo.io/content-management/page-bundles/) so Hugo can
-find them as resources.
-
-**A whole gallery page** — make a leaf bundle and set `type = "gallery"`:
-
-```
-content/gallery/
-  index.md        # front matter: type = "gallery"
-  images/
-    seaside.jpg
-    alley.jpg
-```
-
-The photos can sit next to `index.md` or in a subfolder like `images/` — Hugo
-finds them either way. A subfolder keeps the bundle tidy once you have a few
-hundred; just remember the subfolder becomes part of each image's resource name
-(`images/seaside.jpg`) wherever you refer to one by hand.
-
-Every image in the bundle is laid out automatically; any Markdown in `index.md`
-renders as an intro above the grid.
-
-**Timeline is the default.** With no configuration at all, photos group into
-dated sections (Apple/Google Photos style) down a timeline rail, newest day
-first, photos within a day in the order you shot them. The date comes from each
-photo's **EXIF** capture time — so you must opt EXIF back in (see *EXIF details*
-below), or every photo lands in one "undated" pile. Photos with no EXIF fall back
-to a `YYYYMMDD-HHMMSS` stamp in
-the filename (e.g. `20230126-180452.jpg`); anything still undatable is grouped
-last rather than dropped.
-
-Note the fallback is a *fallback*: such filenames usually come from a file's
-mtime, which can be days off the real capture date. EXIF always wins when present.
-
-For a plain ungrouped waterfall instead, set `timeline = false` (with
-`galleryReverse = true` to flip the order).
-
-**Hand-written sections** — to caption and curate the groups yourself, add a
-`timeline` array to the front matter. It overrides the automatic grouping:
-
-```toml
-[[timeline]]
-  date = "2026-03-20"                       # ISO date — sorts + labels the section
-  title = "City nights"
-  description = "A weekend downtown after dark."
-  images = ["city-night.jpg", "coffee.jpg"] # explicit, ordered
-[[timeline]]
-  date = "2026-01-10"
-  title = "First snow"
-  match = "snow*.jpg"                        # …or select with a glob
-```
-
-Image names are resource paths: if the photos sit in a subfolder of the bundle,
-write `images/city-night.jpg`, not `city-night.jpg`. Drop the whole block and the
-page returns to grouping itself.
-
-**An inline gallery** — inside any post that is a bundle, use the shortcode:
+Markdown images use their alt text correctly; a title becomes a caption. Append `#noZoom` to the title to disable the lightbox for one image:
 
 ```md
-{{</* gallery */>}}                     all images in the post's bundle
-{{</* gallery match="trip/*" */>}}      only those matching a glob
-{{</* gallery reverse="true" thumb="600" */>}}
+![A useful description](diagram.png "Diagram caption")
+![Decorative texture](texture.png "#noZoom")
 ```
 
-**Captions** (optional) come from each image's resource params. Add them to the
-page front matter:
+Local processable page resources and assets receive responsive original/WebP candidates without upscaling. External, static-only, GIF, SVG, and unsupported images fall back safely. For best results and complete intrinsic dimensions, keep article images in a page bundle or the site's `assets/` directory.
+
+Create a gallery as a leaf bundle:
+
+```text
+content/gallery/
+  index.md       # front matter: type = "gallery"
+  images/
+    beach.jpg
+    city.jpg
+```
+
+The default timeline groups photos by EXIF capture day, then by a `YYYYMMDD-HHMMSS` filename fallback. Set `timeline = false` for a plain waterfall, or define `[[timeline]]` groups in front matter. Inline galleries use:
+
+```md
+{{</* gallery */>}}
+{{</* gallery match="trip/*" thumb="600" reverse="true" */>}}
+```
+
+`thumb` must be between 200 and 2400 pixels. Invalid arguments report the source page and position.
+
+Hugo 0.155.3 introduced the image resource `.Meta` API used by the gallery. Preserve EXIF while explicitly excluding GPS:
 
 ```toml
-[[resources]]
-  src = "seaside.jpg"
-  [resources.params]
-    caption = "Low tide, early light"   # shows on hover + in the lightbox
-    alt = "A rocky beach at dawn"        # alt text (defaults to the caption)
+[imaging.meta]
+  sources = ["exif"]
+  fields = ["**", "! *GPS*"]
 ```
 
-Or keep captions **next to the photos** as sidecar JSON, which is easier to
-maintain for a large gallery — no front matter to edit when you add a photo.
-Name the file after the image, with or without the image's extension:
+Caption and alt text may be supplied through page resource params. Sidecar `photo.jpg.meta` or `photo.meta` JSON may contain a `Title`; malformed sidecars are ignored without breaking the build.
 
-```
-content/gallery/images/
-  20230126-180452.jpg
-  20230126-180452.jpg.meta     # or 20230126-180452.meta
-```
-```json
-{ "Title": "Low tide, early light", "Rating": 3 }
-```
+## Multilingual sites
 
-`Title` becomes the caption. Everything is optional — a missing file, an empty
-`{}`, or a blank `Title` just means no caption, and a malformed one is ignored
-rather than breaking the build. Front matter captions win over sidecars.
-(`Rating` is not used by the theme.)
-
-**EXIF details** — the lightbox shows each photo's camera, lens, exposure
-(focal length · aperture · shutter · ISO) and capture date, read straight from
-the file. Hugo strips EXIF by default, so opt the fields back in once in your
-site config:
+Bundled UI translations use `en`, `zh-cn`, `zh-tw`, and `ja`. Configure a locale for localized dates and metadata:
 
 ```toml
-[imaging.exif]
-  includeFields = "Make|Model|LensModel|FNumber|ExposureTime|ISOSpeedRatings|ISO|FocalLength|DateTimeOriginal"
-  disableLatLong = true   # keep GPS location out
+defaultContentLanguage = "en"
+hasCJKLanguage = true
+
+[languages.en]
+  locale = "en-US"
+  weight = 1
+  [languages.en.params]
+    languageLabel = "English"
+
+[languages.zh-cn]
+  locale = "zh-CN"
+  weight = 2
+  [languages.zh-cn.params]
+    languageLabel = "简体中文"
 ```
 
-Photos without EXIF (or with it stripped) simply show no details — nothing
-breaks.
+Translate content with filename suffixes such as `about.zh-cn.md`. Prefer `pageRef` over literal translated paths.
+For an RTL language, set `direction = "rtl"` inside that language's `[languages.<code>.params]` table.
 
-## Custom HTML / scripts (optional)
+## Extension hooks and customization
 
-Two hooks let you inject your own markup without forking a theme partial. Create
-either file in **your site's** `layouts/partials/` and it replaces the theme's
-empty stub:
+Override these empty partials in your site without copying the HTML shell:
 
-| File | Rendered |
+| Site file | Position |
 | --- | --- |
-| `layouts/partials/extend_head.html` | last inside `<head>` — meta tags, verification tokens, custom CSS |
-| `layouts/partials/extend_footer.html` | end of `<body>`, after the theme's JS — analytics, third-party widgets |
+| `layouts/partials/extend_head.html` | End of `<head>` |
+| `layouts/partials/extend_footer.html` | End of `<body>`, after theme JavaScript |
 
-```html
-<!-- layouts/partials/extend_footer.html -->
-<script defer src="https://analytics.example.com/script.js"></script>
-```
+Colors and fonts are CSS variables in `assets/scss/_variables.scss`. Copy only the partial or layout you need into the site; site files take precedence over theme files.
 
-Both receive the current page as context, so you can scope output to a page or
-section:
+## Contributing and tests
 
-```html
-{{ if .IsHome }}<meta name="google-site-verification" content="…">{{ end }}
-```
-
-## Customizing
-
-- **Colors & fonts**: `assets/scss/_variables.scss` (light + dark palettes).
-- **Layout**: copy any file from `themes/beacon/layouts/` into your site's `layouts/` — your copy wins.
-- **Extra HTML/JS**: prefer the `extend_head` / `extend_footer` hooks above over copying `baseof.html`.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the locked Node 24 workflow and [docs/architecture.md](docs/architecture.md) for the small set of design constraints that maintainers need to preserve.
 
 ## License
 

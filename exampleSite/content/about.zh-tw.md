@@ -3,6 +3,8 @@ title: "關於"
 layout: "single"
 showToc: false
 showBreadcrumbs: false
+comments: false
+sponsor: false
 ---
 
 你好，我是**張三**——一名開發者，喜歡寫關於程式碼、設計以及偶爾的業餘專案的文章。

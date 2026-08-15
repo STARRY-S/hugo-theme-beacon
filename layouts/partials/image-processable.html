@@ -1,0 +1,3 @@
+{{- $resource := . -}}
+{{- $processableTypes := slice "jpeg" "png" "tiff" "webp" -}}
+{{- return (and (reflect.IsImageResource $resource) (in $processableTypes $resource.MediaType.SubType)) -}}

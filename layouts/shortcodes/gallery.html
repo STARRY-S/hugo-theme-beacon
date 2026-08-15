@@ -14,9 +14,16 @@
   Captions come from each image's [[resources]] params (see partials/gallery.html). */ -}}
 {{- $match := .Get "match" -}}
 {{- $images := cond (ne $match "") ($.Page.Resources.Match $match) ($.Page.Resources.ByType "image") -}}
+{{- $thumb := int (.Get "thumb" | default 800) -}}
+{{- if or (lt $thumb 200) (gt $thumb 2400) -}}
+  {{- errorf "gallery shortcode: thumb must be between 200 and 2400 pixels; see %s" .Position -}}
+{{- end -}}
+{{- if not $images -}}
+  {{- warnf "gallery shortcode: no images matched %q; see %s" ($match | default "all page images") .Position -}}
+{{- end -}}
 {{- partial "gallery.html" (dict
       "images" $images
       "page" $.Page
       "reverse" (eq (.Get "reverse") "true")
-      "thumb" (int (.Get "thumb" | default 800))
+      "thumb" $thumb
 ) -}}

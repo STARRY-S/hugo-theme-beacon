@@ -1,0 +1,11 @@
+{{- $value := .default -}}
+{{- $key := lower .key -}}
+{{- if isset site.Params $key -}}
+  {{- $value = index site.Params $key -}}
+{{- end -}}
+{{- with .page -}}
+  {{- if isset .Params $key -}}
+    {{- $value = index .Params $key -}}
+  {{- end -}}
+{{- end -}}
+{{- return $value -}}

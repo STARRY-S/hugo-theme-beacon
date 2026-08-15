@@ -65,6 +65,8 @@ other = "复制"
 
 [copied]
 other = "已复制"
+[copyFailed]
+other = "复制失败"
 
 [imagePreview]
 other = "图片预览"
@@ -85,7 +87,13 @@ other = "下一张"
 other = "跳到主要内容"
 
 [toggleTheme]
-other = "切换主题"
+other = "主题"
+[themeAuto]
+other = "自动"
+[themeLight]
+other = "浅色"
+[themeDark]
+other = "深色"
 
 [shareTwitter]
 other = "分享到 X/Twitter"
@@ -123,6 +131,9 @@ other = "请我喝杯咖啡"
 [postCount]
 one = "篇"
 other = "篇"
+
+[page]
+other = "页"
 
 [undated]
 other = "无日期"

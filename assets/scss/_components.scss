@@ -45,12 +45,18 @@
     border-color: var(--color-border-hover);
   }
 
-  .entry-cover img {
-    width: 100%;
-    border-radius: var(--radius);
-    margin-bottom: 18px;
-    aspect-ratio: 21 / 9;
-    object-fit: cover;
+  .entry-cover {
+    display: block;
+
+    picture, img { display: block; }
+
+    img {
+      width: 100%;
+      border-radius: var(--radius);
+      margin-bottom: 18px;
+      aspect-ratio: 21 / 9;
+      object-fit: cover;
+    }
   }
 
   .entry-title {
@@ -116,7 +122,7 @@
     font-size: 0.95rem;
     font-weight: 500;
   }
-  .disabled { color: var(--color-text-soft); opacity: 0.5; }
+  .disabled { color: var(--color-text-soft); }
   .page-info { color: var(--color-text-soft); font-size: 0.95rem; }
 }
 
@@ -238,7 +244,7 @@
 .code-block-wrapper:hover .copy-code,
 .copy-code:focus-visible { opacity: 1; }
 
-// Back-to-top button — floating, bottom-right of the viewport
+// Floating back-to-top control.
 .back-to-top {
   position: fixed;
   right: 1.5rem;
@@ -261,6 +267,8 @@
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease, color 0.15s ease,
     border-color 0.15s ease;
+
+  &[hidden] { display: none; }
 
   .icon { width: 20px; height: 20px; }
 

@@ -3,7 +3,7 @@
   gallery-timeline.html ([[timeline]] front matter), which wins when present.
 
   Dates come from partials/gallery-date.html (EXIF, else a filename stamp).
-  This needs [imaging.exif] in the site config — without it Hugo strips EXIF,
+  This needs [imaging.meta] in the site config — without it Hugo strips EXIF,
   every photo comes back dateless, and the whole gallery collapses into the
   "undated" group. See the README.
 
@@ -14,7 +14,7 @@
 
   Call with the page as context: {{ partial "gallery-auto-timeline.html" . }} */ -}}
 {{- $page := . -}}
-{{- $fmt := or site.Params.dateFormat "Jan 2, 2006" -}}
+{{- $fmt := or site.Params.dateFormat ":date_long" -}}
 
 {{- /* Decorate each image with its date once — resolving is not free. `ts` is a
        sortable string because `sort` cannot order time.Time structs. */ -}}
@@ -47,7 +47,7 @@
       <header class="timeline__head">
         <span class="timeline__marker" aria-hidden="true"></span>
         {{- $t := (index $group 0).t }}
-        <time class="timeline__date" datetime="{{ $key }}">{{ $t.Format $fmt }}</time>
+        <time class="timeline__date" datetime="{{ $key }}">{{ time.Format $fmt $t }}</time>
       </header>
       {{ partial "gallery.html" (dict "images" $imgs "page" $page) }}
     </section>

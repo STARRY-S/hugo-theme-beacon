@@ -96,13 +96,12 @@
 
   &:hover { color: var(--color-primary); transform: rotate(14deg); }
 
+  .icon-sun,
   .icon-moon { display: none; }
 }
 
-:root.dark .theme-toggle {
-  .icon-sun { display: none; }
-  .icon-moon { display: inline; }
-}
+:root[data-theme="light"] .theme-toggle .icon-sun { display: inline; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: inline; }
 
 // Language switcher — native <details> dropdown
 .lang-switcher {
@@ -229,7 +228,6 @@
   display: block;
   margin-top: var(--space-sm);
   font-size: 0.75rem;
-  opacity: 0.85;
 }
 
 // Narrow screens: the dot-separated line wraps mid-way and strands a "·" at

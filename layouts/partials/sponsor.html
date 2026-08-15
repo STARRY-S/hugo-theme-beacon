@@ -1,44 +1,37 @@
-{{- /* Global "sponsor / buy me a coffee" block, shown at the bottom of single
-       pages. Configured once in the site config:
-
-         [params.sponsor]
-           enabled = true
-           # text = "Buy Me a Coffee"   # optional; defaults to i18n "sponsor"
-           [[params.sponsor.items]]
-             title = "Bitcoin"
-             address = "bc1…"            # copyable + QR source (build-time)
-             badge  = "BTC"
-           [[params.sponsor.items]]
-             title = "WeChat Pay"
-             qr = "images/wechat.png"    # explicit image (assets/ or static/)
-             subtitle = "Scan to Pay"
-
-       Per page: front matter `sponsor = false` hides it (default is shown).
-       Self-gating: no config / no items → nothing renders. QR resolution per
-       item: qr image → qrtext → address; the last two are rendered to a PNG at
-       build time with images.QR (no client JS). Styling: _sponsor.scss;
-       behaviour (expand + copy): sponsor.js. */ -}}
+{{- /* Global Sponsor disclosure. QR source order: image, qrtext, address. */ -}}
+{{- $page := . -}}
 {{- $s := site.Params.sponsor -}}
 {{- if and $s $s.enabled $s.items (ne .Params.sponsor false) -}}
-<div class="sponsor-wrapper">
-  <button type="button" class="sponsor-trigger" aria-expanded="false">
+<details class="sponsor-wrapper">
+  <summary class="sponsor-trigger">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     <span>{{ with $s.text }}{{ . }}{{ else }}{{ i18n "sponsor" }}{{ end }}</span>
-  </button>
+  </summary>
   <div class="sponsor-content">
     {{- range $s.items }}
     {{- $title := .title -}}
     {{- $color := .color -}}
-    {{- $qr := .qr -}}
-    {{- if $qr -}}
-      {{- with resources.Get $qr }}{{ $qr = .RelPermalink }}{{ else }}{{ $qr = $qr | relURL }}{{ end -}}
+    {{- if and $color (not (findRE `^#[0-9A-Fa-f]{6}$` $color)) -}}
+      {{- warnf "Beacon sponsor: ignoring invalid color %q for %q; use #RRGGBB" $color $title -}}
+      {{- $color = "" -}}
+    {{- end -}}
+    {{- if not $title }}{{ warnf "Beacon sponsor: every item needs a title on %s" $page.Path }}{{ end -}}
+    {{- if not (or .qr .qrtext .address) }}{{ warnf "Beacon sponsor: item %q has no qr, qrtext, or address on %s" $title $page.Path }}{{ end -}}
+    {{- $qrURL := "" -}}
+    {{- $qrResource := false -}}
+    {{- with .qr -}}
+      {{- with resources.Get . }}{{ $qrResource = . }}{{ $qrURL = .RelPermalink }}{{ else }}{{ $qrURL = partial "asset-url.html" . }}{{ end -}}
     {{- else -}}
-      {{- with or .qrtext .address }}{{ $qr = (images.QR . (dict "level" "medium" "scale" 4)).RelPermalink }}{{ end -}}
+      {{- with or .qrtext .address -}}
+        {{- with try (images.QR . (dict "level" "medium" "scale" 4)) -}}
+          {{- with .Err }}{{ errorf "Beacon sponsor: unable to generate QR for %q: %s" $title . }}{{ else }}{{ $qrResource = .Value }}{{ $qrURL = .Value.RelPermalink }}{{ end -}}
+        {{- end -}}
+      {{- end -}}
     {{- end }}
     <div class="sponsor-card">
-      {{- with $qr }}
+      {{- with $qrURL }}
       <div class="sponsor-qr-wrap"{{ with $color }} style="{{ printf "--qr-color:%s" . | safeCSS }}"{{ end }}>
-        <img class="sponsor-qr" src="{{ . }}" alt="{{ $title }}" loading="lazy">
+        <img class="sponsor-qr" src="{{ . }}" alt="{{ $title }}" width="{{ with $qrResource }}{{ .Width }}{{ else }}160{{ end }}" height="{{ with $qrResource }}{{ .Height }}{{ else }}160{{ end }}" loading="lazy" decoding="async">
       </div>
       {{- end }}
       <span class="sponsor-title">{{ .title }}</span>
@@ -48,10 +41,10 @@
       <span class="sponsor-subtitle">{{ . }}</span>
       {{- end }}{{ end }}
       {{- with .address }}
-      <button type="button" class="sponsor-address" data-copy="{{ . }}" title="{{ i18n `copy` }}">{{ . }}</button>
+      <button type="button" class="sponsor-address" data-copy="{{ . }}" title="{{ i18n `copy` }}" aria-label="{{ i18n `copy` }}: {{ . }}">{{ . }}</button>
       {{- end }}
     </div>
     {{- end }}
   </div>
-</div>
+</details>
 {{- end -}}

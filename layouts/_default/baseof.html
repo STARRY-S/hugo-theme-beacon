@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ site.Language.Lang }}" dir="{{ or site.Language.Direction `ltr` }}">
+<html lang="{{ site.Language.Lang }}" dir="{{ site.Language.Params.direction | default `ltr` }}">
 <head>
   {{ partial "head.html" . }}
 </head>
@@ -8,12 +8,18 @@
 {{- with site.Params.sidebar }}{{ if .enabled }}{{ $showSidebar = true }}{{ $pos = .position | default "left" }}{{ end }}{{ end -}}
 <body class="{{ if eq .Kind `page` }}single{{ else }}list{{ end }}{{ if $showSidebar }} has-sidebar sidebar-{{ $pos }}{{ end }}"
       data-copy="{{ i18n "copy" | default "Copy" }}" data-copied="{{ i18n "copied" | default "Copied!" }}"
+      data-copy-failed="{{ i18n "copyFailed" | default "Copy failed" }}"
+      data-toggle-theme="{{ i18n "toggleTheme" | default "Theme" }}"
+      data-theme-auto="{{ i18n "themeAuto" | default "Auto" }}"
+      data-theme-light="{{ i18n "themeLight" | default "Light" }}"
+      data-theme-dark="{{ i18n "themeDark" | default "Dark" }}"
       data-image-preview="{{ i18n "imagePreview" | default "Image preview" }}"
       data-open-preview="{{ i18n "openImagePreview" | default "Open image preview" }}"
       data-close-preview="{{ i18n "closePreview" | default "Close" }}"
       data-prev-image="{{ i18n "prevImage" | default "Previous image" }}"
       data-next-image="{{ i18n "nextImage" | default "Next image" }}">
   <a class="skip-link" href="#main">{{ i18n "skipToContent" | default "Skip to content" }}</a>
+  <div id="copy-status" class="visually-hidden" role="status" aria-live="polite"></div>
   <div class="container">
     {{ partial "header.html" . }}
     <div class="layout">

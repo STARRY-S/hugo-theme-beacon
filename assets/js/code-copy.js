@@ -3,6 +3,8 @@
   var labels = document.body.dataset;
   var copyLabel = labels.copy || "Copy";
   var copiedLabel = labels.copied || "Copied!";
+  var failedLabel = labels.copyFailed || "Copy failed";
+  var status = document.getElementById("copy-status");
 
   function fallbackCopy(text) {
     var ta = document.createElement("textarea");
@@ -12,12 +14,14 @@
     ta.style.opacity = "0";
     document.body.appendChild(ta);
     ta.select();
+    var copied = false;
     try {
-      document.execCommand("copy");
-    } catch (e) {
+      copied = document.execCommand("copy");
+    } catch {
       /* nothing left to try */
     }
     document.body.removeChild(ta);
+    return copied;
   }
 
   var blocks = document.querySelectorAll(".post-content pre");
@@ -38,17 +42,21 @@
       var text = code ? code.innerText : pre.innerText;
       var done = function () {
         btn.textContent = copiedLabel;
+        if (status) status.textContent = copiedLabel;
+        setTimeout(function () { btn.textContent = copyLabel; }, 1500);
+      };
+      var failed = function () {
+        btn.textContent = failedLabel;
+        if (status) status.textContent = failedLabel;
         setTimeout(function () { btn.textContent = copyLabel; }, 1500);
       };
       // navigator.clipboard is undefined on non-secure origins (plain http)
       if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(text).then(done).catch(function () {
-          fallbackCopy(text);
-          done();
+          fallbackCopy(text) ? done() : failed();
         });
       } else {
-        fallbackCopy(text);
-        done();
+        fallbackCopy(text) ? done() : failed();
       }
     });
   });

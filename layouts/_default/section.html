@@ -9,13 +9,13 @@
          dated photo groups (partials/gallery-timeline.html). */ -}}
   <header class="list-header">
     <h1 class="list-title">{{ .Title }}</h1>
-    {{- with .Description }}<p class="list-description">{{ . | markdownify }}</p>{{ end }}
+    {{- with .Description }}<div class="list-description">{{ . | markdownify }}</div>{{ end }}
     {{- with .Content }}<div class="list-content">{{ . }}</div>{{ end }}
   </header>
 
   {{- $format := or site.Params.timelineDateFormat "01-02" }}
   <div class="post-timeline">
-    {{- range .Pages.GroupByPublishDate "2006" }}
+    {{- range .RegularPagesRecursive.GroupByPublishDate "2006" }}
       <section class="post-timeline__year">
         <h2 class="post-timeline__year-label">
           {{ .Key }}

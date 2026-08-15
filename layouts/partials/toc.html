@@ -1,7 +1,5 @@
 {{- /* An explicit showToc = false must win, so avoid `default` (it treats false as unset) */ -}}
-{{- $show := true }}
-{{- if ne site.Params.showToc nil }}{{ $show = site.Params.showToc }}{{ end }}
-{{- if ne .Params.showToc nil }}{{ $show = .Params.showToc }}{{ end }}
+{{- $show := partial "param-bool.html" (dict "page" . "key" "showToc" "default" true) }}
 {{- if $show }}
   {{- if gt (len .TableOfContents) 50 }}
     <details class="toc" open>

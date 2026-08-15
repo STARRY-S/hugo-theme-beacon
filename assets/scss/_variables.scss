@@ -11,14 +11,9 @@
   --space-lg: 24px;
   --space-xl: 32px;
 
-  // Typography — system font stack. The families up to "Helvetica Neue" cover
-  // macOS/Windows/Android; "Noto Sans" (+ the CJK faces, which only catch the
-  // characters the Latin fonts lack) is the Linux match. Family names must be
-  // exact — "Noto Sans CJK" alone matches nothing in a browser, hence the SC/TC/JP
-  // suffixes. There is deliberately no `sans-serif` generic at the end: Chrome on
-  // Linux can resolve that generic to a *serif* face, so the stack must end on a
-  // real font.
-  --font-sans: -apple-system, BlinkMacSystemFont, "Noto Sans", Roboto, "DejaVu Sans", "Noto Sans CJK SC", "Noto Sans CJK TC", "Noto Sans CJK JP", "Apple Color Emoji", "Segoe UI Emoji";
+  // Exact Noto CJK family names cover Linux/CJK installations; system-ui and
+  // sans-serif remain reliable generic fallbacks on other systems.
+  --font-sans: -apple-system, BlinkMacSystemFont, "Noto Sans", Roboto, "DejaVu Sans", "Noto Sans CJK SC", "Noto Sans CJK TC", "Noto Sans CJK JP", "Apple Color Emoji", "Segoe UI Emoji", system-ui, sans-serif;
   --font-mono: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   // Light palette — clean, aligned with starry-s.moe

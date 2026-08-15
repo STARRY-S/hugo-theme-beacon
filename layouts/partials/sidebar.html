@@ -1,6 +1,6 @@
 {{- $s := site.Params.sidebar }}
-<aside class="sidebar">
-  <button class="sidebar-close" aria-label="{{ i18n "closeSidebar" | default "Close" }}">
+<aside class="sidebar" id="sidebar">
+  <button type="button" class="sidebar-close" aria-label="{{ i18n "closeSidebar" | default "Close" }}">
     <svg class="icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
   </button>
   <div class="sidebar-inner">
@@ -8,25 +8,32 @@
     {{- /* Profile: avatar + name + description */ -}}
     <section class="sidebar-block sidebar-profile">
       {{- with $s.avatar }}
-        <a href="{{ site.Home.RelPermalink }}"><img class="sidebar-avatar" src="{{ . | relURL }}" alt="{{ $s.author | default site.Title }}"></a>
+        <a href="{{ site.Home.RelPermalink }}"><img class="sidebar-avatar" src="{{ partial `asset-url.html` . }}" alt="{{ $s.author | default site.Title }}" width="156" height="156"></a>
       {{- end }}
       {{- with $s.author | default site.Params.author }}<h2 class="sidebar-author">{{ . }}</h2>{{ end }}
-      {{- with $s.description }}<p class="sidebar-desc">{{ . | markdownify }}</p>{{ end }}
+      {{- with $s.description }}<div class="sidebar-desc">{{ . | markdownify }}</div>{{ end }}
     </section>
 
     {{- /* Site stats: posts / categories / tags */ -}}
     {{- if $s.showStats }}
       {{- $posts := where site.RegularPages "Type" "in" (site.Params.mainSections | default (slice "posts")) }}
       <section class="sidebar-block sidebar-stats">
-        <a href="{{ (index (site.Params.mainSections | default (slice "posts")) 0) | relURL }}">
+        {{- $mainSection := index (site.Params.mainSections | default (slice "posts")) 0 -}}
+        {{- $postsURL := $mainSection | relLangURL -}}
+        {{- with site.GetPage $mainSection }}{{ $postsURL = .RelPermalink }}{{ end -}}
+        <a href="{{ $postsURL }}">
           <span class="stat-num">{{ len $posts }}</span>
           <span class="stat-label">{{ i18n "posts" | default "Posts" }}</span>
         </a>
-        <a href="{{ "categories/" | relURL }}">
+        {{- $categoriesURL := "categories/" | relLangURL -}}
+        {{- with site.GetPage "/categories" }}{{ $categoriesURL = .RelPermalink }}{{ end -}}
+        <a href="{{ $categoriesURL }}">
           <span class="stat-num">{{ len site.Taxonomies.categories }}</span>
           <span class="stat-label">{{ i18n "categories" | default "Categories" }}</span>
         </a>
-        <a href="{{ "tags/" | relURL }}">
+        {{- $tagsURL := "tags/" | relLangURL -}}
+        {{- with site.GetPage "/tags" }}{{ $tagsURL = .RelPermalink }}{{ end -}}
+        <a href="{{ $tagsURL }}">
           <span class="stat-num">{{ len site.Taxonomies.tags }}</span>
           <span class="stat-label">{{ i18n "tags" | default "Tags" }}</span>
         </a>
@@ -37,7 +44,9 @@
     {{- with site.Params.social }}
       <div class="sidebar-block social-icons sidebar-social">
         {{- range . }}
-          <a href="{{ .url }}" target="_blank" rel="noopener noreferrer me" aria-label="{{ .name }}" title="{{ .name }}">{{ partial "svg.html" .icon }}</a>
+          {{- $url := partial "link-url.html" (dict "item" . "page" $) -}}
+          {{- $external := partial "is-external-url.html" $url -}}
+          <a href="{{ $url }}"{{ if $external }} target="_blank" rel="noopener noreferrer me"{{ end }} aria-label="{{ .name }}" title="{{ .name }}">{{ partial "svg.html" .icon }}</a>
         {{- end }}
       </div>
     {{- end }}
@@ -46,7 +55,9 @@
     {{- with $s.buttons }}
       <section class="sidebar-block sidebar-buttons">
         {{- range . }}
-          <a class="sidebar-button" href="{{ .url }}"{{ if hasPrefix .url "http" }} target="_blank" rel="noopener noreferrer"{{ end }}>
+          {{- $url := partial "link-url.html" (dict "item" . "page" $) -}}
+          {{- $external := partial "is-external-url.html" $url -}}
+          <a class="sidebar-button" href="{{ $url }}"{{ if $external }} target="_blank" rel="noopener noreferrer"{{ end }}>
             {{- with .icon }}{{ partial "svg.html" . }}{{ end }}
             <span>{{ .name }}</span>
           </a>
@@ -59,7 +70,11 @@
       <section class="sidebar-block sidebar-links-block">
         {{- with $s.itemsTitle }}<h3 class="sidebar-title">{{ . }}</h3>{{ end }}
         <ul class="sidebar-links">
-          {{- range . }}<li><a href="{{ .url }}">{{ .name }}</a></li>{{ end }}
+          {{- range . -}}
+            {{- $url := partial "link-url.html" (dict "item" . "page" $) -}}
+            {{- $external := partial "is-external-url.html" $url -}}
+            <li><a href="{{ $url }}"{{ if $external }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .name }}</a></li>
+          {{- end }}
         </ul>
       </section>
     {{- end }}
@@ -69,7 +84,11 @@
       <section class="sidebar-block sidebar-friends">
         <h3 class="sidebar-title">{{ $s.friendsTitle | default (i18n "friends") | default "Friends" }}</h3>
         <ul class="sidebar-links">
-          {{- range . }}<li><a href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ .name }}</a></li>{{ end }}
+          {{- range . -}}
+            {{- $url := partial "link-url.html" (dict "item" . "page" $) -}}
+            {{- $external := partial "is-external-url.html" $url -}}
+            <li><a href="{{ $url }}"{{ if $external }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .name }}</a></li>
+          {{- end }}
         </ul>
       </section>
     {{- end }}

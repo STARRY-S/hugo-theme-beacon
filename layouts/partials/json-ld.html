@@ -5,7 +5,7 @@
         "@context" "https://schema.org"
         "@type" "WebSite"
         "name" site.Title
-        "url" site.Home.Permalink }}
+        "url" (.Store.Get "beaconCanonical" | default site.Home.Permalink) }}
   {{- with site.Params.description }}{{ $schema = merge $schema (dict "description" .) }}{{ end }}
   <script type="application/ld+json">{{ $schema | jsonify | safeJS }}</script>
 {{- else if and .IsPage (in (site.Params.mainSections | default (slice "posts")) .Type) }}
@@ -13,11 +13,11 @@
         "@context" "https://schema.org"
         "@type" "BlogPosting"
         "headline" .Title
-        "url" .Permalink }}
+        "url" (.Store.Get "beaconCanonical" | default .Permalink) }}
   {{- if not .PublishDate.IsZero }}{{ $schema = merge $schema (dict "datePublished" (.PublishDate.Format "2006-01-02T15:04:05Z07:00")) }}{{ end }}
   {{- if not .Lastmod.IsZero }}{{ $schema = merge $schema (dict "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")) }}{{ end }}
   {{- with or .Params.author site.Params.author }}{{ $schema = merge $schema (dict "author" (dict "@type" "Person" "name" .)) }}{{ end }}
-  {{- with .Params.cover.image }}{{ $schema = merge $schema (dict "image" (. | absURL)) }}{{ end }}
+  {{- with .Params.cover.image }}{{ $schema = merge $schema (dict "image" (partial "asset-url.html" . | absURL)) }}{{ end }}
   {{- with .Description }}{{ $schema = merge $schema (dict "description" .) }}{{ end }}
   <script type="application/ld+json">{{ $schema | jsonify | safeJS }}</script>
 {{- end }}

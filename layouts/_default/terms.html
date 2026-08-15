@@ -1,7 +1,7 @@
 {{ define "main" }}
   <header class="list-header">
     <h1 class="list-title">{{ .Title }}</h1>
-    {{- with .Description }}<p class="list-description">{{ . | markdownify }}</p>{{ end }}
+    {{- with .Description }}<div class="list-description">{{ . | markdownify }}</div>{{ end }}
   </header>
 
   <div class="terms">

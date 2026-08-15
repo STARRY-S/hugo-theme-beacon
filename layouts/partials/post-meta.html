@@ -2,16 +2,16 @@
 <div class="post-meta">
   {{- with .PublishDate }}
     <span class="meta-date">
-      <time datetime="{{ .Format "2006-01-02" }}">{{ .Format (or site.Params.dateFormat "Jan 2, 2006") }}</time>
+      <time datetime="{{ .Format "2006-01-02" }}">{{ time.Format (or site.Params.dateFormat ":date_long") . }}</time>
     </span>
   {{- end }}
-  {{- if site.Params.showReadingTime }}
+  {{- if partial "param-bool.html" (dict "page" . "key" "showReadingTime" "default" false) }}
     <span class="meta-reading-time">{{ .ReadingTime }} {{ i18n "minutes" .ReadingTime }}</span>
   {{- end }}
-  {{- if site.Params.showWordCount }}
+  {{- if partial "param-bool.html" (dict "page" . "key" "showWordCount" "default" false) }}
     <span class="meta-word-count">{{ .WordCount }} {{ i18n "words" .WordCount }}</span>
   {{- end }}
-  {{- if and .IsPage site.Params.showAuthor }}
+  {{- if and .IsPage (partial "param-bool.html" (dict "page" . "key" "showAuthor" "default" false)) }}
     {{- with or .Params.author site.Params.author }}
       <span class="meta-author">{{ i18n "by" }} {{ delimit (slice | append .) ", " }}</span>
     {{- end }}

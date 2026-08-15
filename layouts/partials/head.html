@@ -1,29 +1,52 @@
 {{- /* Charset & viewport */ -}}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="{{ if or .Params.private site.Params.noindex }}noindex, nofollow{{ else }}index, follow{{ end }}">
+{{- $is404 := eq .Kind "404" -}}
+{{- $noindex := or $is404 .Params.noindex .Params.private site.Params.noindex -}}
+<meta name="robots" content="{{ if $noindex }}noindex, follow{{ else }}index, follow{{ end }}">
 
 {{- /* Title */ -}}
-<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+{{- $pageTitle := cond .IsHome site.Title (printf "%s · %s" .Title site.Title) -}}
+{{- $socialTitle := cond .IsHome site.Title .Title -}}
+{{- $canonical := .Permalink -}}
+{{- $paginator := false -}}
+{{- if or .IsHome (eq .Kind "term") -}}
+  {{- $paginator = .Paginate (partial "pagination-pages.html" .) -}}
+  {{- if gt $paginator.PageNumber 1 -}}
+    {{- $pageLabel := i18n "page" | default "Page" -}}
+    {{- if .IsHome -}}
+      {{- $pageTitle = printf "%s · %s %d" site.Title $pageLabel $paginator.PageNumber -}}
+    {{- else -}}
+      {{- $pageTitle = printf "%s · %s %d · %s" $socialTitle $pageLabel $paginator.PageNumber site.Title -}}
+    {{- end -}}
+    {{- $socialTitle = printf "%s · %s %d" $socialTitle $pageLabel $paginator.PageNumber -}}
+    {{- $canonical = $paginator.URL | absURL -}}
+  {{- end -}}
+{{- end -}}
+{{- .Store.Set "beaconCanonical" $canonical -}}
+{{- .Store.Set "beaconSocialTitle" $socialTitle -}}
+<title>{{ $pageTitle }}</title>
 
 {{- /* Prevent theme flash: set color scheme before paint */ -}}
 <script>
   (function () {
-    var theme = localStorage.getItem("beacon-theme");
-    if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-      document.documentElement.classList.add("dark");
-    }
+    var theme = null;
+    try { theme = localStorage.getItem("beacon-theme"); } catch {}
+    if (theme !== "light" && theme !== "dark") theme = "auto";
+    var dark = theme === "dark" || (theme === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.classList.toggle("dark", dark);
   })();
 </script>
 
 {{- partial "meta.html" . -}}
 
 {{- /* Cross-link translations for search engines */ -}}
-{{- if .IsTranslated -}}
+{{- if and (not $is404) .IsTranslated (or (not $paginator) (eq $paginator.PageNumber 1)) -}}
   {{- range .AllTranslations }}
   <link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">
   {{- end }}
-  {{- $defaultLang := (index hugo.Sites 0).Language.Lang }}
+  {{- $defaultLang := (index site.Home.AllTranslations 0).Language.Lang }}
   {{- range .AllTranslations }}
     {{- if eq .Language.Lang $defaultLang }}
   <link rel="alternate" hreflang="x-default" href="{{ .Permalink }}">
@@ -32,6 +55,11 @@
 {{- end -}}
 
 {{- partial "json-ld.html" . -}}
+
+{{- with $paginator -}}
+  {{- with .Prev }}<link rel="prev" href="{{ .URL | absURL }}">{{ end -}}
+  {{- with .Next }}<link rel="next" href="{{ .URL | absURL }}">{{ end -}}
+{{- end -}}
 
 {{- /* Styles */ -}}
 {{- $opts := dict "transpiler" "dartsass" "targetPath" "css/main.css" "enableSourceMap" hugo.IsDevelopment -}}
@@ -60,9 +88,12 @@
        that use the {{< music >}} shortcode. The meting API endpoint can be
        overridden with [params.meting].api in the site config. */ -}}
 {{- if .HasShortcode "music" -}}
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/meting/dist/Meting.min.js" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css"
+        integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"
+          integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL/aORyw+5+HZoU6e" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/meting@2.0.2/dist/Meting.min.js"
+          integrity="sha384-fbKru+jstKDdWI11+8ziKY8ts5Sv48OB1WWGUom0J9ZxRGKLm/hmuYNnkIYeT3lu" crossorigin="anonymous" defer></script>
   <script>var meting_api = {{ site.Params.meting.api | default "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&auth=:auth&r=:r" }};</script>
 {{- end -}}
 
@@ -73,7 +104,7 @@
 
 {{- /* Favicon */ -}}
 {{- with site.Params.favicon -}}
-  <link rel="icon" href="{{ . | relURL }}">
+  <link rel="icon" href="{{ partial `asset-url.html` . }}">
 {{- end -}}
 
 {{- with hugo.Generator -}}{{ . }}{{- end -}}

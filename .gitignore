@@ -13,5 +13,13 @@ Thumbs.db
 *.swp
 node_modules/
 
-# Claude Code — keep shared settings, ignore personal/local overrides
+# Local test output
+/playwright-report/
+/test-results/
+
+# The example is run with --theme ../..; do not track local compatibility links.
+/exampleSite/themes/
+
+# Local agent/editor settings
+.claude/settings.json
 .claude/settings.local.json

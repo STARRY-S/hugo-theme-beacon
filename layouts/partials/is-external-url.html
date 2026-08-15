@@ -1,0 +1,2 @@
+{{- $url := strings.TrimSpace (string .) -}}
+{{- return (or (strings.Contains $url "://") (hasPrefix $url "//")) -}}

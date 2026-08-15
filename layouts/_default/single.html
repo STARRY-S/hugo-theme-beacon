@@ -1,7 +1,7 @@
 {{ define "main" }}
   <article class="post">
     <header class="post-header">
-      {{- if .Params.showBreadcrumbs | default site.Params.showBreadcrumbs }}
+      {{- if partial "param-bool.html" (dict "page" . "key" "showBreadcrumbs" "default" false) }}
         {{ partial "breadcrumbs.html" . }}
       {{- end }}
       <h1 class="post-title">{{ .Title }}</h1>
@@ -9,9 +9,9 @@
       {{ partial "post-meta.html" . }}
     </header>
 
-    {{- with .Params.cover.image }}
+      {{- with .Params.cover.image }}
       <figure class="post-cover">
-        <img src="{{ . | relURL }}" alt="{{ $.Title }}">
+        {{ partial "responsive-image.html" (dict "src" . "page" $ "alt" $.Title "loading" "eager" "fetchpriority" "high" "sizes" "(max-width: 760px) 100vw, 720px" "widths" (slice 480 720 1200)) }}
         {{- with $.Params.cover.caption }}<figcaption>{{ . | markdownify }}</figcaption>{{ end }}
       </figure>
     {{- end }}
@@ -23,17 +23,17 @@
     </div>
 
     <footer class="post-footer">
-      {{- with .Params.tags }}
+      {{- with .GetTerms "tags" }}
         <div class="post-tags">
           {{- range . }}
-            <a href="{{ (urls.JoinPath "tags" (. | urlize)) | relURL }}" class="tag">{{ . }}</a>
+            <a href="{{ .RelPermalink }}" class="tag">{{ .LinkTitle }}</a>
           {{- end }}
         </div>
       {{- end }}
 
       {{ partial "post-nav.html" . }}
 
-      {{- if site.Params.showShareButtons }}
+      {{- if partial "param-bool.html" (dict "page" . "key" "showShareButtons" "default" false) }}
         {{ partial "share.html" . }}
       {{- end }}
     </footer>

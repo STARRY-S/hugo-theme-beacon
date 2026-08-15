@@ -6,6 +6,12 @@
   margin: var(--space-xl) 0;
 }
 
+.sponsor-wrapper > summary {
+  list-style: none;
+
+  &::-webkit-details-marker { display: none; }
+}
+
 .sponsor-trigger {
   display: inline-flex;
   align-items: center;
@@ -43,16 +49,7 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 40px;
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
-
-  &.expanded {
-    max-height: 1000px;
-    opacity: 1;
-    margin-top: var(--space-xl);
-  }
+  margin-top: var(--space-xl);
 }
 
 .sponsor-card {

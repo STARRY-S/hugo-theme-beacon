@@ -1,0 +1,19 @@
+{{- $item := .item -}}
+{{- $page := .page -}}
+{{- $result := "" -}}
+{{- with $item.pageRef -}}
+  {{- with site.GetPage . -}}
+    {{- $result = .RelPermalink -}}
+  {{- else -}}
+    {{- warnf "Beacon: pageRef %q does not resolve on %s" . $page.Path -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $result -}}
+  {{- $url := strings.TrimSpace (string ($item.url | default "")) -}}
+  {{- if or (not $url) (strings.Contains $url "://") (hasPrefix $url "//") (hasPrefix $url "mailto:") (hasPrefix $url "tel:") (hasPrefix $url "#") -}}
+    {{- $result = $url -}}
+  {{- else -}}
+    {{- $result = strings.TrimPrefix "/" $url | relLangURL -}}
+  {{- end -}}
+{{- end -}}
+{{- return $result -}}

@@ -3,6 +3,8 @@ title: "概要"
 layout: "single"
 showToc: false
 showBreadcrumbs: false
+comments: false
+sponsor: false
 ---
 
 こんにちは、**山田花子**です。コードやデザイン、そして時々サイドプロジェクトについて
