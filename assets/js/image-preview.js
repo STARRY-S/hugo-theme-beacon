@@ -97,6 +97,7 @@
     }
     var caption =
       src.getAttribute("data-caption") ||
+      (src.closest("a") && src.closest("a").getAttribute("data-caption")) ||
       src.getAttribute("title") ||
       src.getAttribute("alt") ||
       "";

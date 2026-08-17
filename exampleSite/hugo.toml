@@ -25,6 +25,7 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
   showReadingTime = true
   showWordCount = true
   showAuthor = true
+  showDate = true
   showSummary = true
   showToc = true
   showBreadcrumbs = true
@@ -139,6 +140,8 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
   [params.sidebar]
     enabled = true
     position = "left"          # "left" or "right"
+    showOnSingle = false       # keep long-form pages focused
+    showOnMobile = true        # demo the accessible profile drawer
     avatar = "/images/avatar.svg"
     showStats = true
     author = "Jane Doe"
@@ -211,7 +214,7 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
     title = "Beacon Demo"
     [languages.en.params]
       languageLabel = "English"
-      description = "A clean, fast, modern blog theme for Hugo with a dual-column card layout."
+      description = "A clean, fast Hugo theme with a focused editorial layout."
     [languages.en.menu]
       [[languages.en.menu.main]]
         name = "Posts"
@@ -231,7 +234,7 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
         weight = 4
 
   [languages.zh-cn]
-    locale = "zh-CN"
+    locale = "zh-Hans"
     weight = 2
     title = "Beacon Demo"
     [languages.zh-cn.params]
@@ -257,7 +260,7 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
         weight = 3
 
   [languages.zh-tw]
-    locale = "zh-TW"
+    locale = "zh-Hant"
     weight = 3
     title = "Beacon Demo"
     [languages.zh-tw.params]

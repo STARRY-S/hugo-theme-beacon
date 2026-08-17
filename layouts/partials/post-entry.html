@@ -8,6 +8,9 @@
   {{- end }}
   <div class="entry-body">
     <h2 class="entry-title">
+      {{- if partial "param-bool.html" (dict "page" . "key" "pinned" "default" false) }}
+        <span class="entry-pinned">{{ i18n "pinned" | default "Pinned" }}</span>
+      {{- end }}
       <a href="{{ .RelPermalink }}">{{ .Title }}</a>
     </h2>
     {{ partial "post-meta.html" . }}

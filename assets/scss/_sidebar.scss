@@ -4,12 +4,10 @@
 .layout { min-width: 0; }
 
 .has-sidebar {
-  --content-width: 1320px;
-
   .layout {
     display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 48px;
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+    gap: var(--layout-gap);
     align-items: start;
   }
 
@@ -18,7 +16,7 @@
 
 // Right-hand position: swap column order
 .has-sidebar.sidebar-right {
-  .layout { grid-template-columns: 1fr 300px; }
+  .layout { grid-template-columns: minmax(0, 1fr) var(--sidebar-width); }
   .sidebar { order: 2; }
   .main { order: 1; }
 }
@@ -26,8 +24,8 @@
 // Desktop, sidebar visible: align the sidebar card's top edge with the first
 // post card (`.main` carries 32px of top padding), and quiet the section title
 // down to a label so it doesn't read as a redundant second "bar".
-@media (min-width: 901px) {
-  .has-sidebar .sidebar-inner { margin-top: var(--space-xl); }
+@media (min-width: 1100px) {
+  .has-sidebar .sidebar-inner { margin-top: 40px; }
 
   .has-sidebar .list-title {
     font-size: 1.15rem;
@@ -42,18 +40,23 @@
 }
 
 .sidebar-inner {
-  @extend %card;
   position: sticky;
   top: 24px;
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  padding: 24px 20px;
-  animation: fade-in-up 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  gap: 18px;
+  padding: 20px 24px 20px 0;
+  border-right: 1px solid var(--color-divider);
+}
+
+.sidebar-right .sidebar-inner {
+  padding: 20px 0 20px 24px;
+  border-right: 0;
+  border-left: 1px solid var(--color-divider);
 }
 
 .sidebar-block {
-  padding-bottom: 22px;
+  padding-bottom: 18px;
   border-bottom: 1px solid var(--color-divider);
 
   &:last-child { border-bottom: none; padding-bottom: 0; }
@@ -65,9 +68,9 @@
 
   .sidebar-avatar {
     @extend %avatar;
-    width: 156px;
-    height: 156px;
-    border: 3px solid var(--color-border);
+    width: 128px;
+    height: 128px;
+    border: 2px solid var(--color-border);
   }
   .sidebar-author { font-size: 1.35rem; margin: 12px 0 4px; }
   .sidebar-desc { color: var(--color-text-soft); font-size: 1.05rem; line-height: 1.6; margin: 0; }
@@ -179,17 +182,24 @@
 }
 
 // ── Mobile: off-canvas drawer ────────────────────────────────────────
-@media (max-width: 900px) {
+@media (max-width: 1099px) {
   .has-sidebar {
-    --content-width: 720px;
-
     .layout { grid-template-columns: 1fr; }
-    .main, .sidebar { order: 0; }
-
-    .sidebar-toggle { display: inline-flex; }
+    .main {
+      order: 0;
+      max-width: var(--list-width);
+      margin-inline: auto;
+    }
+    .sidebar { order: 0; }
   }
 
-  .sidebar {
+  .single.has-sidebar .main { max-width: var(--reading-width); }
+  .single.has-sidebar.type-gallery .main { max-width: var(--gallery-width); }
+
+  .has-sidebar:not(.sidebar-mobile-enabled) .sidebar { display: none; }
+  .sidebar-mobile-enabled .sidebar-toggle { display: inline-flex; }
+
+  .sidebar-mobile-enabled .sidebar {
     position: fixed;
     top: 0;
     left: 0;
@@ -205,14 +215,14 @@
     z-index: 50;
     visibility: hidden;
   }
-  .sidebar-right .sidebar {
+  .sidebar-mobile-enabled.sidebar-right .sidebar {
     left: auto;
     right: 0;
     transform: translateX(100%);
   }
 
-  .sidebar-close { display: inline-flex; }
-  .sidebar-inner {
+  .sidebar-mobile-enabled .sidebar-close { display: inline-flex; }
+  .sidebar-mobile-enabled .sidebar-inner {
     position: static;
     background: none;
     border: none;

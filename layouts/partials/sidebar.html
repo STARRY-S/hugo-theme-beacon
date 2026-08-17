@@ -8,7 +8,7 @@
     {{- /* Profile: avatar + name + description */ -}}
     <section class="sidebar-block sidebar-profile">
       {{- with $s.avatar }}
-        <a href="{{ site.Home.RelPermalink }}"><img class="sidebar-avatar" src="{{ partial `asset-url.html` . }}" alt="{{ $s.author | default site.Title }}" width="156" height="156"></a>
+        <a href="{{ site.Home.RelPermalink }}"><img class="sidebar-avatar" src="{{ partial `asset-url.html` . }}" alt="{{ $s.author | default site.Title }}" width="128" height="128"></a>
       {{- end }}
       {{- with $s.author | default site.Params.author }}<h2 class="sidebar-author">{{ . }}</h2>{{ end }}
       {{- with $s.description }}<div class="sidebar-desc">{{ . | markdownify }}</div>{{ end }}

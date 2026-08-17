@@ -1,6 +1,6 @@
 # Beacon
 
-A clean, fast blog theme for [Hugo](https://gohugo.io/) with a two-column card layout, responsive images, multilingual navigation, and an Auto / Light / Dark color scheme.
+A clean, fast blog theme for [Hugo](https://gohugo.io/) with an editorial layout, responsive images, multilingual navigation, and an Auto / Light / Dark color scheme.
 
 ![Hugo](https://img.shields.io/badge/Hugo-0.155.3+-ff4088?logo=hugo) ![License](https://img.shields.io/badge/License-MIT-blue)
 
@@ -9,7 +9,7 @@ A clean, fast blog theme for [Hugo](https://gohugo.io/) with a two-column card l
 ## Features
 
 - Auto → Light → Dark theme control with system-theme tracking and persistence
-- Post cards, nested section archives, taxonomies, breadcrumbs, TOC, code copy, and share links
+- Editorial post lists, nested section archives, taxonomies, breadcrumbs, TOC, code copy, and share links
 - Responsive local images with orientation correction, WebP candidates, intrinsic dimensions, and safe fallbacks
 - Gallery waterfall/timeline layouts with captions, EXIF details, and an accessible lightbox
 - Optional accessible sidebar, Sponsor cards, comments, build-time math, music, and Profile homepage
@@ -64,13 +64,14 @@ The starter has no comments, music, Iconify, Sponsor provider, or real external 
   showReadingTime = true
   showWordCount = true
   showAuthor = true
+  showDate = true
   showSummary = true
   showToc = true
   showBreadcrumbs = true
   showShareButtons = true
 ```
 
-All `show…` values may be overridden in page front matter. An explicit `false` always wins over the site default.
+All `show…` values may be overridden in page front matter. An explicit `false` always wins over the site default. Set `pinned = true` to render a localized list badge; use Hugo's `weight` independently when the page should sort first.
 
 ### URLs and links
 
@@ -113,6 +114,8 @@ The legacy page parameter `private: true` remains an alias for compatibility but
 [params.sidebar]
   enabled = true
   position = "left"
+  showOnSingle = true
+  showOnMobile = true
   avatar = "images/avatar.svg"
   author = "Your Name"
   description = "A short biography."
@@ -126,7 +129,7 @@ The legacy page parameter `private: true` remains an alias for compatibility but
   enabled = false
 ```
 
-The sidebar becomes a focus-trapped drawer on mobile. Avatar dimensions can be customized with your own layout override if the source is not square.
+`showOnSingle` and `showOnMobile` default to `true` for compatibility. Set both to `false` for a desktop-only sidebar on list pages. When enabled on mobile, the sidebar becomes a focus-trapped drawer. Avatar dimensions can be customized with your own layout override if the source is not square.
 
 ### Comments
 

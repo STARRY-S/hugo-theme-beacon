@@ -17,10 +17,16 @@ enableRobotsTXT = true
   dateFormat = ":date_long"
   showReadingTime = true
   showWordCount = true
+  showDate = true
   showSummary = true
   showToc = true
   showBreadcrumbs = true
   showShareButtons = true
+
+[params.sidebar]
+  enabled = false
+  showOnSingle = true
+  showOnMobile = true
 
 [[menus.main]]
   name = "Posts"

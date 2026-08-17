@@ -1,7 +1,7 @@
 name = "Beacon"
 license = "MIT"
 licenselink = "https://github.com/starry-s/hugo-theme-beacon/blob/main/LICENSE"
-description = "A clean, fast, modern Hugo blog theme with a dual-column layout, responsive images, and auto/light/dark modes."
+description = "A clean, fast Hugo blog theme with an editorial layout, responsive images, and auto/light/dark modes."
 homepage = "https://github.com/starry-s/hugo-theme-beacon"
 demosite = "https://beacon-demo.starry-s.moe"
 tags = ["blog", "minimal", "responsive", "dark mode", "clean"]

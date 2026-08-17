@@ -1,10 +1,11 @@
 ---
 title: "歡迎使用 Beacon"
+pinned: true
 date: 2026-07-01T09:00:00+08:00
 draft: false
 tags: ["hugo", "theme", "getting-started"]
 categories: ["announcements"]
-description: "認識 Beacon —— 一款簡潔、快速的 Hugo 主題，採用雙欄卡片版面與現代深灰配色。"
+description: "認識 Beacon —— 一款簡潔、快速的 Hugo 主題，採用編輯式版面與現代深灰配色。"
 cover:
   image: ""
   caption: ""
@@ -15,11 +16,11 @@ Beacon 是一款為速度與可讀性打造的極簡部落格主題。這篇文�
 
 ## 有哪些功能
 
-Beacon 將雙欄卡片版面與現代深灰配色、清晰的排版以及細膩的動效結合在一起，
+Beacon 將輕量編輯式版面與現代深灰配色、清晰的排版以及克制的動效結合在一起，
 帶來平靜而專注的閱讀體驗。它內建了：
 
 - 淺色 / 深色 / 自動 三種配色模式，並會記住你的選擇
-- 簡潔雙欄版面的卡片式文章列表首頁
+- 使用細分隔線組織的編輯式文章列表首頁
 - 閱讀時間、字數、標籤與麵包屑導覽
 - 目錄、程式碼複製按鈕與分享連結
 - 開箱即用的 SEO、OpenGraph 與 Twitter 卡片中繼資料

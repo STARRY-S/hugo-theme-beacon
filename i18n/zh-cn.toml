@@ -137,3 +137,15 @@ other = "页"
 
 [undated]
 other = "无日期"
+
+[mainNavigation]
+other = "主导航"
+
+[openMenu]
+other = "打开菜单"
+
+[closeMenu]
+other = "关闭菜单"
+
+[pinned]
+other = "置顶"

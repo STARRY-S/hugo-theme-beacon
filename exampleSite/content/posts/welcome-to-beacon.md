@@ -1,10 +1,11 @@
 ---
 title: "Welcome to Beacon"
+pinned: true
 date: 2026-07-01T09:00:00+08:00
 draft: false
 tags: ["hugo", "theme", "getting-started"]
 categories: ["announcements"]
-description: "Meet Beacon — a clean, fast Hugo theme with a dual-column card layout and a modern deep-charcoal palette."
+description: "Meet Beacon — a clean, fast Hugo theme with an editorial layout and a modern deep-charcoal palette."
 cover:
   image: ""
   caption: ""
@@ -15,12 +16,12 @@ off the typography and features so you can see how your content will look.
 
 ## What's inside
 
-Beacon pairs a two-column card layout with a modern deep-charcoal palette,
+Beacon pairs a focused editorial layout with a modern deep-charcoal palette,
 crisp typography, and gentle motion — a calm, focused reading experience. It
 ships with:
 
 - Light / dark / auto color modes with a persisted toggle
-- A card-based post list homepage in a clean two-column layout
+- A separated post list with an optional profile sidebar
 - Reading time, word count, tags, and breadcrumbs
 - Table of contents, code-copy buttons, and share links
 - SEO, OpenGraph, and Twitter card metadata out of the box

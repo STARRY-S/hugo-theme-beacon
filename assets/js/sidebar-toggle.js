@@ -5,7 +5,7 @@
   var closeBtn = document.querySelector(".sidebar-close");
   var overlay = document.querySelector(".sidebar-overlay");
   var sidebar = document.getElementById("sidebar");
-  var mobile = window.matchMedia("(max-width: 900px)");
+  var mobile = window.matchMedia("(max-width: 1099px)");
   var hideTimer = 0;
   var openFrame = 0;
   var backgroundState = [];

@@ -1,9 +1,11 @@
 {{- /* Post metadata line: date, reading time, word count */ -}}
 <div class="post-meta">
+  {{- if partial "param-bool.html" (dict "page" . "key" "showDate" "default" true) }}
   {{- with .PublishDate }}
     <span class="meta-date">
       <time datetime="{{ .Format "2006-01-02" }}">{{ time.Format (or site.Params.dateFormat ":date_long") . }}</time>
     </span>
+  {{- end }}
   {{- end }}
   {{- if partial "param-bool.html" (dict "page" . "key" "showReadingTime" "default" false) }}
     <span class="meta-reading-time">{{ .ReadingTime }} {{ i18n "minutes" .ReadingTime }}</span>

@@ -80,6 +80,10 @@ function assertHtmlIntegrity(output, pathPrefix) {
 
 function assertExample(output, pathPrefix) {
   const prefix = pathPrefix === "/" ? "/" : pathPrefix;
+  const home = text(output, "index.html");
+  assert.match(home, /<body class="list kind-home type-page has-sidebar sidebar-left sidebar-mobile-enabled"/);
+  assert.match(home, /id=nav-toggle[^>]+aria-controls=nav-menu/);
+
   const page2 = text(output, "page/2/index.html");
   assert.match(page2, /<title>Beacon Demo · Page 2<\/title>/);
   assert.match(page2, new RegExp(`rel=canonical href=https://example\\.test${prefix === "/" ? "/" : prefix}page/2/`));
@@ -94,11 +98,19 @@ function assertExample(output, pathPrefix) {
   const chinesePost = text(output, "zh-cn/posts/welcome-to-beacon/index.html");
   assert.match(chinesePost, new RegExp(`href=${prefix}zh-cn/tags/hugo/`));
   assert.match(chinesePost, new RegExp(`href=${prefix}zh-cn/posts/`));
-  assert.match(chinesePost, new RegExp(`href=${prefix}zh-cn/index\\.xml`));
-  assert.match(chinesePost, new RegExp(`src=${prefix}images/avatar\\.svg`));
+  assert.match(chinesePost, /<body class="single kind-page type-posts"/);
+  assert.doesNotMatch(chinesePost, /id=sidebar/);
   assert.match(chinesePost, /class=breadcrumbs/);
+  // Hugo releases before locale became the primary localization key fall back
+  // to English here; both supported versions must still honor the date token.
+  assert.match(chinesePost, /<time datetime=2026-07-01>(?:2026年7月1日|July 1, 2026)<\/time>/);
+  const chineseHome = text(output, "zh-cn/index.html");
+  assert.match(chineseHome, new RegExp(`src=${prefix}images/avatar\\.svg`));
+  assert.match(chineseHome, new RegExp(`href=${prefix}zh-cn/index\\.xml`));
+  assert.match(chineseHome, /class="?entry-pinned"?>置顶</);
 
   const about = text(output, "about/index.html");
+  assert.match(about, /<body class="single kind-page type-page"/);
   assert.doesNotMatch(about, /class=breadcrumbs/);
   assert.doesNotMatch(about, /class=sponsor-wrapper|id=comments/);
   assert.match(about, new RegExp(`<img[^>]+src=${prefix}images/screenshots/beacon-home-dark\\.png[^>]*>`));
@@ -107,9 +119,12 @@ function assertExample(output, pathPrefix) {
   assert.doesNotMatch(page2, /Lowering the bar until publishing/);
 
   const section = text(output, "posts/index.html");
+  assert.match(section, /<body class="list kind-section type-posts has-sidebar sidebar-left sidebar-mobile-enabled"/);
   assert.match(section, new RegExp(`href=${prefix}posts/2025/nested-section/`));
 
   const gallery = text(output, "gallery/index.html");
+  assert.match(gallery, /<body class="single kind-page type-gallery"/);
+  assert.doesNotMatch(gallery, /id=sidebar/);
   assert.match(gallery, /<picture>/);
   assert.match(gallery, /type=image\/webp/);
   assert.match(gallery, new RegExp(`srcset="${prefix}gallery/`));
@@ -177,11 +192,13 @@ const subpathOutput = buildExample("/blog/");
 assertExample(subpathOutput, "/blog/");
 
 const indexingSource = fixtureSite({
-  "public.md": "---\ntitle: Public\ndate: 2026-01-02\ntags: [fixture]\n---\n\n## Public heading\n",
+  "public.md": "---\ntitle: Public\ndate: 2026-01-02\ntags: [fixture]\npinned: true\nshowDate: false\n---\n\n## Public heading\n",
   "hidden.md": "---\ntitle: Hidden\ndate: 2026-01-01\ntags: [fixture]\nnoindex: true\nshowSummary: false\nshowToc: false\nshowBreadcrumbs: false\n---\n\n## Hidden heading\n",
   "legacy.md": "---\ntitle: Legacy\ndate: 2025-12-31\ntags: [fixture]\nprivate: true\n---\n\nLegacy alias.\n",
 });
 const indexing = buildFixture(indexingSource).output;
+assert.match(text(indexing, "index.html"), /class="?entry-pinned"?>Pinned</);
+assert.doesNotMatch(text(indexing, "posts/nested/public/index.html"), /<time datetime=2026-01-02/);
 assert.match(text(indexing, "posts/nested/hidden/index.html"), /name="robots" content="noindex, follow"/);
 assert.doesNotMatch(text(indexing, "posts/nested/hidden/index.html"), /class="breadcrumbs"|class="toc"/);
 const sitemap = text(indexing, "sitemap.xml");
@@ -193,6 +210,31 @@ assert.match(termPage2, /<title>Fixture · Page 2 · Fixture<\/title>/);
 assert.match(termPage2, /rel="canonical" href="https:\/\/fixture\.test\/tags\/fixture\/page\/2\/"/);
 assert.match(termPage2, /property="og:url" content="https:\/\/fixture\.test\/tags\/fixture\/page\/2\/"/);
 assert.match(termPage2, /rel="prev" href="https:\/\/fixture\.test\/tags\/fixture\/"/);
+
+const sidebarCompatibilitySource = fixtureSite({
+  "sidebar.md": "---\ntitle: Sidebar page\ndate: 2026-01-01\n---\n\nSidebar fixture.\n",
+}, `
+[params.sidebar]
+  enabled = true
+  author = "Fixture author"
+`);
+const sidebarCompatibility = buildFixture(sidebarCompatibilitySource).output;
+assert.match(text(sidebarCompatibility, "index.html"), /has-sidebar[^"]*sidebar-mobile-enabled/);
+assert.match(text(sidebarCompatibility, "posts/nested/sidebar/index.html"), /has-sidebar[^"]*sidebar-mobile-enabled/);
+
+const listOnlySidebarSource = fixtureSite({
+  "list-only.md": "---\ntitle: List only\ndate: 2026-01-01\n---\n\nList-only fixture.\n",
+}, `
+[params.sidebar]
+  enabled = true
+  showOnSingle = false
+  showOnMobile = false
+  author = "Fixture author"
+`);
+const listOnlySidebar = buildFixture(listOnlySidebarSource).output;
+assert.match(text(listOnlySidebar, "index.html"), /has-sidebar sidebar-left/);
+assert.doesNotMatch(text(listOnlySidebar, "index.html"), /sidebar-mobile-enabled/);
+assert.doesNotMatch(text(listOnlySidebar, "posts/nested/list-only/index.html"), /has-sidebar|id=sidebar/);
 
 const profileSource = fixtureSite({
   "profile-post.md": "---\ntitle: Profile post\ndate: 2026-01-01\n---\n\nProfile fixture.\n",

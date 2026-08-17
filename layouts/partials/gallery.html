@@ -37,12 +37,13 @@
     {{- /* Explicit front matter captions win over sidecars. */ -}}
     {{- if not $caption }}{{ $caption = partial "gallery-meta.html" (dict "img" $img "page" $page) }}{{ end -}}
     {{- $alt := or $img.Params.alt $caption "" -}}
+    {{- $accessibleName := printf "%s: %s" (i18n "openImagePreview") (or $alt $img.Name) -}}
     {{- $exif := partial "gallery-exif.html" $img -}}
     {{- $imageIndex := $page.Store.Get "beaconGalleryImageIndex" | default 0 -}}
     {{- $eager := eq $imageIndex 0 -}}
     {{- $page.Store.Set "beaconGalleryImageIndex" (add $imageIndex 1) -}}
-    <a class="gallery__item" href="{{ $full.RelPermalink }}"
-       {{ with $caption }}data-caption="{{ . }}"{{ end }}
+    <a class="gallery__item" href="{{ $full.RelPermalink }}" aria-label="{{ $accessibleName }}"
+       {{ with $alt }}data-caption="{{ . }}"{{ end }}
        {{- with $exif.camera }} data-camera="{{ . }}"{{ end }}
        {{- with $exif.lens }} data-lens="{{ . }}"{{ end }}
        {{- with $exif.settings }} data-settings="{{ . }}"{{ end }}
@@ -52,12 +53,12 @@
         <source type="image/webp" srcset="{{ range $i, $candidate := $webps }}{{ if $i }}, {{ end }}{{ $candidate.RelPermalink }} {{ $candidate.Width }}w{{ end }}" sizes="(max-width: 480px) 100vw, (max-width: 900px) 50vw, 33vw">
         <img class="gallery__img zoomable" src="{{ $fallback.RelPermalink }}"
              width="{{ $fallback.Width }}" height="{{ $fallback.Height }}" data-full="{{ $full.RelPermalink }}"
-             alt="{{ $alt }}"{{ with $caption }} title="{{ . }}"{{ end }}
+             alt=""
              loading="{{ if $eager }}eager{{ else }}lazy{{ end }}"{{ if $eager }} fetchpriority="high"{{ end }} decoding="async" />
       </picture>
       {{- else }}
       <img class="gallery__img zoomable" src="{{ $img.RelPermalink }}" data-full="{{ $img.RelPermalink }}"
-           alt="{{ $alt }}"{{ with $caption }} title="{{ . }}"{{ end }} loading="{{ if $eager }}eager{{ else }}lazy{{ end }}" decoding="async" />
+           alt="" loading="{{ if $eager }}eager{{ else }}lazy{{ end }}" decoding="async" />
       {{- end }}
       {{- with $caption }}<div class="gallery__caption">{{ . | markdownify }}</div>{{ end -}}
     </a>

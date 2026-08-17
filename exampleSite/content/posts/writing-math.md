@@ -39,7 +39,7 @@ $$
 \end{aligned}
 $$
 
-Wide equations scroll horizontally inside the card instead of overflowing on
+Wide equations scroll horizontally inside the reading column instead of overflowing on
 small screens:
 
 $$

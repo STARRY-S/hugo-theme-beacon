@@ -12,7 +12,7 @@ decisions that add up to something you can read for an hour without eye strain.
 
 ## Avoid pure black
 
-Deep charcoal (`#1d1e20`) is softer than `#000` and lets cards sit *above* the
+Deep charcoal (`#1c1d1f`) is softer than `#000` and lets raised controls sit *above* the
 background using nothing but a lighter grey. Contrast comes from layering, not
 from hard borders.
 

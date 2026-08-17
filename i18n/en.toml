@@ -137,3 +137,15 @@ other = "Page"
 
 [undated]
 other = "Undated"
+
+[mainNavigation]
+other = "Main navigation"
+
+[openMenu]
+other = "Open menu"
+
+[closeMenu]
+other = "Close menu"
+
+[pinned]
+other = "Pinned"

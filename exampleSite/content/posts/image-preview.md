@@ -14,8 +14,8 @@ backdrop to close. When a post has several images, use the arrows or the
 
 ## The theme at a glance
 
-Here is Beacon's homepage in dark mode — a two-column card layout with a profile
-sidebar and a paginated post list.
+Here is Beacon's homepage in dark mode — an editorial post list with an optional
+profile sidebar.
 
 ![Beacon homepage in dark mode](/images/screenshots/beacon-home-dark.png "Beacon homepage — dark mode")
 

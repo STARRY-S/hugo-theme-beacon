@@ -137,3 +137,15 @@ other = "ページ"
 
 [undated]
 other = "日付なし"
+
+[mainNavigation]
+other = "メインナビゲーション"
+
+[openMenu]
+other = "メニューを開く"
+
+[closeMenu]
+other = "メニューを閉じる"
+
+[pinned]
+other = "固定"

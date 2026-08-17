@@ -137,3 +137,15 @@ other = "頁"
 
 [undated]
 other = "無日期"
+
+[mainNavigation]
+other = "主導覽"
+
+[openMenu]
+other = "開啟選單"
+
+[closeMenu]
+other = "關閉選單"
+
+[pinned]
+other = "置頂"

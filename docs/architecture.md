@@ -8,6 +8,8 @@ This document records constraints that are easy to break during otherwise reason
 
 SCSS is compiled by Hugo Pipes with the external Dart Sass transpiler. `main.scss` uses `@use`; placeholders shared through `_base.scss` must be imported in every module that extends them. Production output remains one fingerprinted stylesheet and one small fingerprinted first-party script.
 
+The layout is editorial rather than card-based. The site shell tops out at 1200px, list content at 880px, normal reading content at 760px, and galleries at 1100px. A 260px desktop sidebar appears at 1100px and above. `showOnSingle` and `showOnMobile` retain the legacy behavior by default; sites can disable them independently. Body kind/type classes are the stable styling hooks for these scopes.
+
 The empty `extend_head.html` and `extend_footer.html` partials are supported site override hooks. `extend_footer.html` must not be cached because a site override may vary per page.
 
 ## URLs and metadata
@@ -41,6 +43,6 @@ Gallery dates prefer image resource `.Meta.Date`, then a `YYYYMMDD-HHMMSS` filen
 
 The theme preference cycle is Auto → Light → Dark → Auto. `beacon-theme=light|dark` remains compatible; Auto deletes the key and follows system changes. `beacon:themechange` carries `{ mode, isDark }`; consumers relying on `isDark` remain supported.
 
-The mobile sidebar and image lightbox trap focus, close with Escape, restore the opener, and make background content inert. The Sponsor disclosure must not leave collapsed controls focusable. Hidden back-to-top controls leave the tab order, and reduced-motion preferences disable JavaScript smooth scrolling.
+The mobile sidebar and image lightbox trap focus, close with Escape, restore the opener, and make background content inert. Below 640px the global navigation is a separate disclosure that closes with Escape or an outside click and restores focus; closed links must not remain in the tab order. The Sponsor disclosure must not leave collapsed controls focusable. Hidden back-to-top controls leave the tab order, and reduced-motion preferences disable JavaScript smooth scrolling.
 
 Copy feedback is announced through a live region only after success; failure is localized and does not impersonate success.

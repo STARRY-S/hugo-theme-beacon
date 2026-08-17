@@ -1,20 +1,27 @@
+{{- $page := .page -}}
 <header class="header">
-  <nav class="nav">
+  <nav class="nav" aria-label="{{ i18n `mainNavigation` | default `Main navigation` }}">
     <div class="nav-brand">
-      {{- with site.Params.sidebar }}{{ if .enabled }}
+      {{- if and .showSidebar .showSidebarMobile }}
         <button type="button" id="sidebar-toggle" class="sidebar-toggle" aria-label="{{ i18n "openSidebar" | default "Open sidebar" }}" aria-controls="sidebar" aria-expanded="false">
           <svg class="icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
-      {{ end }}{{ end -}}
+      {{- end }}
       <a href="{{ site.Home.RelPermalink }}" class="brand-title">
         {{- with site.Params.logo }}<img src="{{ partial `asset-url.html` . }}" alt="{{ site.Title }}" class="brand-logo" width="{{ site.Params.logoWidth | default 28 }}" height="{{ site.Params.logoHeight | default 28 }}">{{ end -}}
         {{ site.Title }}
       </a>
     </div>
 
-    <ul class="nav-links">
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="{{ i18n `openMenu` | default `Open menu` }}" aria-controls="nav-menu" aria-expanded="false">
+      <svg class="icon icon-menu" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <svg class="icon icon-close" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+
+    <div class="nav-menu" id="nav-menu">
+      <ul class="nav-links">
       {{- range site.Menus.main }}
-        {{- $active := or ($.IsMenuCurrent "main" .) ($.HasMenuCurrent "main" .) }}
+        {{- $active := or ($page.IsMenuCurrent "main" .) ($page.HasMenuCurrent "main" .) }}
         {{- $external := partial "is-external-url.html" .URL }}
         <li>
           <a href="{{ .URL }}"{{ if $active }} class="active"{{ end }}{{ if $external }} target="_blank" rel="{{ with .Params.rel }}{{ . }} {{ end }}noopener noreferrer"{{ else }}{{ with .Params.rel }} rel="{{ . }}"{{ end }}{{ end }}>
@@ -23,15 +30,15 @@
         </li>
       {{- end }}
       {{- if gt (len site.Home.AllTranslations) 1 }}
-        <li class="nav-lang">{{ partial "lang-switcher.html" . }}</li>
+        <li class="nav-lang">{{ partial "lang-switcher.html" $page }}</li>
       {{- end }}
-      <li>
-        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="{{ i18n "toggleTheme" | default "Toggle theme" }}" title="{{ i18n "toggleTheme" | default "Toggle theme" }}">
-          <svg class="icon icon-auto" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-          <svg class="icon icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-          <svg class="icon icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-        </button>
-      </li>
-    </ul>
+      </ul>
+    </div>
+
+    <button type="button" id="theme-toggle" class="theme-toggle" aria-label="{{ i18n "toggleTheme" | default "Toggle theme" }}" title="{{ i18n "toggleTheme" | default "Toggle theme" }}">
+      <svg class="icon icon-auto" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <svg class="icon icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="icon icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </button>
   </nav>
 </header>

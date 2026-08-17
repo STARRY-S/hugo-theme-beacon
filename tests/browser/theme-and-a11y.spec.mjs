@@ -28,6 +28,9 @@ test("theme cycles Auto, Light, Dark and follows the system", async ({ page }) =
   const toggle = page.locator("#theme-toggle");
   await expect(root).toHaveAttribute("data-theme", "auto");
   await expect(root).toHaveClass(/dark/);
+  await expect(toggle.locator(".icon-auto")).toBeVisible();
+  await expect(toggle.locator(".icon-sun")).toBeHidden();
+  await expect(toggle.locator(".icon-moon")).toBeHidden();
 
   const events = await page.evaluate(() => {
     window.__beaconEvents = [];
@@ -38,10 +41,16 @@ test("theme cycles Auto, Light, Dark and follows the system", async ({ page }) =
 
   await toggle.click();
   await expect(root).toHaveAttribute("data-theme", "light");
+  await expect(toggle.locator(".icon-auto")).toBeHidden();
+  await expect(toggle.locator(".icon-sun")).toBeVisible();
+  await expect(toggle.locator(".icon-moon")).toBeHidden();
   expect(await page.evaluate(() => localStorage.getItem("beacon-theme"))).toBe("light");
 
   await toggle.click();
   await expect(root).toHaveAttribute("data-theme", "dark");
+  await expect(toggle.locator(".icon-auto")).toBeHidden();
+  await expect(toggle.locator(".icon-sun")).toBeHidden();
+  await expect(toggle.locator(".icon-moon")).toBeVisible();
   await toggle.click();
   await expect(root).toHaveAttribute("data-theme", "auto");
   expect(await page.evaluate(() => localStorage.getItem("beacon-theme"))).toBeNull();
@@ -64,13 +73,15 @@ test("dark palette keeps content rules and component boundaries visible", async 
     content.append(rule, divider);
 
     const style = (element) => getComputedStyle(element);
-    const post = document.querySelector(".post");
+    const body = document.body;
+    const toc = document.querySelector(".toc");
     const tag = document.querySelector(".post-tags .tag");
     const tableCell = document.querySelector(".post-content td");
 
     return {
-      surface: style(post).backgroundColor,
-      componentBorder: style(post).borderTopColor,
+      surface: style(body).backgroundColor,
+      raisedSurface: style(toc).backgroundColor,
+      componentBorder: style(toc).borderTopColor,
       divider: style(divider).borderTopColor,
       rule: style(rule).borderTopColor,
       tableBorder: style(tableCell).borderTopColor,
@@ -78,15 +89,12 @@ test("dark palette keeps content rules and component boundaries visible", async 
     };
   });
 
-  expect(contrastRatio(colors.componentBorder, colors.surface)).toBeGreaterThanOrEqual(1.5);
+  expect(contrastRatio(colors.componentBorder, colors.raisedSurface)).toBeGreaterThanOrEqual(1.3);
   expect(contrastRatio(colors.divider, colors.surface)).toBeGreaterThanOrEqual(1.9);
   expect(contrastRatio(colors.tableBorder, colors.surface)).toBeGreaterThanOrEqual(1.9);
   expect(contrastRatio(colors.rule, colors.surface)).toBeGreaterThanOrEqual(3);
   expect(contrastRatio(colors.tag, colors.surface)).toBeGreaterThanOrEqual(1.3);
 
-  // The post and sidebar fade in for 500ms; audit the settled colors rather
-  // than the deliberately translucent animation frames.
-  await page.waitForTimeout(600);
   const results = await new AxeBuilder({ page }).withRules(["color-contrast"]).analyze();
   expect(results.violations).toEqual([]);
 });
@@ -116,6 +124,59 @@ test("mobile sidebar traps focus, closes with Escape, and restores focus", async
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
   await expect(sidebar).not.toHaveAttribute("aria-hidden", "true");
   await expect(sidebar).toHaveJSProperty("inert", false);
+});
+
+test("mobile navigation discloses links and restores focus", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const toggle = page.locator("#nav-toggle");
+  const menu = page.locator("#nav-menu");
+
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(menu).toBeHidden();
+  await expect(menu).toHaveJSProperty("inert", true);
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await expect(menu).toBeVisible();
+  await expect(menu).toHaveJSProperty("inert", false);
+
+  await page.keyboard.press("Escape");
+  await expect(toggle).toBeFocused();
+  await expect(menu).toBeHidden();
+
+  await toggle.click();
+  await page.locator("main").click({ position: { x: 10, y: 10 } });
+  await expect(menu).toBeHidden();
+});
+
+test("editorial layout stays fluid across sidebar breakpoints", async ({ page }) => {
+  const widths = [320, 390, 640, 900, 1099, 1100, 1440];
+  const mainWidths = new Map();
+
+  for (const width of widths) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    const metrics = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      mainWidth: Math.round(document.querySelector("main").getBoundingClientRect().width),
+      sidebarVisible: document.querySelector(".sidebar").getBoundingClientRect().width > 0
+        && getComputedStyle(document.querySelector(".sidebar")).visibility !== "hidden",
+    }));
+    expect(metrics.scrollWidth).toBe(width);
+    expect(metrics.sidebarVisible).toBe(width >= 1100);
+    mainWidths.set(width, metrics.mainWidth);
+  }
+
+  expect(mainWidths.get(1099) - mainWidths.get(1100)).toBeLessThanOrEqual(160);
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  for (const [path, maximum] of [["/posts/welcome-to-beacon/", 760], ["/gallery/", 1100]]) {
+    await page.goto(path);
+    await expect(page.locator("#sidebar")).toHaveCount(0);
+    const width = await page.locator("main").evaluate((element) => Math.round(element.getBoundingClientRect().width));
+    expect(width).toBeLessThanOrEqual(maximum);
+  }
 });
 
 test("lightbox traps focus and restores the image trigger", async ({ page }) => {
@@ -229,3 +290,35 @@ test("optional third-party assets stay scoped and the homepage passes axe", asyn
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);
 });
+
+for (const path of ["/", "/posts/welcome-to-beacon/", "/gallery/", "/tags/"]) {
+  for (const theme of ["light", "dark"]) {
+    test(`${path} passes axe in ${theme} mode`, async ({ page }) => {
+      await page.addInitScript((value) => localStorage.setItem("beacon-theme", value), theme);
+      await page.goto(path);
+      const results = await new AxeBuilder({ page }).analyze();
+      expect(results.violations).toEqual([]);
+    });
+  }
+}
+
+for (const visual of [
+  { name: "home-desktop-light", path: "/", width: 1440, height: 1000, theme: "light" },
+  { name: "home-mobile-dark", path: "/", width: 390, height: 844, theme: "dark" },
+  { name: "post-desktop-dark", path: "/posts/welcome-to-beacon/", width: 1440, height: 1000, theme: "dark" },
+  { name: "post-mobile-light", path: "/posts/welcome-to-beacon/", width: 390, height: 844, theme: "light" },
+  { name: "gallery-desktop-light", path: "/gallery/", width: 1440, height: 1000, theme: "light" },
+  { name: "gallery-mobile-dark", path: "/gallery/", width: 390, height: 844, theme: "dark" },
+  { name: "tags-desktop-dark", path: "/tags/", width: 1440, height: 1000, theme: "dark" },
+  { name: "tags-mobile-light", path: "/tags/", width: 390, height: 844, theme: "light" },
+]) {
+  test(`visual regression: ${visual.name}`, async ({ page }) => {
+    await page.setViewportSize({ width: visual.width, height: visual.height });
+    await page.addInitScript((theme) => localStorage.setItem("beacon-theme", theme), visual.theme);
+    await page.goto(visual.path);
+    await expect(page).toHaveScreenshot(`${visual.name}.png`, {
+      animations: "disabled",
+      maxDiffPixelRatio: 0.01,
+    });
+  });
+}
