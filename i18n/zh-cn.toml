@@ -31,7 +31,7 @@ other = "较旧"
 other = "首页"
 
 [notFound]
-other = "哎呀！此页面不存在。"
+other = "Oops！此页面不存在。"
 
 [backHome]
 other = "返回首页"
@@ -96,7 +96,7 @@ other = "浅色"
 other = "深色"
 
 [shareTwitter]
-other = "分享到 X/Twitter"
+other = "分享到 X"
 
 [shareLinkedin]
 other = "分享到 LinkedIn"
@@ -120,10 +120,10 @@ other = "暂无照片。"
 other = "评论"
 
 [poweredBy]
-other = "基于"
+other = "Powered by"
 
 [hostedOn]
-other = "托管于"
+other = "Hosted on"
 
 [sponsor]
 other = "请我喝杯咖啡"
@@ -149,3 +149,6 @@ other = "关闭菜单"
 
 [pinned]
 other = "置顶"
+
+[topTags]
+other = "热门标签"

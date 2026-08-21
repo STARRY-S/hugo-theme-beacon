@@ -106,6 +106,7 @@ function assertExample(output, pathPrefix) {
   assert.match(chinesePost, /<time datetime=2026-07-01>(?:2026年7月1日|July 1, 2026)<\/time>/);
   const chineseHome = text(output, "zh-cn/index.html");
   assert.match(chineseHome, new RegExp(`src=${prefix}images/avatar\\.svg`));
+  assert.match(chineseHome, /class=sidebar-avatar[^>]+width=128 height=128/);
   assert.match(chineseHome, new RegExp(`href=${prefix}zh-cn/index\\.xml`));
   assert.match(chineseHome, /class="?entry-pinned"?>置顶</);
 
@@ -212,14 +213,19 @@ assert.match(termPage2, /property="og:url" content="https:\/\/fixture\.test\/tag
 assert.match(termPage2, /rel="prev" href="https:\/\/fixture\.test\/tags\/fixture\/"/);
 
 const sidebarCompatibilitySource = fixtureSite({
-  "sidebar.md": "---\ntitle: Sidebar page\ndate: 2026-01-01\n---\n\nSidebar fixture.\n",
+  "sidebar.md": "---\ntitle: Sidebar page\ndate: 2026-01-01\ntags: [Alpha, Beta]\n---\n\nSidebar fixture.\n",
+  "sidebar-two.md": "---\ntitle: Second sidebar page\ndate: 2026-01-02\ntags: [Alpha]\n---\n\nSecond sidebar fixture.\n",
 }, `
 [params.sidebar]
   enabled = true
   author = "Fixture author"
+  showTopTags = true
+  topTagsLimit = 1
 `);
 const sidebarCompatibility = buildFixture(sidebarCompatibilitySource).output;
 assert.match(text(sidebarCompatibility, "index.html"), /has-sidebar[^"]*sidebar-mobile-enabled/);
+assert.match(text(sidebarCompatibility, "index.html"), /class="sidebar-tag" href="\/tags\/alpha\/"/);
+assert.doesNotMatch(text(sidebarCompatibility, "index.html"), /class="sidebar-tag" href="\/tags\/beta\/"/);
 assert.match(text(sidebarCompatibility, "posts/nested/sidebar/index.html"), /has-sidebar[^"]*sidebar-mobile-enabled/);
 
 const listOnlySidebarSource = fixtureSite({

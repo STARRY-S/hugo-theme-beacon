@@ -117,9 +117,12 @@ The legacy page parameter `private: true` remains an alias for compatibility but
   showOnSingle = true
   showOnMobile = true
   avatar = "images/avatar.svg"
+  avatarSize = 128
   author = "Your Name"
   description = "A short biography."
   showStats = true
+  showTopTags = true
+  topTagsLimit = 8
 
   [[params.sidebar.items]]
     name = "About"
@@ -129,7 +132,7 @@ The legacy page parameter `private: true` remains an alias for compatibility but
   enabled = false
 ```
 
-`showOnSingle` and `showOnMobile` default to `true` for compatibility. Set both to `false` for a desktop-only sidebar on list pages. When enabled on mobile, the sidebar becomes a focus-trapped drawer. Avatar dimensions can be customized with your own layout override if the source is not square.
+`showOnSingle` and `showOnMobile` default to `true` for compatibility. Set both to `false` for a desktop-only sidebar on list pages. When enabled on mobile, the sidebar becomes a focus-trapped drawer. `avatarSize` sets the square avatar size in pixels and defaults to `128`. `showTopTags` is opt-in and lists the most-used tags for the current language; `topTagsLimit` defaults to `8`, while `topTagsTitle` optionally overrides the localized heading. Non-square avatars can still be customized with a layout override.
 
 ### Comments
 

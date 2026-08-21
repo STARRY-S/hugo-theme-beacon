@@ -171,6 +171,15 @@ test("editorial layout stays fluid across sidebar breakpoints", async ({ page })
   expect(mainWidths.get(1099) - mainWidths.get(1100)).toBeLessThanOrEqual(160);
 
   await page.setViewportSize({ width: 1440, height: 900 });
+  const socialIconMetrics = await page.locator(".sidebar-social a").first().evaluate((link) => {
+    const icon = link.querySelector(".icon, iconify-icon");
+    return {
+      hitArea: Math.round(link.getBoundingClientRect().width),
+      icon: Math.round(icon.getBoundingClientRect().width),
+    };
+  });
+  expect(socialIconMetrics).toEqual({ hitArea: 36, icon: 24 });
+
   for (const [path, maximum] of [["/posts/welcome-to-beacon/", 760], ["/gallery/", 1100]]) {
     await page.goto(path);
     await expect(page.locator("#sidebar")).toHaveCount(0);

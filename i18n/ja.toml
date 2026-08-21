@@ -149,3 +149,6 @@ other = "メニューを閉じる"
 
 [pinned]
 other = "固定"
+
+[topTags]
+other = "人気のタグ"

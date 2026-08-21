@@ -1,4 +1,8 @@
 {{- $s := site.Params.sidebar }}
+{{- $avatarSize := 128 -}}
+{{- with $s.avatarSize }}
+  {{- if gt (int .) 0 }}{{ $avatarSize = int . }}{{ end -}}
+{{- end }}
 <aside class="sidebar" id="sidebar">
   <button type="button" class="sidebar-close" aria-label="{{ i18n "closeSidebar" | default "Close" }}">
     <svg class="icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -8,7 +12,7 @@
     {{- /* Profile: avatar + name + description */ -}}
     <section class="sidebar-block sidebar-profile">
       {{- with $s.avatar }}
-        <a href="{{ site.Home.RelPermalink }}"><img class="sidebar-avatar" src="{{ partial `asset-url.html` . }}" alt="{{ $s.author | default site.Title }}" width="128" height="128"></a>
+        <a href="{{ site.Home.RelPermalink }}"><img class="sidebar-avatar" src="{{ partial `asset-url.html` . }}" alt="{{ $s.author | default site.Title }}" width="{{ $avatarSize }}" height="{{ $avatarSize }}"{{ if ne $avatarSize 128 }} style="{{ printf `--sidebar-avatar-size:%dpx` $avatarSize | safeCSS }}"{{ end }}></a>
       {{- end }}
       {{- with $s.author | default site.Params.author }}<h2 class="sidebar-author">{{ . }}</h2>{{ end }}
       {{- with $s.description }}<div class="sidebar-desc">{{ . | markdownify }}</div>{{ end }}
@@ -77,6 +81,29 @@
           {{- end }}
         </ul>
       </section>
+    {{- end }}
+
+    {{- /* Most-used tags for compact content discovery. */ -}}
+    {{- if $s.showTopTags }}
+      {{- $limit := 8 -}}
+      {{- with $s.topTagsLimit }}
+        {{- if gt (int .) 0 }}{{ $limit = int . }}{{ end -}}
+      {{- end }}
+      {{- with index site.Taxonomies "tags" }}
+        {{- with .ByCount }}
+          <section class="sidebar-block sidebar-top-tags">
+            <h3 class="sidebar-title">{{ $s.topTagsTitle | default (i18n "topTags") | default "Top tags" }}</h3>
+            <div class="sidebar-tag-list">
+              {{- range first $limit . }}
+                <a class="sidebar-tag" href="{{ .Page.RelPermalink }}">
+                  <span class="sidebar-tag-name">{{ .Page.LinkTitle }}</span>
+                  <span class="sidebar-tag-count">{{ .Count }}</span>
+                </a>
+              {{- end }}
+            </div>
+          </section>
+        {{- end }}
+      {{- end }}
     {{- end }}
 
     {{- /* Friends / links */ -}}

@@ -149,3 +149,6 @@ other = "Close menu"
 
 [pinned]
 other = "Pinned"
+
+[topTags]
+other = "Top tags"

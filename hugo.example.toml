@@ -25,8 +25,11 @@ enableRobotsTXT = true
 
 [params.sidebar]
   enabled = false
+  avatarSize = 128
   showOnSingle = true
   showOnMobile = true
+  showTopTags = false
+  topTagsLimit = 8
 
 [[menus.main]]
   name = "Posts"

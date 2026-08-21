@@ -68,11 +68,11 @@
 
   .sidebar-avatar {
     @extend %avatar;
-    width: 128px;
-    height: 128px;
+    width: var(--sidebar-avatar-size, 128px);
+    height: var(--sidebar-avatar-size, 128px);
     border: 2px solid var(--color-border);
   }
-  .sidebar-author { font-size: 1.35rem; margin: 12px 0 4px; }
+  .sidebar-author { font-size: 1.35rem; margin: 12px 0 10px; }
   .sidebar-desc { color: var(--color-text-soft); font-size: 1.05rem; line-height: 1.6; margin: 0; }
 }
 
@@ -93,7 +93,25 @@
 }
 
 // Social row
-.sidebar-social { justify-content: center; margin-bottom: 0; }
+.sidebar-social {
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 0;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+  }
+
+  .icon,
+  iconify-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
 
 // Buttons — flat, list-aligned contact actions. No border/fill so they read the
 // same in light & dark (a bordered box is nearly invisible on the dark card but
@@ -153,6 +171,43 @@
     color: var(--color-text);
     &:hover { color: var(--color-primary); }
   }
+}
+
+// Popular tags — compact enough for the sidebar, with counts kept secondary.
+.sidebar-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 6px;
+}
+
+.sidebar-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 6px 8px;
+  border-radius: var(--radius);
+  background: var(--color-tag-bg);
+  color: var(--color-text);
+  font-size: 0.86rem;
+  line-height: 1.25;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-primary);
+  }
+}
+
+.sidebar-tag-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-tag-count {
+  color: var(--color-text-soft);
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
 }
 
 // ── Toggle + close buttons (mobile only) ─────────────────────────────
