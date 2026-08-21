@@ -38,6 +38,7 @@
   @media (max-width: 640px) { padding: 24px 0; }
 
   &:first-child { padding-top: 4px; }
+  &:last-of-type { border-bottom: 0; }
 
   .entry-cover {
     display: block;
