@@ -1,4 +1,4 @@
-// Off-canvas sidebar drawer for mobile
+// Off-canvas sidebar drawer for mobile and optional desktop single pages
 (function () {
   var body = document.body;
   var toggle = document.getElementById("sidebar-toggle");
@@ -6,10 +6,21 @@
   var overlay = document.querySelector(".sidebar-overlay");
   var sidebar = document.getElementById("sidebar");
   var mobile = window.matchMedia("(max-width: 1099px)");
+  var desktopDrawer = body.classList.contains("sidebar-drawer-enabled");
+  var mobileDrawer = body.classList.contains("sidebar-mobile-enabled");
   var hideTimer = 0;
   var openFrame = 0;
   var backgroundState = [];
   if (!toggle) return;
+
+  function drawerActive() {
+    if (!desktopDrawer) return mobile.matches;
+    return !mobile.matches || mobileDrawer;
+  }
+
+  function sidebarIsStatic() {
+    return !desktopDrawer && !mobile.matches;
+  }
 
   function background(disabled) {
     if (disabled) {
@@ -39,6 +50,7 @@
   }
 
   function open() {
+    if (!drawerActive()) return;
     window.clearTimeout(hideTimer);
     window.cancelAnimationFrame(openFrame);
     if (overlay) overlay.removeAttribute("hidden");
@@ -61,7 +73,7 @@
     body.classList.remove("sidebar-open");
     toggle.setAttribute("aria-expanded", "false");
     background(false);
-    if (sidebar && mobile.matches) {
+    if (sidebar && !sidebarIsStatic()) {
       sidebar.inert = true;
       sidebar.setAttribute("aria-hidden", "true");
     }
@@ -71,20 +83,23 @@
         if (!body.classList.contains("sidebar-open")) overlay.setAttribute("hidden", "");
       }, 300);
     }
-    if (restoreFocus !== false && mobile.matches) toggle.focus();
+    if (restoreFocus !== false && drawerActive()) toggle.focus();
   }
 
   function syncViewport() {
-    if (mobile.matches) {
+    if (drawerActive()) {
       if (!body.classList.contains("sidebar-open") && sidebar) {
         sidebar.inert = true;
         sidebar.setAttribute("aria-hidden", "true");
       }
     } else {
       close(false);
-      if (sidebar) {
+      if (sidebar && sidebarIsStatic()) {
         sidebar.inert = false;
         sidebar.removeAttribute("aria-hidden");
+      } else if (sidebar) {
+        sidebar.inert = true;
+        sidebar.setAttribute("aria-hidden", "true");
       }
       if (overlay) overlay.setAttribute("hidden", "");
     }
@@ -97,7 +112,7 @@
   if (overlay) overlay.addEventListener("click", function () { close(true); });
   if (sidebar) {
     sidebar.addEventListener("click", function (e) {
-      if (mobile.matches && e.target.closest("a")) close(false);
+      if (drawerActive() && e.target.closest("a")) close(false);
     });
   }
   document.addEventListener("keydown", function (e) {

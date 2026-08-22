@@ -2,9 +2,10 @@
 <header class="header">
   <nav class="nav" aria-label="{{ i18n `mainNavigation` | default `Main navigation` }}">
     <div class="nav-brand">
-      {{- if and .showSidebar .showSidebarMobile }}
-        <button type="button" id="sidebar-toggle" class="sidebar-toggle" aria-label="{{ i18n "openSidebar" | default "Open sidebar" }}" aria-controls="sidebar" aria-expanded="false">
-          <svg class="icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      {{- if and .renderSidebar (or .showSidebarMobile .sidebarDrawer) }}
+        {{- $openSidebar := i18n "openSidebar" | default "Open sidebar" -}}
+        <button type="button" id="sidebar-toggle" class="sidebar-toggle{{ if .sidebarDrawer }} sidebar-drawer-toggle{{ end }}" aria-label="{{ $openSidebar }}" title="{{ $openSidebar }}" aria-controls="sidebar" aria-expanded="false">
+          <svg class="icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="{{ if eq .sidebarPosition `right` }}M15 3v18{{ else }}M9 3v18{{ end }}"/></svg>
         </button>
       {{- end }}
       <a href="{{ site.Home.RelPermalink }}" class="brand-title">

@@ -57,7 +57,7 @@
 
     {{- /* Buttons */ -}}
     {{- with $s.buttons }}
-      <section class="sidebar-block sidebar-buttons">
+      <section class="sidebar-block sidebar-buttons{{ if eq $s.buttonslayout `grid` }} sidebar-buttons-grid{{ end }}">
         {{- range . }}
           {{- $url := partial "link-url.html" (dict "item" . "page" $) -}}
           {{- $external := partial "is-external-url.html" $url -}}

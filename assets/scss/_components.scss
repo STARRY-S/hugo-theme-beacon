@@ -336,4 +336,8 @@
   // Widgets embed as iframes that default to inline layout, which leaves a
   // stray baseline gap under the thread.
   iframe { display: block; }
+
+  // Disqus does not allow custom CSS inside its cross-origin iframe, but its
+  // embed officially inherits this link color for author names and controls.
+  #disqus_thread a { color: var(--color-comment-accent); }
 }

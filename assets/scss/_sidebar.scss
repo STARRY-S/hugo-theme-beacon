@@ -149,6 +149,31 @@
   }
 }
 
+// Optional compact navigation grid. An unmatched final button spans both
+// columns so odd-sized menus still look intentional rather than unfinished.
+.sidebar-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+
+  .sidebar-button {
+    justify-content: center;
+    min-width: 0;
+    padding: 10px 8px;
+    border: 1px solid var(--color-border);
+    text-align: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease,
+      color 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--color-border-hover);
+    }
+
+    &:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
+}
+
 // Link lists (items + friends)
 .sidebar-title {
   @extend %section-label;
@@ -236,6 +261,82 @@
   z-index: 40;
 }
 
+// ── Desktop single-page drawer ────────────────────────────────────────
+// Keep long-form content centered until the reader explicitly asks for the
+// profile sidebar. The panel overlays the page so opening it never reflows the
+// article or changes its reading width.
+@media (min-width: 1100px) {
+  .sidebar-drawer-enabled .sidebar-drawer-toggle {
+    display: inline-flex;
+    position: fixed;
+    inset: auto auto 24px 24px;
+    z-index: 35;
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    padding: 12px;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-soft);
+    background: color-mix(in srgb, var(--color-bg-soft) 92%, transparent);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+    transition: color 0.15s ease, border-color 0.15s ease,
+      background-color 0.15s ease, transform 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-primary);
+      border-color: var(--color-border-hover);
+      background: var(--color-bg-soft);
+      transform: translateY(-2px);
+    }
+  }
+
+  .sidebar-drawer-enabled.sidebar-right .sidebar-drawer-toggle {
+    inset: auto 24px 80px auto;
+  }
+
+  .sidebar-drawer-enabled .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 320px;
+    max-width: 85vw;
+    padding: 0 20px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--color-bg);
+    box-shadow: var(--shadow-hover);
+    transform: translateX(-100%);
+    transition: transform 0.28s ease;
+    visibility: hidden;
+    z-index: 50;
+  }
+
+  .sidebar-drawer-enabled.sidebar-right .sidebar {
+    right: 0;
+    left: auto;
+    transform: translateX(100%);
+  }
+
+  .sidebar-drawer-enabled .sidebar-close { display: inline-flex; }
+  .sidebar-drawer-enabled .sidebar-inner {
+    position: static;
+    margin: 0;
+    padding: 24px 0;
+    background: none;
+    border: 0;
+  }
+
+  .sidebar-drawer-enabled.sidebar-open .sidebar {
+    transform: translateX(0);
+    visibility: visible;
+  }
+  .sidebar-drawer-enabled.sidebar-open .sidebar-overlay:not([hidden]) { opacity: 1; }
+  body.sidebar-drawer-enabled.sidebar-open { overflow: hidden; }
+}
+
 // ── Mobile: off-canvas drawer ────────────────────────────────────────
 @media (max-width: 1099px) {
   .has-sidebar {
@@ -252,6 +353,10 @@
   .single.has-sidebar.type-gallery .main { max-width: var(--gallery-width); }
 
   .has-sidebar:not(.sidebar-mobile-enabled) .sidebar { display: none; }
+  .sidebar-drawer-enabled:not(.sidebar-mobile-enabled) {
+    .sidebar,
+    .sidebar-toggle { display: none; }
+  }
   .sidebar-mobile-enabled .sidebar-toggle { display: inline-flex; }
 
   .sidebar-mobile-enabled .sidebar {

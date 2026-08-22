@@ -27,6 +27,7 @@ enableRobotsTXT = true
   enabled = false
   avatarSize = 128
   showOnSingle = true
+  collapsibleOnSingle = false
   showOnMobile = true
   showTopTags = false
   topTagsLimit = 8

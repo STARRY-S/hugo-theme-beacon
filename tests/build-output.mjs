@@ -242,6 +242,23 @@ assert.match(text(listOnlySidebar, "index.html"), /has-sidebar sidebar-left/);
 assert.doesNotMatch(text(listOnlySidebar, "index.html"), /sidebar-mobile-enabled/);
 assert.doesNotMatch(text(listOnlySidebar, "posts/nested/list-only/index.html"), /has-sidebar|id=sidebar/);
 
+const drawerSidebarSource = fixtureSite({
+  "drawer.md": "---\ntitle: Drawer sidebar\ndate: 2026-01-01\n---\n\nDrawer fixture.\n",
+}, `
+[params.sidebar]
+  enabled = true
+  showOnSingle = false
+  collapsibleOnSingle = true
+  showOnMobile = false
+  author = "Fixture author"
+`);
+const drawerSidebar = text(buildFixture(drawerSidebarSource).output, "posts/nested/drawer/index.html");
+assert.match(drawerSidebar, /<body class="?single kind-page type-posts sidebar-drawer-enabled sidebar-left/);
+assert.doesNotMatch(drawerSidebar, /\bhas-sidebar\b/);
+assert.match(drawerSidebar, /id="?sidebar-toggle"?/);
+assert.match(drawerSidebar, /id="?sidebar"?/);
+assert.match(drawerSidebar, /class="?sidebar-overlay"? hidden/);
+
 const profileSource = fixtureSite({
   "profile-post.md": "---\ntitle: Profile post\ndate: 2026-01-01\n---\n\nProfile fixture.\n",
 }, `

@@ -4,8 +4,6 @@ A clean, fast blog theme for [Hugo](https://gohugo.io/) with an editorial layout
 
 ![Hugo](https://img.shields.io/badge/Hugo-0.155.3+-ff4088?logo=hugo) ![License](https://img.shields.io/badge/License-MIT-blue)
 
-> Beacon is a work in progress, maintained primarily for a personal blog. Public reuse is welcome, but review release notes before upgrading.
-
 ## Features
 
 - Auto → Light → Dark theme control with system-theme tracking and persistence
@@ -115,6 +113,7 @@ The legacy page parameter `private: true` remains an alias for compatibility but
   enabled = true
   position = "left"
   showOnSingle = true
+  collapsibleOnSingle = false
   showOnMobile = true
   avatar = "images/avatar.svg"
   avatarSize = 128
@@ -123,6 +122,7 @@ The legacy page parameter `private: true` remains an alias for compatibility but
   showStats = true
   showTopTags = true
   topTagsLimit = 8
+  buttonsLayout = "grid" # optional; the default is a vertical list
 
   [[params.sidebar.items]]
     name = "About"
@@ -132,7 +132,7 @@ The legacy page parameter `private: true` remains an alias for compatibility but
   enabled = false
 ```
 
-`showOnSingle` and `showOnMobile` default to `true` for compatibility. Set both to `false` for a desktop-only sidebar on list pages. When enabled on mobile, the sidebar becomes a focus-trapped drawer. `avatarSize` sets the square avatar size in pixels and defaults to `128`. `showTopTags` is opt-in and lists the most-used tags for the current language; `topTagsLimit` defaults to `8`, while `topTagsTitle` optionally overrides the localized heading. Non-square avatars can still be customized with a layout override.
+`showOnSingle` and `showOnMobile` default to `true` for compatibility. Set `showOnSingle = false` and `collapsibleOnSingle = true` to keep main-section articles centered while offering the same sidebar from a desktop panel button; `showOnMobile` independently controls whether that drawer is available below `1100px`. A page-level `showSidebar: true` or `showSidebar: false` overrides the permanent page-kind layout, while `showSidebarDrawer: true` or `showSidebarDrawer: false` overrides the optional drawer. A permanent sidebar takes precedence when both are requested. Drawers trap focus, close with Escape or the backdrop, and restore focus to their opener. `avatarSize` sets the square avatar size in pixels and defaults to `128`. `buttonsLayout = "grid"` arranges sidebar buttons in two columns; the default remains a vertical list. `showTopTags` is opt-in and lists the most-used tags for the current language; `topTagsLimit` defaults to `8`, while `topTagsTitle` optionally overrides the localized heading. Non-square avatars can still be customized with a layout override.
 
 ### Comments
 

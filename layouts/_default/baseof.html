@@ -4,18 +4,28 @@
   {{ partial "head.html" . }}
 </head>
 {{- $showSidebar := false -}}
+{{- $renderSidebar := false -}}
+{{- $sidebarDrawer := false -}}
 {{- $showSidebarMobile := true -}}
 {{- $pos := "left" -}}
 {{- with site.Params.sidebar -}}
   {{- if .enabled -}}
     {{- $showOnSingle := true -}}
+    {{- $collapsibleOnSingle := false -}}
     {{- if isset . "showonsingle" }}{{ $showOnSingle = .showOnSingle }}{{ end -}}
+    {{- if isset . "collapsibleonsingle" }}{{ $collapsibleOnSingle = .collapsibleOnSingle }}{{ end -}}
     {{- if isset . "showonmobile" }}{{ $showSidebarMobile = .showOnMobile }}{{ end -}}
     {{- $showSidebar = or (ne $.Kind "page") $showOnSingle -}}
+    {{- $showSidebar = partial "param-bool.html" (dict "page" $ "key" "showSidebar" "default" $showSidebar) -}}
+    {{- $mainSections := site.Params.mainSections | default (slice "posts") -}}
+    {{- $drawerDefault := and $.IsPage (in $mainSections $.Type) (not $showSidebar) $collapsibleOnSingle -}}
+    {{- $sidebarDrawer = partial "param-bool.html" (dict "page" $ "key" "showSidebarDrawer" "default" $drawerDefault) -}}
+    {{- $sidebarDrawer = and $.IsPage (not $showSidebar) $sidebarDrawer -}}
+    {{- $renderSidebar = or $showSidebar $sidebarDrawer -}}
     {{- $pos = .position | default "left" -}}
   {{- end -}}
 {{- end -}}
-<body class="{{ if eq .Kind `page` }}single{{ else }}list{{ end }} kind-{{ .Kind }} type-{{ .Type | default `page` | urlize }}{{ if $showSidebar }} has-sidebar sidebar-{{ $pos }}{{ if $showSidebarMobile }} sidebar-mobile-enabled{{ end }}{{ end }}"
+<body class="{{ if eq .Kind `page` }}single{{ else }}list{{ end }} kind-{{ .Kind }} type-{{ .Type | default `page` | urlize }}{{ if $showSidebar }} has-sidebar sidebar-{{ $pos }}{{ else if $sidebarDrawer }} sidebar-drawer-enabled sidebar-{{ $pos }}{{ end }}{{ if and $renderSidebar $showSidebarMobile }} sidebar-mobile-enabled{{ end }}"
       data-copy="{{ i18n "copy" | default "Copy" }}" data-copied="{{ i18n "copied" | default "Copied!" }}"
       data-copy-failed="{{ i18n "copyFailed" | default "Copy failed" }}"
       data-toggle-theme="{{ i18n "toggleTheme" | default "Theme" }}"
@@ -32,16 +42,16 @@
   <a class="skip-link" href="#main">{{ i18n "skipToContent" | default "Skip to content" }}</a>
   <div id="copy-status" class="visually-hidden" role="status" aria-live="polite"></div>
   <div class="container">
-    {{ partial "header.html" (dict "page" . "showSidebar" $showSidebar "showSidebarMobile" $showSidebarMobile) }}
+    {{ partial "header.html" (dict "page" . "renderSidebar" $renderSidebar "sidebarDrawer" $sidebarDrawer "showSidebarMobile" $showSidebarMobile "sidebarPosition" $pos) }}
     <div class="layout">
-      {{- if $showSidebar }}{{ partial "sidebar.html" . }}{{ end }}
+      {{- if $renderSidebar }}{{ partial "sidebar.html" . }}{{ end }}
       <main class="main" id="main">
         {{ block "main" . }}{{ end }}
       </main>
     </div>
     {{ partial "footer.html" . }}
   </div>
-  {{- if and $showSidebar $showSidebarMobile }}<div class="sidebar-overlay" hidden></div>{{ end }}
+  {{- if and $renderSidebar (or $showSidebarMobile $sidebarDrawer) }}<div class="sidebar-overlay" hidden></div>{{ end }}
   {{ partialCached "js.html" . }}
   {{- /* Site escape hatch — after the JS bundle, so third-party scripts can rely
          on it. Deliberately NOT partialCached: an override may vary per page. */ -}}
