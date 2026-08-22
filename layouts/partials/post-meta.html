@@ -1,9 +1,11 @@
 {{- /* Post metadata line: date, reading time, word count */ -}}
+{{- $dateFormat := or site.Params.postDateFormat site.Params.dateFormat ":date_long" -}}
 <div class="post-meta">
   {{- if partial "param-bool.html" (dict "page" . "key" "showDate" "default" true) }}
   {{- with .PublishDate }}
     <span class="meta-date">
-      <time datetime="{{ .Format "2006-01-02" }}">{{ time.Format (or site.Params.dateFormat ":date_long") . }}</time>
+      <span class="meta-label meta-date-label">{{ i18n "createdAt" | default "Created" }}</span>
+      <time datetime="{{ .Format "2006-01-02T15:04:05Z07:00" }}">{{ time.Format $dateFormat . }}</time>
     </span>
   {{- end }}
   {{- end }}

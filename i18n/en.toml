@@ -9,6 +9,12 @@ other = "words"
 [by]
 other = "By"
 
+[lastUpdated]
+other = "Last updated"
+
+[createdAt]
+other = "Created"
+
 [toc]
 other = "Table of Contents"
 

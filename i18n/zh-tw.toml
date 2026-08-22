@@ -9,6 +9,12 @@ other = "字"
 [by]
 other = "作者"
 
+[lastUpdated]
+other = "更新於"
+
+[createdAt]
+other = "建立於"
+
 [toc]
 other = "目錄"
 

@@ -9,6 +9,12 @@ other = "文字"
 [by]
 other = "投稿者"
 
+[lastUpdated]
+other = "最終更新"
+
+[createdAt]
+other = "作成"
+
 [toc]
 other = "目次"
 

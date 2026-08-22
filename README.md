@@ -57,19 +57,21 @@ The starter has no comments, music, Iconify, Sponsor provider, or real external 
   author = "Your Name"
   mainSections = ["posts"]
   dateFormat = ":date_long"       # Hugo-localized; any Go time layout also works
+  postDateFormat = ":date_long"   # optional post-only override; falls back to dateFormat
   timelineDateFormat = "01-02"
 
   showReadingTime = true
   showWordCount = true
   showAuthor = true
   showDate = true
+  showLastmod = false
   showSummary = true
   showToc = true
   showBreadcrumbs = true
   showShareButtons = true
 ```
 
-All `show…` values may be overridden in page front matter. An explicit `false` always wins over the site default. Set `pinned = true` to render a localized list badge; use Hugo's `weight` independently when the page should sort first.
+All `show…` values may be overridden in page front matter. An explicit `false` always wins over the site default. When `showLastmod` is enabled, single pages display a localized “Last updated” line only when `.Lastmod` is later than `.PublishDate`; list entries remain compact. Use a numeric-zone layout such as `2006-01-02 15:04:05 UTCZ07:00` when an unambiguous timestamp is preferred. Set `pinned = true` to render a localized list badge; use Hugo's `weight` independently when the page should sort first.
 
 ### URLs and links
 

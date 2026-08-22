@@ -103,7 +103,7 @@ function assertExample(output, pathPrefix) {
   assert.match(chinesePost, /class=breadcrumbs/);
   // Hugo releases before locale became the primary localization key fall back
   // to English here; both supported versions must still honor the date token.
-  assert.match(chinesePost, /<time datetime=2026-07-01>(?:2026年7月1日|July 1, 2026)<\/time>/);
+  assert.match(chinesePost, /<time datetime=2026-07-01T09:00:00(?:\+|&#43;)08:00>(?:2026年7月1日|July 1, 2026)<\/time>/);
   const chineseHome = text(output, "zh-cn/index.html");
   assert.match(chineseHome, new RegExp(`src=${prefix}images/avatar\\.svg`));
   assert.match(chineseHome, /class=sidebar-avatar[^>]+width=128 height=128/);
@@ -211,6 +211,18 @@ assert.match(termPage2, /<title>Fixture · Page 2 · Fixture<\/title>/);
 assert.match(termPage2, /rel="canonical" href="https:\/\/fixture\.test\/tags\/fixture\/page\/2\/"/);
 assert.match(termPage2, /property="og:url" content="https:\/\/fixture\.test\/tags\/fixture\/page\/2\/"/);
 assert.match(termPage2, /rel="prev" href="https:\/\/fixture\.test\/tags\/fixture\/"/);
+
+const lastmodSource = fixtureSite({
+  "updated.md": "---\ntitle: Updated\ndate: 2026-01-02T03:04:05+08:00\nlastmod: 2026-02-03T04:05:06+08:00\n---\n\nUpdated fixture.\n",
+}, `
+  showLastmod = true
+  postDateFormat = "2006-01-02 15:04:05 UTCZ07:00"
+`);
+const lastmodOutput = buildFixture(lastmodSource).output;
+const updatedPost = text(lastmodOutput, "posts/nested/updated/index.html");
+assert.match(updatedPost, /datetime="?2026-01-02T03:04:05(?:\+|&#43;)08:00"?>2026-01-02 03:04:05 UTC(?:\+|&#43;)08:00<\/time>/);
+assert.match(updatedPost, /Last updated<\/span>\s*<time datetime="?2026-02-03T04:05:06(?:\+|&#43;)08:00"?>2026-02-03 04:05:06 UTC(?:\+|&#43;)08:00<\/time>/);
+assert.doesNotMatch(text(lastmodOutput, "index.html"), /Last updated/);
 
 const sidebarCompatibilitySource = fixtureSite({
   "sidebar.md": "---\ntitle: Sidebar page\ndate: 2026-01-01\ntags: [Alpha, Beta]\n---\n\nSidebar fixture.\n",
