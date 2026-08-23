@@ -34,6 +34,34 @@
 
   a { text-decoration: underline; text-underline-offset: 2px; }
 
+  // Inline spoilers stay concealed until hovered, focused, or explicitly
+  // toggled. box-decoration-break keeps wrapped spoilers covered line by line.
+  .spoiler {
+    padding: 0 0.12em;
+    color: transparent;
+    background: var(--color-text-soft);
+    border-radius: 2px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+
+    &,
+    * { text-decoration-color: transparent; }
+
+    &:hover,
+    &:focus-visible,
+    &.is-revealed {
+      color: var(--color-text);
+      background: var(--color-bg-muted);
+
+      * {
+        color: inherit;
+        text-decoration-color: currentcolor;
+      }
+    }
+  }
+
   blockquote {
     border-left: 3px solid var(--color-primary);
     padding: 4px 18px;

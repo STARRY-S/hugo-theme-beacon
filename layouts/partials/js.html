@@ -6,7 +6,8 @@
 {{- $imagePreview := resources.Get "js/image-preview.js" }}
 {{- $comments := resources.Get "js/comments.js" }}
 {{- $sponsor := resources.Get "js/sponsor.js" }}
-{{- $bundle := slice $toggle $copy $sidebar $navigation $backToTop $imagePreview $comments $sponsor | resources.Concat "js/bundle.js" }}
+{{- $spoiler := resources.Get "js/spoiler.js" }}
+{{- $bundle := slice $toggle $copy $sidebar $navigation $backToTop $imagePreview $comments $sponsor $spoiler | resources.Concat "js/bundle.js" }}
 {{- if hugo.IsProduction }}
   {{- $bundle = $bundle | minify | fingerprint }}
   <script src="{{ $bundle.RelPermalink }}" integrity="{{ $bundle.Data.Integrity }}" defer></script>
