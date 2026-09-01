@@ -35,6 +35,14 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
   # entry below). Curated short names still render as inline SVG regardless.
   iconify = true
 
+  # Preserve already-optimized article images up to 2560px. Larger images get
+  # responsive display candidates, while the lightbox keeps the source file.
+  [params.imageProcessing]
+    quality = 82
+    contentMaxWidth = 2560
+    galleryThumbnailWidth = 1200
+    lightboxMaxWidth = 0
+
   # ── Footer ────────────────────────────────────────────────
   [params.footer]
     since = ""                     # start year; omit for the current year alone

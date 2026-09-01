@@ -17,35 +17,52 @@
 {{- $loading := .loading | default "lazy" -}}
 {{- $sizes := .sizes | default "100vw" -}}
 {{- $processable := and $resource (partial "image-processable.html" $resource) -}}
+{{- $config := partialCached "image-processing-config.html" . site.Language.Lang -}}
+{{- $quality := $config.quality -}}
+{{- $contentMaxWidth := $config.contentMaxWidth -}}
+{{- $lightboxMaxWidth := $config.lightboxMaxWidth -}}
+{{- $full := $resource -}}
+{{- if and .full $processable (gt $lightboxMaxWidth 0) (gt $resource.Width $lightboxMaxWidth) -}}
+  {{- $filters := slice images.AutoOrient (images.Process (printf "resize %dx q%d" $lightboxMaxWidth $quality)) -}}
+  {{- $full = $resource.Filter $filters -}}
+{{- end -}}
 {{- if $processable -}}
-  {{- $widths := .widths | default (slice 480 800 1200) -}}
+  {{- $preserveOriginal := .preserveOriginal | default false -}}
+  {{- $shouldProcess := or (not $preserveOriginal) (gt $resource.Width $contentMaxWidth) -}}
+  {{- $widths := .widths | default (slice 480 960 1440) -}}
   {{- $targetWidths := slice -}}
   {{- $webps := slice -}}
-  {{- range $widths -}}
-    {{- if ge $resource.Width . }}{{ $targetWidths = $targetWidths | append . }}{{ end -}}
+  {{- if $shouldProcess -}}
+    {{- $ceiling := $resource.Width -}}
+    {{- if gt $ceiling $contentMaxWidth }}{{ $ceiling = $contentMaxWidth }}{{ end -}}
+    {{- $widths = $widths | append $ceiling | uniq | sort -}}
+    {{- range $widths -}}
+      {{- if and (ge . 1) (le . $ceiling) }}{{ $targetWidths = $targetWidths | append . }}{{ end -}}
+    {{- end -}}
+    {{- range $targetWidths -}}
+      {{- $spec := cond (eq . $resource.Width) (printf "webp q%d" $quality) (printf "resize %dx webp q%d" . $quality) -}}
+      {{- $filters := slice images.AutoOrient (images.Process $spec) -}}
+      {{- $webps = $webps | append ($resource.Filter $filters) -}}
+    {{- end -}}
   {{- end -}}
-  {{- if not $targetWidths }}{{ $targetWidths = slice $resource.Width }}{{ end -}}
-  {{- range $targetWidths -}}
-    {{- $spec := cond (eq . $resource.Width) "webp q82" (printf "resize %dx webp q82" .) -}}
-    {{- $filters := slice images.AutoOrient (images.Process $spec) -}}
-    {{- $webps = $webps | append ($resource.Filter $filters) -}}
-  {{- end -}}
-  {{- $fallbackWidth := index $targetWidths (sub (len $targetWidths) 1) -}}
-  {{- $fallback := $resource -}}
-  {{- if eq $fallbackWidth $resource.Width -}}
-    {{- $fallback = $resource.Filter images.AutoOrient -}}
-  {{- else -}}
-    {{- $filters := slice images.AutoOrient (images.Process (printf "resize %dx q82" $fallbackWidth)) -}}
-    {{- $fallback = $resource.Filter $filters -}}
-  {{- end -}}
+  {{- if $webps }}
   <picture>
     <source type="image/webp" srcset="{{ range $i, $img := $webps }}{{ if $i }}, {{ end }}{{ $img.RelPermalink }} {{ $img.Width }}w{{ end }}" sizes="{{ $sizes }}">
-    <img{{ with $class }} class="{{ . }}"{{ end }} src="{{ $fallback.RelPermalink }}"
-      width="{{ $fallback.Width }}" height="{{ $fallback.Height }}" alt="{{ $alt }}"
+    <img{{ with $class }} class="{{ . }}"{{ end }} src="{{ $resource.RelPermalink }}"
+      width="{{ $resource.Width }}" height="{{ $resource.Height }}" alt="{{ $alt }}"
+      {{- if $.full }} data-full="{{ $full.RelPermalink }}"{{ end }}
       loading="{{ $loading }}" decoding="async"{{ if .fetchpriority }} fetchpriority="{{ .fetchpriority }}"{{ end }}{{ with .title }} title="{{ . }}"{{ end }}>
   </picture>
+  {{- else }}
+  <img{{ with $class }} class="{{ . }}"{{ end }} src="{{ $resource.RelPermalink }}"
+    width="{{ $resource.Width }}" height="{{ $resource.Height }}" alt="{{ $alt }}"
+    {{- if .full }} data-full="{{ $full.RelPermalink }}"{{ end }}
+    loading="{{ $loading }}" decoding="async"{{ if .fetchpriority }} fetchpriority="{{ .fetchpriority }}"{{ end }}{{ with .title }} title="{{ . }}"{{ end }}>
+  {{- end }}
 {{- else -}}
-  <img{{ with $class }} class="{{ . }}"{{ end }} src="{{ partial `asset-url.html` $raw }}" alt="{{ $alt }}"
+  {{- $url := partial `asset-url.html` $raw -}}
+  <img{{ with $class }} class="{{ . }}"{{ end }} src="{{ $url }}" alt="{{ $alt }}"
+    {{- if .full }} data-full="{{ $url }}"{{ end }}
     {{- with .width }} width="{{ . }}"{{ end }}{{ with .height }} height="{{ . }}"{{ end }}
     loading="{{ $loading }}" decoding="async"{{ if .fetchpriority }} fetchpriority="{{ .fetchpriority }}"{{ end }}{{ with .title }} title="{{ . }}"{{ end }}>
 {{- end -}}

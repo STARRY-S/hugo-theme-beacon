@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, mkdtempSync, readFileSync, readdirSync, statSync, writeFileSync, mkdirSync } from "node:fs";
+import { copyFileSync, existsSync, mkdtempSync, readFileSync, readdirSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -135,6 +135,7 @@ function assertExample(output, pathPrefix) {
   const gallerySource = gallery.match(/<source type=image\/webp[^>]+>/)?.[0] || "";
   const galleryImage = gallery.match(/<img class="gallery__img zoomable"[^>]+>/)?.[0] || "";
   assert.equal((gallerySource.match(/\.webp/g) || []).length, 2, "gallery should emit only its two responsive WebP widths");
+  assert.match(gallerySource, / 400w, .* 1200w/, "gallery should provide a high-DPI 1200px thumbnail without adding another candidate");
   assert.doesNotMatch(galleryImage, /\bsrcset=/, "gallery fallback should be a single original-format thumbnail");
   assert.match(galleryImage, new RegExp(`data-full=${prefix}gallery/images/[\\w-]+\\.jpg`), "gallery lightbox should use the original resource");
 
@@ -166,6 +167,7 @@ ${extraConfig}
 `);
   for (const [name, body] of Object.entries(contentFiles)) {
     const path = join(source, "content", "posts", "nested", name);
+    mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, body);
   }
   return source;
@@ -296,6 +298,42 @@ writeFileSync(join(vectorSource, "content", "gallery", "diagram.svg"), '<svg xml
 const vectorGallery = text(buildFixture(vectorSource).output, "gallery/index.html");
 assert.match(vectorGallery, /src="\/gallery\/diagram\.svg"/);
 assert.doesNotMatch(vectorGallery, /<picture>/);
+
+const imageSource = fixtureSite({
+  "image-quality/index.md": `---
+title: Image quality
+date: 2026-01-01
+---
+
+![Small image](small.jpg)
+
+![Large image](large.jpg)
+
+{{< gallery match="large.jpg" thumb=600 >}}
+`,
+}, `
+[params.imageProcessing]
+  quality = 82
+  contentMaxWidth = 1200
+  galleryThumbnailWidth = 1000
+  lightboxMaxWidth = 1500
+`);
+const imageBundle = join(imageSource, "content", "posts", "nested", "image-quality");
+copyFileSync(join(root, "exampleSite", "content", "gallery", "images", "desk.jpg"), join(imageBundle, "small.jpg"));
+copyFileSync(join(root, "exampleSite", "content", "gallery", "images", "city-night.jpg"), join(imageBundle, "large.jpg"));
+const imageOutput = buildFixture(imageSource).output;
+const imagePost = text(imageOutput, "posts/nested/image-quality/index.html");
+const smallImage = imagePost.match(/<img class="zoomable" src="\/posts\/nested\/image-quality\/small\.jpg"[^>]+>/)?.[0] || "";
+assert.ok(smallImage, "small Markdown image should use its source file directly");
+assert.match(smallImage, /data-full="\/posts\/nested\/image-quality\/small\.jpg"/);
+assert.doesNotMatch(smallImage, /_hu_|srcset=/, "small Markdown image should not be re-encoded");
+const largeSource = imagePost.match(/<source type="image\/webp"[^>]+large_hu_[^>]+>/)?.[0] || "";
+const largeImage = imagePost.match(/<img class="zoomable" src="\/posts\/nested\/image-quality\/large\.jpg"[^>]+>/)?.[0] || "";
+assert.match(largeSource, / 720w, .* 1200w/, "oversized Markdown image should stop at the configured display width");
+assert.doesNotMatch(largeSource, / 1440w| 1600w/, "oversized display candidates must not exceed the configured width");
+assert.match(largeImage, /data-full="\/posts\/nested\/image-quality\/large_hu_[^"]+\.jpg"/, "configured lightbox cap should create a separate full image");
+const inlineGallerySource = imagePost.match(/<div class="gallery">[\s\S]*?<source type="image\/webp"([^>]+)>/)?.[1] || "";
+assert.match(inlineGallerySource, / 400w, .* 600w/, "shortcode thumb should override the global gallery thumbnail width");
 
 for (const [name, body, expected] of [
   ["bad-gallery.md", "---\ntitle: Bad gallery\n---\n\n{{< gallery thumb=100 >}}\n", "thumb must be between 200 and 2400"],

@@ -213,7 +213,19 @@ Markdown images use their alt text correctly; a title becomes a caption. Append 
 ![Decorative texture](texture.png "#noZoom")
 ```
 
-Local processable page resources and assets receive responsive original/WebP candidates without upscaling. External, static-only, GIF, SVG, and unsupported images fall back safely. For best results and complete intrinsic dimensions, keep article images in a page bundle or the site's `assets/` directory.
+Beacon keeps display images separate from lightbox images. Local Markdown images up to 2560 pixels wide are published unchanged, so an already-optimized JPEG is not decoded and encoded again. Larger images receive responsive WebP display candidates up to 2560 pixels, while clicking the image opens the original by default. Covers remain responsive display assets, and gallery thumbnails default to 1200 pixels; neither path upscales a source image.
+
+These defaults can be adjusted without changing the theme:
+
+```toml
+[params.imageProcessing]
+  quality = 82                 # encoder quality, not a literal compression percentage
+  contentMaxWidth = 2560       # preserve smaller Markdown images; cap display candidates above it
+  galleryThumbnailWidth = 1200 # overridden by the gallery shortcode's thumb argument
+  lightboxMaxWidth = 0         # 0 keeps the original; set a width to cap unusually large originals
+```
+
+Hugo writes derivatives only to its generated output and resource cache; it never modifies source images. External, static-only, GIF, SVG, and unsupported images fall back safely and still open their original URL. For responsive processing and complete intrinsic dimensions, keep article images in a page bundle or the site's `assets/` directory.
 
 Create a gallery as a leaf bundle:
 
@@ -232,7 +244,7 @@ The default timeline groups photos by EXIF capture day, then by a `YYYYMMDD-HHMM
 {{</* gallery match="trip/*" thumb="600" reverse="true" */>}}
 ```
 
-`thumb` must be between 200 and 2400 pixels. Invalid arguments report the source page and position.
+`thumb` overrides `galleryThumbnailWidth` for that gallery and must be between 200 and 2400 pixels. Invalid arguments report the source page and position.
 
 Hugo 0.155.3 introduced the image resource `.Meta` API used by the gallery. Preserve EXIF while explicitly excluding GPS:
 

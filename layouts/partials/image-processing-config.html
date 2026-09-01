@@ -1,0 +1,32 @@
+{{- $params := site.Params.imageProcessing | default dict -}}
+
+{{- $quality := 82 -}}
+{{- with $params.quality }}{{ $quality = int . }}{{ end -}}
+{{- if or (lt $quality 1) (gt $quality 100) -}}
+  {{- errorf "Beacon image processing: quality must be between 1 and 100" -}}
+{{- end -}}
+
+{{- $contentMaxWidth := 2560 -}}
+{{- with $params.contentMaxWidth }}{{ $contentMaxWidth = int . }}{{ end -}}
+{{- if lt $contentMaxWidth 320 -}}
+  {{- errorf "Beacon image processing: contentMaxWidth must be at least 320 pixels" -}}
+{{- end -}}
+
+{{- $galleryThumbnailWidth := 1200 -}}
+{{- with $params.galleryThumbnailWidth }}{{ $galleryThumbnailWidth = int . }}{{ end -}}
+{{- if or (lt $galleryThumbnailWidth 200) (gt $galleryThumbnailWidth 2400) -}}
+  {{- errorf "Beacon image processing: galleryThumbnailWidth must be between 200 and 2400 pixels" -}}
+{{- end -}}
+
+{{- $lightboxMaxWidth := 0 -}}
+{{- with $params.lightboxMaxWidth }}{{ $lightboxMaxWidth = int . }}{{ end -}}
+{{- if lt $lightboxMaxWidth 0 -}}
+  {{- errorf "Beacon image processing: lightboxMaxWidth must be zero or a positive number" -}}
+{{- end -}}
+
+{{- return (dict
+      "quality" $quality
+      "contentMaxWidth" $contentMaxWidth
+      "galleryThumbnailWidth" $galleryThumbnailWidth
+      "lightboxMaxWidth" $lightboxMaxWidth
+) -}}

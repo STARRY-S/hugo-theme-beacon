@@ -9,12 +9,14 @@
   Params:
     match    - resource glob (default: all images in the bundle).
     reverse  - "true" to flip the order.
-    thumb    - thumbnail width in px (default 800).
+    thumb    - thumbnail width in px (defaults to the site setting, initially 1200).
 
   Captions come from each image's [[resources]] params (see partials/gallery.html). */ -}}
 {{- $match := .Get "match" -}}
 {{- $images := cond (ne $match "") ($.Page.Resources.Match $match) ($.Page.Resources.ByType "image") -}}
-{{- $thumb := int (.Get "thumb" | default 800) -}}
+{{- $config := partialCached "image-processing-config.html" . site.Language.Lang -}}
+{{- $thumb := $config.galleryThumbnailWidth -}}
+{{- with .Get "thumb" }}{{ $thumb = int . }}{{ end -}}
 {{- if or (lt $thumb 200) (gt $thumb 2400) -}}
   {{- errorf "gallery shortcode: thumb must be between 200 and 2400 pixels; see %s" .Position -}}
 {{- end -}}

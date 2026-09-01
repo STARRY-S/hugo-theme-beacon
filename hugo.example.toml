@@ -25,6 +25,12 @@ enableRobotsTXT = true
   showBreadcrumbs = true
   showShareButtons = true
 
+[params.imageProcessing]
+  quality = 82
+  contentMaxWidth = 2560
+  galleryThumbnailWidth = 1200
+  lightboxMaxWidth = 0
+
 [params.sidebar]
   enabled = false
   avatarSize = 128

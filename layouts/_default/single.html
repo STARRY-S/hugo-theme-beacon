@@ -12,7 +12,7 @@
 
       {{- with .Params.cover.image }}
       <figure class="post-cover">
-        {{ partial "responsive-image.html" (dict "src" . "page" $ "alt" $.Title "loading" "eager" "fetchpriority" "high" "sizes" "(max-width: 760px) 100vw, 720px" "widths" (slice 480 720 1200)) }}
+        {{ partial "responsive-image.html" (dict "src" . "page" $ "alt" $.Title "loading" "eager" "fetchpriority" "high" "sizes" "(max-width: 760px) 100vw, 720px" "widths" (slice 480 960 1440)) }}
         {{- with $.Params.cover.caption }}<figcaption>{{ . | markdownify }}</figcaption>{{ end }}
       </figure>
     {{- end }}

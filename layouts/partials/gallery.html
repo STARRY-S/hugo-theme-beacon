@@ -3,7 +3,10 @@
 {{- $images := .images -}}
 {{- $page := .page -}}
 {{- if .reverse }}{{ $images = collections.Reverse $images }}{{ end -}}
-{{- $thumbW := .thumb | default 800 -}}
+{{- $config := partialCached "image-processing-config.html" . site.Language.Lang -}}
+{{- $thumbW := .thumb | default $config.galleryThumbnailWidth -}}
+{{- $quality := $config.quality -}}
+{{- $lightboxMaxWidth := $config.lightboxMaxWidth -}}
 
 {{- if $images -}}
 <div class="gallery">
@@ -14,13 +17,17 @@
     {{- $fallback := $img -}}
     {{- $full := $img -}}
     {{- if $processable -}}
+      {{- if and (gt $lightboxMaxWidth 0) (gt $img.Width $lightboxMaxWidth) -}}
+        {{- $filters := slice images.AutoOrient (images.Process (printf "resize %dx q%d" $lightboxMaxWidth $quality)) -}}
+        {{- $full = $img.Filter $filters -}}
+      {{- end -}}
       {{- $widths := slice -}}
       {{- range (slice 400 $thumbW | uniq | sort) -}}
         {{- if ge $img.Width . }}{{ $widths = $widths | append . }}{{ end -}}
       {{- end -}}
       {{- if not $widths }}{{ $widths = slice $img.Width }}{{ end -}}
       {{- range $widths -}}
-        {{- $spec := cond (eq . $img.Width) "webp q82" (printf "resize %dx webp q82" .) -}}
+        {{- $spec := cond (eq . $img.Width) (printf "webp q%d" $quality) (printf "resize %dx webp q%d" . $quality) -}}
         {{- $filters := slice images.AutoOrient (images.Process $spec) -}}
         {{- $webps = $webps | append ($img.Filter $filters) -}}
       {{- end -}}
@@ -28,7 +35,7 @@
       {{- if eq $fallbackWidth $img.Width -}}
         {{- $fallback = $img.Filter images.AutoOrient -}}
       {{- else -}}
-        {{- $filters := slice images.AutoOrient (images.Process (printf "resize %dx q82" $fallbackWidth)) -}}
+        {{- $filters := slice images.AutoOrient (images.Process (printf "resize %dx q%d" $fallbackWidth $quality)) -}}
         {{- $fallback = $img.Filter $filters -}}
       {{- end -}}
     {{- end -}}

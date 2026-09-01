@@ -3,7 +3,7 @@
   {{- with .Params.cover.image }}
     <a href="{{ $.RelPermalink }}" class="entry-cover" aria-label="{{ $.Title }}">
       {{- /* alt is empty on purpose: the wrapping link already carries the title */ -}}
-      {{ partial "responsive-image.html" (dict "src" . "page" $ "alt" "" "sizes" "(max-width: 760px) 100vw, 720px" "widths" (slice 480 720 1200)) }}
+      {{ partial "responsive-image.html" (dict "src" . "page" $ "alt" "" "sizes" "(max-width: 760px) 100vw, 720px" "widths" (slice 480 960 1440)) }}
     </a>
   {{- end }}
   <div class="entry-body">
