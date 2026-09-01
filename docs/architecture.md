@@ -35,7 +35,7 @@ Optional integrations self-gate:
 
 ## Images and galleries
 
-Processable resources are auto-oriented and receive non-upscaled original/WebP candidates. Unsupported, external, SVG, GIF, and static-only sources degrade to a normal image. The first cover or gallery image may be eager/high-priority; later images are lazy. Intrinsic dimensions are emitted whenever Hugo can determine them.
+Markdown image resources at or below `contentMaxWidth` are published unchanged; larger resources receive non-upscaled WebP display candidates while the lightbox keeps a separate original or configured capped resource. Covers remain responsive display assets. Gallery thumbnails use two candidates and keep their lightbox resource separate. Unsupported, external, SVG, GIF, and static-only sources degrade to a normal image. The first cover or gallery image may be eager/high-priority; later images are lazy. Intrinsic dimensions are emitted whenever Hugo can determine them.
 
 Gallery dates prefer image resource `.Meta.Date`, then a `YYYYMMDD-HHMMSS` filename. `.Meta` requires Hugo 0.155.3, which defines the minimum theme version. Image metadata configuration must exclude GPS. Hand-authored timeline groups, `timeline = false`, and automatic date grouping are separate supported modes.
 
