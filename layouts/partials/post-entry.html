@@ -13,7 +13,7 @@
       {{- end }}
       <a href="{{ .RelPermalink }}">{{ .Title }}</a>
     </h2>
-    {{ partial "post-meta.html" . }}
+    {{ partial "post-meta.html" (dict "page" .) }}
     {{- if partial "param-bool.html" (dict "page" . "key" "showSummary" "default" true) }}
       <p class="entry-summary">{{ .Summary | plainify | truncate (or site.Params.summaryLength 200) }}</p>
     {{- end }}

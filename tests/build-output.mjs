@@ -115,6 +115,8 @@ function assertExample(output, pathPrefix) {
   assert.doesNotMatch(about, /class=breadcrumbs/);
   assert.doesNotMatch(about, /class=sponsor-wrapper|id=comments/);
   assert.match(about, new RegExp(`<img[^>]+src=${prefix}images/screenshots/beacon-home-dark\\.png[^>]*>`));
+  assert.match(about, /<figure class=post-figure>[\s\S]*?<figcaption>Beacon homepage — dark mode<\/figcaption><\/figure>/,
+    "standalone Markdown image titles should be visible below the image");
   const noToc = text(output, "posts/notes-on-writing-more/index.html");
   assert.doesNotMatch(noToc, /class=toc(?:\s|>)/);
   assert.doesNotMatch(page2, /Lowering the bar until publishing/);
@@ -218,12 +220,15 @@ const lastmodSource = fixtureSite({
   "updated.md": "---\ntitle: Updated\ndate: 2026-01-02T03:04:05+08:00\nlastmod: 2026-02-03T04:05:06+08:00\n---\n\nUpdated fixture.\n",
 }, `
   showLastmod = true
-  postDateFormat = "2006-01-02 15:04:05 UTCZ07:00"
+  showReadingTime = true
+  postDateFormat = "2006-01-02 15:04:05"
 `);
 const lastmodOutput = buildFixture(lastmodSource).output;
 const updatedPost = text(lastmodOutput, "posts/nested/updated/index.html");
-assert.match(updatedPost, /datetime="?2026-01-02T03:04:05(?:\+|&#43;)08:00"?>2026-01-02 03:04:05 UTC(?:\+|&#43;)08:00<\/time>/);
-assert.match(updatedPost, /Last updated<\/span>\s*<time datetime="?2026-02-03T04:05:06(?:\+|&#43;)08:00"?>2026-02-03 04:05:06 UTC(?:\+|&#43;)08:00<\/time>/);
+assert.match(updatedPost, /class=meta-date[\s\S]*class=meta-lastmod[\s\S]*class=meta-reading-time/,
+  "single-page metadata should group created and updated times before reading time");
+assert.match(updatedPost, /datetime="?2026-01-02T03:04:05(?:\+|&#43;)08:00"? title="?2026-01-02 03:04:05 UTC(?:\+|&#43;)08:00"?>2026-01-02 03:04:05<\/time>/);
+assert.match(updatedPost, /Last updated<\/span>\s*<time datetime="?2026-02-03T04:05:06(?:\+|&#43;)08:00"? title="?2026-02-03 04:05:06 UTC(?:\+|&#43;)08:00"?>2026-02-03 04:05:06<\/time>/);
 assert.doesNotMatch(text(lastmodOutput, "index.html"), /Last updated/);
 
 const sidebarCompatibilitySource = fixtureSite({

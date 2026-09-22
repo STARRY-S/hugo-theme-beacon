@@ -6,8 +6,7 @@
       {{- end }}
       <h1 class="post-title">{{ .Title }}</h1>
       {{- with .Description }}<p class="post-description">{{ . }}</p>{{ end }}
-      {{ partial "post-meta.html" . }}
-      {{ partial "post-lastmod.html" . }}
+      {{ partial "post-meta.html" (dict "page" . "includeLastmod" true) }}
     </header>
 
       {{- with .Params.cover.image }}

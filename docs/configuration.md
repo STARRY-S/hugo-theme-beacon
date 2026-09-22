@@ -45,11 +45,15 @@ enableRobotsTXT = true
   showShareButtons = true
 ```
 
-`dateFormat` accepts Hugo localized layouts or Go time layouts. `postDateFormat` overrides it only for post metadata. For an unambiguous timestamp with timezone, use:
+`dateFormat` accepts Hugo localized layouts or Go time layouts. `postDateFormat` overrides it only for post metadata. For a compact timestamp, use:
 
 ```toml
-postDateFormat = "2006-01-02 15:04:05 UTCZ07:00"
+postDateFormat = "2006-01-02 15:04:05"
 ```
+
+The complete timestamp, including its UTC offset, remains available in the
+semantic `datetime` value and in the tooltip shown when the visible time is
+hovered.
 
 When `showLastmod` is enabled, a single page displays its update time only when `.Lastmod` is later than `.PublishDate`.
 

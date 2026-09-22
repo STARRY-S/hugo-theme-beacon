@@ -198,6 +198,9 @@ hasCJKLanguage = true              # correct word/character counts for CJK conte
     noClasses = false
     lineNos = false
     codeFences = true
+  [markup.goldmark.parser]
+    # Standalone Markdown images become semantic figures with visible captions.
+    wrapStandAloneImageWithinParagraph = false
   [markup.goldmark.renderer]
     unsafe = true
   [markup.tableOfContents]

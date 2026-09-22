@@ -53,6 +53,11 @@ enableRobotsTXT = true
 [markup.highlight]
   noClasses = false
 
+[markup.goldmark.parser]
+  # Allows Beacon's image render hook to emit semantic figure/figcaption markup
+  # for images placed on their own line.
+  wrapStandAloneImageWithinParagraph = false
+
 [imaging.meta]
   sources = ["exif"]
   fields = ["**", "! *GPS*"]

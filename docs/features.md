@@ -11,6 +11,17 @@ Markdown images receive lazy loading, intrinsic dimensions when available, and a
 ![Decorative texture](texture.png "#noZoom")
 ```
 
+Standalone captions require Goldmark to leave images placed on their own line
+outside paragraph elements. This is already set in Beacon's starter and example
+configuration. Add it when upgrading an existing site:
+
+```toml
+[markup.goldmark.parser]
+  wrapStandAloneImageWithinParagraph = false
+```
+
+Images next to other text remain inline and do not display a caption.
+
 Append `#noZoom` to the title to disable the lightbox for one image.
 
 Local Markdown images up to 2560 pixels wide are published unchanged, avoiding a second lossy encode. Larger images receive responsive WebP display candidates up to 2560 pixels, while the lightbox opens the original by default. Covers remain responsive display assets.

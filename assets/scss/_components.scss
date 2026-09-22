@@ -90,18 +90,26 @@
 .post-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 16px;
+  gap: 6px 12px;
   color: var(--color-text-soft);
   font-size: 0.875rem;
 
   span { display: inline-flex; align-items: center; }
 
+  > span:not(:first-child)::before {
+    content: "";
+    width: 1px;
+    height: 1em;
+    margin-right: 12px;
+    background: var(--color-divider);
+    flex: none;
+  }
+
+  .meta-reading-time { gap: 0.35em; }
+  .meta-icon { flex: none; }
+
   .meta-date { gap: 0.35em; }
   .meta-date-label { display: none; }
-}
-
-.post-lastmod {
-  margin-top: 3px;
 }
 
 .post-header .post-meta {
@@ -109,23 +117,22 @@
 
   .meta-date,
   .meta-lastmod {
-    display: grid;
-    grid-template-columns: 5.5em minmax(0, 1fr);
-    gap: 0.5em;
+    display: inline-flex;
+    gap: 0.4em;
     align-items: baseline;
+    white-space: nowrap;
   }
 
   .meta-label { justify-content: flex-start; }
 }
 
-:lang(zh) .post-header .post-meta {
-  .meta-date,
-  .meta-lastmod { grid-template-columns: 3em minmax(0, 1fr); }
-}
+@media (max-width: 640px) {
+  .post-header .post-meta {
+    flex-direction: column;
+    gap: 4px;
 
-:lang(ja) .post-header .post-meta {
-  .meta-date,
-  .meta-lastmod { grid-template-columns: 4em minmax(0, 1fr); }
+    > span:not(:first-child)::before { display: none; }
+  }
 }
 
 // Tags
